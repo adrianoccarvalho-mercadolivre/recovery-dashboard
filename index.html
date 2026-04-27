@@ -77,51 +77,6 @@ td{padding:8px 10px;font-family:var(--mono);font-size:11px}
 </style>
 </head>
 <body>
-
-<style>
-#pw-overlay{position:fixed;inset:0;background:#0b0d11;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:24px}
-#pw-box{background:#111419;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:40px 48px;display:flex;flex-direction:column;align-items:center;gap:20px;width:360px;max-width:90vw}
-#pw-logo{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#2ecc8a,#4d9fff);display:flex;align-items:center;justify-content:center;font-size:22px}
-#pw-title{font-size:17px;font-weight:500;color:#dde1ea;text-align:center}
-#pw-sub{font-size:12px;color:#5a6170;font-family:'IBM Plex Mono',monospace;text-align:center;margin-top:-8px}
-#pw-input{width:100%;background:#0b0d11;border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#dde1ea;font-size:14px;padding:12px 16px;outline:none;text-align:center;letter-spacing:.1em;font-family:'IBM Plex Mono',monospace}
-#pw-input:focus{border-color:#4d9fff}
-#pw-btn{width:100%;background:#4d9fff;border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:500;padding:12px;cursor:pointer;transition:background .2s}
-#pw-btn:hover{background:#3a8eef}
-#pw-err{font-size:12px;color:#ff4f4f;font-family:'IBM Plex Mono',monospace;display:none}
-</style>
-<div id="pw-overlay">
-  <div id="pw-box">
-    <div id="pw-logo">📦</div>
-    <div>
-      <div id="pw-title">Recovery Dashboard</div>
-      <div id="pw-sub">Commercial Carriers · 2026</div>
-    </div>
-    <input id="pw-input" type="password" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')checkPw()">
-    <button id="pw-btn" onclick="checkPw()">Acessar →</button>
-    <div id="pw-err">Senha incorreta. Tente novamente.</div>
-  </div>
-</div>
-<script>
-function checkPw(){
-  const v=document.getElementById('pw-input').value;
-  const err=document.getElementById('pw-err');
-  if(v==='Businesscontrol2026'){
-    document.getElementById('pw-overlay').style.display='none';
-    err.style.display='none';
-    // Render all tabs after unlock
-    if(typeof renderBpp==='function'){// Charts rendered after password unlock}
-  } else {
-    err.style.display='block';
-    document.getElementById('pw-input').value='';
-    document.getElementById('pw-input').focus();
-  }
-}
-document.addEventListener('DOMContentLoaded',function(){
-  document.getElementById('pw-input').focus();
-});
-</script>
-
 <div class="hdr">
   <div class="hdr-l">
     <div class="logo">📦</div>
@@ -587,7 +542,60 @@ function applyFilters(){
   const i=[...document.querySelectorAll('.tab')].findIndex(t=>t.classList.contains('active'));
   switchTab(['bpp','nonbpp','carriers','overview'][i]);
 }
-// Charts rendered after password unlock
+renderBpp();renderNonBpp();renderCarriers();renderOverview();
 </script>
+
+<!-- PASSWORD GATE -->
+<style>
+#pw-gate{position:fixed;inset:0;background:#0b0d11;display:flex;align-items:center;justify-content:center;z-index:9999}
+#pw-card{background:#111419;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:40px 44px;display:flex;flex-direction:column;align-items:center;gap:18px;width:340px;max-width:90vw}
+.pw-logo{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,#2ecc8a,#4d9fff);display:flex;align-items:center;justify-content:center;font-size:24px}
+.pw-title{font-size:17px;font-weight:600;color:#dde1ea;letter-spacing:.01em}
+.pw-sub{font-size:11px;color:#5a6170;font-family:monospace;margin-top:-10px}
+#pw-field{width:100%;background:#0b0d11;border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#dde1ea;font-size:15px;padding:12px 16px;outline:none;text-align:center;letter-spacing:.15em}
+#pw-field:focus{border-color:#4d9fff;box-shadow:0 0 0 3px rgba(77,159,255,.15)}
+#pw-submit{width:100%;background:linear-gradient(135deg,#4d9fff,#2ecc8a);border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:600;padding:13px;cursor:pointer;letter-spacing:.03em;transition:opacity .2s}
+#pw-submit:hover{opacity:.88}
+#pw-err{font-size:12px;color:#ff4f4f;font-family:monospace;display:none;text-align:center}
+</style>
+<div id="pw-gate">
+  <div id="pw-card">
+    <div class="pw-logo">📦</div>
+    <div style="text-align:center">
+      <div class="pw-title">Recovery Dashboard</div>
+      <div class="pw-sub">Commercial Carriers &middot; 2026</div>
+    </div>
+    <input id="pw-field" type="password" placeholder="••••••••••••••••" autocomplete="off">
+    <button id="pw-submit">Acessar &rarr;</button>
+    <div id="pw-err">Senha incorreta. Tente novamente.</div>
+  </div>
+</div>
+<script>
+(function(){
+  var PASS = 'Businesscontrol2026';
+  function unlock(){
+    var v = document.getElementById('pw-field').value;
+    if(v === PASS){
+      var gate = document.getElementById('pw-gate');
+      gate.style.transition = 'opacity .3s';
+      gate.style.opacity = '0';
+      setTimeout(function(){ gate.style.display = 'none'; }, 300);
+    } else {
+      document.getElementById('pw-err').style.display = 'block';
+      document.getElementById('pw-field').value = '';
+      document.getElementById('pw-field').focus();
+    }
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    document.getElementById('pw-field').focus();
+    document.getElementById('pw-submit').addEventListener('click', unlock);
+    document.getElementById('pw-field').addEventListener('keydown', function(e){
+      if(e.key === 'Enter') unlock();
+    });
+  });
+})();
+</script>
+<!-- END PASSWORD GATE -->
+
 </body>
 </html>
