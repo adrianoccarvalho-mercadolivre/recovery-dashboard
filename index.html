@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recovery Dashboard — Commercial Carriers 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --bg:#0b0d11;--s1:#111419;--s2:#181c24;
+  --b:rgba(255,255,255,.06);--b2:rgba(255,255,255,.12);
+  --txt:#dde1ea;--m:#5a6170;--m2:#7c8696;
+  --grn:#2ecc8a;--blu:#4d9fff;--red:#ff4f4f;
+  --amb:#f5a623;--pur:#a374ff;--cyn:#00d4c8;
+  --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:var(--sans);font-size:14px;line-height:1.5}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 26px;border-bottom:1px solid var(--b);background:var(--s1);position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:10px}
+.hdr-l{display:flex;align-items:center;gap:12px}
+.logo{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#2ecc8a,#4d9fff);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.hdr-title{font-size:14px;font-weight:500}
+.hdr-sub{font-size:11px;color:var(--m);font-family:var(--mono);margin-top:1px}
+.hdr-r{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pill{font-size:10px;font-family:var(--mono);padding:3px 9px;border-radius:20px;border:1px solid rgba(46,204,138,.3);background:rgba(46,204,138,.07);color:var(--grn)}
+.pill-info{border-color:rgba(77,159,255,.3);background:rgba(77,159,255,.07);color:var(--blu)}
+select{background:var(--s2);border:1px solid var(--b2);color:var(--txt);border-radius:6px;padding:6px 10px;font-family:var(--sans);font-size:12px;cursor:pointer;outline:none}
+select:hover{border-color:var(--blu)}
+.tabs{display:flex;padding:0 26px;border-bottom:1px solid var(--b);background:var(--s1);overflow-x:auto}
+.tab{padding:12px 16px;cursor:pointer;font-size:12px;font-weight:500;color:var(--m);border-bottom:2px solid transparent;transition:all .18s;white-space:nowrap;user-select:none}
+.tab:hover{color:var(--txt)}.tab.active{color:var(--blu);border-bottom-color:var(--blu)}
+.main{padding:20px 26px;max-width:1500px;margin:0 auto}
+.tc{display:none}.tc.active{display:block}
+.krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:18px}
+.kpi{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:13px 16px;position:relative;overflow:hidden}
+.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.kpi.g::after{background:var(--grn)}.kpi.b::after{background:var(--blu)}
+.kpi.r::after{background:var(--red)}.kpi.a::after{background:var(--amb)}.kpi.p::after{background:var(--pur)}
+.kl{font-size:10px;font-family:var(--mono);color:var(--m);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.kv{font-size:20px;font-weight:500;font-family:var(--mono);letter-spacing:-.02em}
+.ks{font-size:11px;margin-top:3px;color:var(--m2)}
+.up{color:var(--grn)}.dn{color:var(--red)}.wn{color:var(--amb)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.gf{margin-bottom:12px}
+.card{background:var(--s1);border:1px solid var(--b);border-radius:12px;padding:16px 20px}
+.ch{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.ct{font-size:12px;font-weight:500}.cs{font-size:10px;color:var(--m);font-family:var(--mono);margin-top:2px}
+.badge{font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:4px;border:1px solid;white-space:nowrap}
+.bg{color:var(--grn);border-color:rgba(46,204,138,.3);background:rgba(46,204,138,.07)}
+.bb{color:var(--blu);border-color:rgba(77,159,255,.3);background:rgba(77,159,255,.07)}
+.ba{color:var(--amb);border-color:rgba(245,166,35,.3);background:rgba(245,166,35,.07)}
+.cw{position:relative;width:100%}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{text-align:left;padding:7px 10px;color:var(--m);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid var(--b);white-space:nowrap}
+tbody tr{border-bottom:1px solid rgba(255,255,255,.025);transition:background .12s}
+tbody tr:hover{background:rgba(255,255,255,.02)}
+td{padding:8px 10px;font-family:var(--mono);font-size:11px}
+.tcc{font-family:var(--sans);font-weight:500;font-size:12px}
+.tr{text-align:right}
+.tg{color:var(--grn)}.tb{color:var(--blu)}.t-r{color:var(--red)}.ta{color:var(--amb)}
+.gau-row{display:flex;flex-wrap:wrap;gap:10px}
+.gau{flex:1;min-width:120px}
+.gau-l{font-size:11px;color:var(--m2);font-family:var(--mono);margin-bottom:4px}
+.gau-t{height:4px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+.gau-f{height:100%;border-radius:3px;transition:width .9s cubic-bezier(.4,0,.2,1)}
+.gau-v{display:flex;justify-content:space-between;margin-top:3px;font-size:10px;font-family:var(--mono)}
+.pb{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;margin-top:2px}
+.pf{height:100%;border-radius:2px;transition:width .5s}
+.leg{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--m2)}
+.ld{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.slbl{font-size:10px;color:var(--m);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.fbar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(77,159,255,.06);border:1px solid rgba(77,159,255,.15);border-radius:8px;margin-bottom:16px;font-size:11px;color:var(--blu);font-family:var(--mono)}
+@media(max-width:760px){.main{padding:12px}.hdr{padding:10px 12px}.tabs{padding:0 12px}.g2{grid-template-columns:1fr}.krow{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="logo">📦</div>
+    <div>
+      <div class="hdr-title">Recovery Dashboard — Commercial Carriers</div>
+      <div class="hdr-sub">BPP Real · Plano BPP · Recuperado BPP · Recuperado Não-BPP · 2026</div>
+    </div>
+  </div>
+  <div class="hdr-r">
+    <span class="pill">● Jan–Abr 2026</span>
+    <select id="fC" onchange="applyFilters()">
+      <option value="all">Todos os países</option>
+      <option value="MLB">🇧🇷 Brasil (MLB)</option>
+      <option value="MLA">🇦🇷 Argentina (MLA)</option>
+      <option value="MLM">🇲🇽 México (MLM)</option>
+      <option value="MCO">🇨🇴 Colômbia (MCO)</option>
+      <option value="MLC">🇨🇱 Chile (MLC)</option>
+      <option value="MPE">🇵🇪 Peru (MPE)</option>
+      <option value="MLU">🇺🇾 Uruguai (MLU)</option>
+      <option value="MEC">🇪🇨 Equador (MEC)</option>
+    </select>
+    <select id="fT" onchange="applyFilters()">
+      <option value="all">CC + Seguros</option>
+      <option value="cc">Só Commercial Carrier</option>
+      <option value="seg">Só Seguros</option>
+    </select>
+  </div>
+</div>
+<div class="tabs">
+  <div class="tab active"  onclick="switchTab('bpp')">BPP — Real × Plano × Recuperado</div>
+  <div class="tab"         onclick="switchTab('nonbpp')">Não-BPP por País</div>
+  <div class="tab"         onclick="switchTab('carriers')">Por Transportadora</div>
+  <div class="tab"         onclick="switchTab('overview')">Consolidado</div>
+</div>
+<div class="main">
+
+<!-- TAB BPP -->
+<div id="tab-bpp" class="tc active">
+  <div class="fbar">🔍 Filtro ativo: <strong id="fl-bpp">CC + Seguros · Todos os países</strong></div>
+  <div class="krow">
+    <div class="kpi r"><div class="kl">BPP Real (cashout)</div><div class="kv" id="k-real">—</div><div class="ks">Custo ao mercado livre</div></div>
+    <div class="kpi b"><div class="kl">Plano BPP (YTD)</div><div class="kv" id="k-plan">—</div><div class="ks">Meta Jan–Abr</div></div>
+    <div class="kpi g"><div class="kl">BPP Recuperado (YTD)</div><div class="kv" id="k-rec">—</div><div class="ks" id="k-rec-s">—</div></div>
+    <div class="kpi a"><div class="kl">Rec ÷ Plano</div><div class="kv" id="k-pp">—</div><div class="ks" id="k-pp-s">—</div></div>
+    <div class="kpi p"><div class="kl">Rec ÷ BPP Real</div><div class="kv" id="k-pr">—</div><div class="ks">Taxa de recuperação real</div></div>
+  </div>
+  <div class="slbl">Progresso por País — BPP Recuperado vs Plano</div>
+  <div class="card gf"><div id="gauges" class="gau-row"></div></div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div><div class="ct">BPP Real × Plano × Recuperado — Mensal</div><div class="cs">USD</div></div><span class="badge bb">BPP</span></div>
+      <div class="cw" style="height:240px"><canvas id="cBM"></canvas></div>
+      <div class="leg">
+        <div class="li"><div class="ld" style="background:rgba(255,79,79,.6)"></div>BPP Real</div>
+        <div class="li"><div class="ld" style="background:var(--grn)"></div>Recuperado</div>
+        <div class="li"><div class="ld" style="background:var(--blu);opacity:.5"></div>Plano</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><div><div class="ct">BPP Recuperado por País (YTD)</div></div><span class="badge bg">YTD</span></div>
+      <div class="cw" style="height:240px"><canvas id="cBD"></canvas></div>
+    </div>
+  </div>
+  <div class="card gf">
+    <div class="ch"><div class="ct">Detalhe por País — BPP</div><span class="badge bb">USD · YTD Jan–Abr</span></div>
+    <div class="tw"><table>
+      <thead><tr>
+        <th>País</th><th class="tr">BPP Real</th><th class="tr">Plano BPP</th>
+        <th class="tr">Jan</th><th class="tr">Fev</th><th class="tr">Mar</th><th class="tr">Abr</th>
+        <th class="tr">Total Rec.</th><th class="tr">Rec/Real</th><th class="tr">Rec/Plano</th><th>Progresso</th>
+      </tr></thead>
+      <tbody id="tB"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- TAB NÃO-BPP -->
+<div id="tab-nonbpp" class="tc">
+  <div class="fbar">🔍 Filtro ativo: <strong id="fl-nb">CC + Seguros · Todos os países</strong></div>
+  <div class="krow">
+    <div class="kpi a"><div class="kl">Não-BPP Total (YTD)</div><div class="kv" id="k-nb-t">—</div><div class="ks">Tarifas · não conciliados</div></div>
+    <div class="kpi"><div class="kl">Maior País</div><div class="kv" id="k-nb-top">—</div><div class="ks" id="k-nb-top-v">—</div></div>
+    <div class="kpi"><div class="kl">Melhor Mês</div><div class="kv" id="k-nb-mon">—</div><div class="ks" id="k-nb-mon-v">—</div></div>
+    <div class="kpi"><div class="kl">Média Mensal</div><div class="kv" id="k-nb-avg">—</div><div class="ks">Não-BPP</div></div>
+  </div>
+  <div class="card gf">
+    <div class="slbl">Heatmap — Não-BPP por País × Mês</div>
+    <div class="tw"><table style="min-width:650px"><thead><tr id="hH"></tr></thead><tbody id="hB"></tbody></table></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div><div class="ct">Não-BPP Mensal por País</div></div><span class="badge ba">2026</span></div>
+      <div class="cw" style="height:240px"><canvas id="cNM"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div><div class="ct">Mix por País (YTD)</div></div><span class="badge ba">%</span></div>
+      <div class="cw" style="height:240px"><canvas id="cND"></canvas></div>
+    </div>
+  </div>
+  <div class="card gf">
+    <div class="ch"><div class="ct">Detalhe por País — Não-BPP</div><span class="badge ba">USD</span></div>
+    <div class="tw"><table>
+      <thead><tr><th>País</th><th class="tr">Jan</th><th class="tr">Fev</th><th class="tr">Mar</th><th class="tr">Abr</th><th class="tr">Total</th><th class="tr">%</th></tr></thead>
+      <tbody id="tN"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- TAB CARRIERS -->
+<div id="tab-carriers" class="tc">
+  <div class="fbar">🔍 Filtro ativo: <strong id="fl-car">CC + Seguros · Todos os países</strong></div>
+  <div class="krow">
+    <div class="kpi b"><div class="kl">Transportadoras</div><div class="kv" id="k-cn">—</div><div class="ks">Ativas em 2026</div></div>
+    <div class="kpi g"><div class="kl">Top BPP</div><div class="kv" id="k-cb">—</div><div class="ks" id="k-cb-v">—</div></div>
+    <div class="kpi a"><div class="kl">Top Não-BPP</div><div class="kv" id="k-cn2">—</div><div class="ks" id="k-cn2-v">—</div></div>
+    <div class="kpi p"><div class="kl">% BPP do total</div><div class="kv" id="k-cp">—</div><div class="ks">BPP ÷ total</div></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div><div class="ct">Carriers — BPP vs Não-BPP por País</div><div class="cs">Separado por site · Top 20</div></div><span class="badge bb">USD</span></div>
+      <div class="cw" style="height:380px"><canvas id="cCar"></canvas></div>
+      <div class="leg">
+        <div class="li"><div class="ld" style="background:var(--grn)"></div>BPP</div>
+        <div class="li"><div class="ld" style="background:var(--amb)"></div>Não-BPP</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><div><div class="ct">Top 5 Carriers — Evolução Mensal</div></div><span class="badge bg">2026</span></div>
+      <div class="cw" style="height:380px"><canvas id="cCT"></canvas></div>
+    </div>
+  </div>
+  <div class="card gf">
+    <div class="ch"><div class="ct">Detalhe por Transportadora × País</div><span class="badge bb">USD · separado por site</span></div>
+    <div class="tw"><table>
+      <thead><tr><th>Transportadora</th><th>País</th><th class="tr">BPP</th><th class="tr">Não-BPP</th><th class="tr">Total</th><th class="tr">% BPP</th></tr></thead>
+      <tbody id="tCar"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- TAB OVERVIEW -->
+<div id="tab-overview" class="tc">
+  <div class="fbar">🔍 Filtro ativo: <strong id="fl-ov">CC + Seguros · Todos os países</strong></div>
+  <div class="krow">
+    <div class="kpi g"><div class="kl">Total Recuperado (YTD)</div><div class="kv" id="k-ot">—</div><div class="ks">BPP + Não-BPP</div></div>
+    <div class="kpi r"><div class="kl">BPP Real Total</div><div class="kv" id="k-or">—</div><div class="ks">Cashout</div></div>
+    <div class="kpi b"><div class="kl">Plano BPP (YTD)</div><div class="kv" id="k-op">—</div><div class="ks" id="k-op-s">—</div></div>
+    <div class="kpi a"><div class="kl">Não-BPP Recuperado</div><div class="kv" id="k-on">—</div><div class="ks" id="k-on-s">—</div></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div><div class="ct">BPP Real × Plano × BPP Rec × Não-BPP — Mensal</div></div></div>
+      <div class="cw" style="height:260px"><canvas id="cOM"></canvas></div>
+      <div class="leg">
+        <div class="li"><div class="ld" style="background:rgba(255,79,79,.5)"></div>BPP Real</div>
+        <div class="li"><div class="ld" style="background:var(--grn)"></div>BPP Rec.</div>
+        <div class="li"><div class="ld" style="background:var(--amb)"></div>Não-BPP</div>
+        <div class="li"><div class="ld" style="background:var(--blu);opacity:.5"></div>Plano</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><div><div class="ct">Por País — BPP Real vs Rec vs Não-BPP</div></div></div>
+      <div class="cw" style="height:260px"><canvas id="cOC"></canvas></div>
+    </div>
+  </div>
+  <div class="card gf">
+    <div class="ch"><div class="ct">Resumo Completo por País</div><span class="badge bg">USD · YTD Jan–Abr 2026</span></div>
+    <div class="tw"><table>
+      <thead><tr>
+        <th>País</th><th class="tr">BPP Real</th><th class="tr">Plano BPP</th>
+        <th class="tr">BPP Rec.</th><th class="tr">Rec/Real</th><th class="tr">Rec/Plano</th>
+        <th class="tr">Não-BPP</th><th class="tr">Total Rec.</th>
+      </tr></thead>
+      <tbody id="tOv"></tbody>
+    </table></div>
+  </div>
+</div>
+
+</div>
+<script>
+const D={"recBpp_all": {"MLB": [406698, 923239, 1679904, 302708, 0, 0, 0, 0, 0, 0, 0, 0], "MLA": [207582, 247013, 543023, 239205, 0, 0, 0, 0, 0, 0, 0, 0], "MLM": [256234, 458426, 491413, 1144758, 0, 0, 0, 0, 0, 0, 0, 0], "MCO": [1149, 5726, 7337, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLC": [29117, 80344, 1451, 46350, 0, 0, 0, 0, 0, 0, 0, 0], "MPE": [0, 0, 10257, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLU": [6642, 7576, 6499, 17812, 0, 0, 0, 0, 0, 0, 0, 0], "MEC": [0, 0, 4796, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, "recNB_all": {"MLB": [201076, 301956, 49569, 146773, 0, 0, 0, 0, 0, 0, 0, 0], "MLA": [585892, 677783, 642993, 14720, 0, 0, 0, 0, 0, 0, 0, 0], "MLM": [23151, 265169, 51827, 29074, 0, 0, 0, 0, 0, 0, 0, 0], "MCO": [169, 0, 270, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLC": [46199, 45951, 38280, 4012, 0, 0, 0, 0, 0, 0, 0, 0], "MPE": [27824, 31750, 31791, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLU": [24431, 10911, 10515, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MEC": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, "recBpp_cc": {"MLB": [406698, 557184, 1349557, 302708, 0, 0, 0, 0, 0, 0, 0, 0], "MLA": [207582, 247013, 543023, 239205, 0, 0, 0, 0, 0, 0, 0, 0], "MLM": [256234, 77694, 130207, 220408, 0, 0, 0, 0, 0, 0, 0, 0], "MCO": [1149, 5726, 7337, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLC": [29117, 80344, 1451, 46350, 0, 0, 0, 0, 0, 0, 0, 0], "MPE": [0, 0, 10257, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLU": [6642, 7576, 6499, 17812, 0, 0, 0, 0, 0, 0, 0, 0], "MEC": [0, 0, 4796, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, "recNB_cc": {"MLB": [201076, 301956, 49569, 146773, 0, 0, 0, 0, 0, 0, 0, 0], "MLA": [585892, 677783, 642993, 14720, 0, 0, 0, 0, 0, 0, 0, 0], "MLM": [23151, 265169, 51827, 29074, 0, 0, 0, 0, 0, 0, 0, 0], "MCO": [169, 0, 270, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLC": [46199, 45951, 38280, 4012, 0, 0, 0, 0, 0, 0, 0, 0], "MPE": [27824, 31750, 31791, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLU": [24431, 10911, 10515, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MEC": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, "recBpp_seg": {"MLB": [0, 366055, 330347, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLA": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLM": [0, 380732, 361206, 924350, 0, 0, 0, 0, 0, 0, 0, 0], "MCO": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLC": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MPE": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLU": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MEC": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, "recNB_seg": {"MLB": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLA": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLM": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MCO": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLC": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MPE": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLU": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MEC": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, "carrierBySite": {"DAC": {"MLU": {"bpp": [504, 7576, 0, 345, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Urbano": {"MEC": {"bpp": [0, 0, 4796, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, "MLA": {"bpp": [11272, 6987, 0, 12961, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Chilexpress": {"MLC": {"bpp": [8787, 32590, 0, 24765, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [8185, 6156, 4696, 4012, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Envia": {"MCO": {"bpp": [0, 0, 4659, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [169, 0, 270, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Urbano MPE": {"MPE": {"bpp": [0, 0, 10257, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [27824, 31750, 31791, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Punto HOP": {"MLA": {"bpp": [0, 0, 38932, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 5111, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Correo Argentino": {"MLA": {"bpp": [0, 71891, 62951, 89103, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [456108, 553095, 537916, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Carvalima": {"MLB": {"bpp": [15525, 9382, 15653, 30694, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [2592, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "HDI SEGUROS GLOBAL SA": {"MLM": {"bpp": [149952, 380732, 361206, 924350, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "DHL": {"MLM": {"bpp": [575, 4421, 6717, 1506, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 125301, 47398, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "FedEx": {"MLM": {"bpp": [99416, 47871, 70057, 98502, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [23032, 54000, 0, 29074, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Estafeta": {"MLM": {"bpp": [5623, 0, 1502, 4322, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 13000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Correios": {"MLB": {"bpp": [46679, 41305, 21111, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [562, 11762, 13800, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Loggi": {"MLB": {"bpp": [0, 178169, 675264, 99575, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 11734, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Correos Chile": {"MLC": {"bpp": [465, 1304, 0, 5108, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Pickit": {"MLA": {"bpp": [14339, 44723, 56953, 45910, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Webpack": {"MLA": {"bpp": [5150, 0, 2613, 4371, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [23654, 11016, 12021, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "UES": {"MLU": {"bpp": [6138, 0, 6499, 17467, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [24431, 10911, 10515, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Blue Express": {"MLC": {"bpp": [19865, 46450, 1451, 16477, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [38014, 39795, 33584, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Cainiao Domestic": {"MLM": {"bpp": [668, 411, 0, 7027, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 4429, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "J&T Express": {"MLM": {"bpp": [0, 24991, 35989, 87207, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 72868, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, "MLB": {"bpp": [0, 191662, 518185, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Paquetexpress": {"MLM": {"bpp": [0, 0, 15942, 21844, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [119, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "OCA": {"MLA": {"bpp": [35510, 35803, 35803, 17722, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [24168, 12506, 14386, 14720, 0, 0, 0, 0, 0, 0, 0, 0]}}, "TNT": {"MLB": {"bpp": [0, 8083, 4443, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [4124, 6013, 6105, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Jad Logistica Ltda": {"MLB": {"bpp": [132228, 128583, 114901, 172439, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [193798, 272447, 29664, 146773, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Servientrega": {"MCO": {"bpp": [1149, 3777, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Argo Seguros": {"MLB": {"bpp": [212266, 366055, 330347, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Andreani": {"MLA": {"bpp": [54781, 0, 292803, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "OCASA": {"MLA": {"bpp": [86530, 87609, 52968, 69138, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [81962, 101166, 73559, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Coordinadora": {"MCO": {"bpp": [0, 1949, 2678, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}}, "carrierSites": {"Jad Logistica Ltda": ["MLB"], "Paquetexpress": ["MLM"], "OCASA": ["MLA"], "Servientrega": ["MCO"], "FedEx": ["MLM"], "Pickit": ["MLA"], "Andreani": ["MLA"], "Webpack": ["MLA"], "Cainiao Domestic": ["MLM"], "Carvalima": ["MLB"], "Urbano": ["MEC", "MLA"], "OCA": ["MLA"], "Chilexpress": ["MLC"], "UES": ["MLU"], "TNT": ["MLB"], "Estafeta": ["MLM"], "DHL": ["MLM"], "DAC": ["MLU"], "Correios": ["MLB"], "Blue Express": ["MLC"], "HDI SEGUROS GLOBAL SA": ["MLM"], "Correos Chile": ["MLC"], "Envia": ["MCO"], "Urbano MPE": ["MPE"], "Correo Argentino": ["MLA"], "Argo Seguros": ["MLB"], "Loggi": ["MLB"], "J&T Express": ["MLB", "MLM"], "Coordinadora": ["MCO"], "Punto HOP": ["MLA"]}, "plan": {"MLB": [550355, 507110, 577394, 533073, 637304, 597146, 626097, 615996, 593158, 637045, 740489, 737993], "MLA": [332555, 306424, 348893, 322112, 385094, 360828, 378322, 372219, 358419, 384938, 447444, 445936], "MLM": [181500, 167238, 190417, 175801, 210175, 196931, 206479, 203148, 195616, 210089, 244204, 243381], "MLU": [32787, 30211, 34398, 31758, 37967, 35575, 37299, 36698, 35337, 37952, 44114, 43966], "MCO": [4684, 79, 88, 79, 87, 84, 99, 92, 94, 99, 110, 125], "MLC": [59719, 55027, 62653, 57844, 69154, 64797, 67938, 66842, 64364, 69126, 80351, 80080], "MEC": [1171, 1079, 1228, 1134, 1356, 1271, 1332, 1311, 1262, 1355, 1576, 1570], "MPE": [8197, 7553, 8599, 7939, 9492, 8894, 9325, 9174, 8834, 9488, 11029, 10991]}, "bppReal": {"MLB": [1395481, 900318, 1258797, 850785, 0, 0, 0, 0, 0, 0, 0, 0], "MLA": [750345, 509811, 656055, 384720, 0, 0, 0, 0, 0, 0, 0, 0], "MLM": [532818, 392540, 293061, 183512, 0, 0, 0, 0, 0, 0, 0, 0], "MLU": [35294, 22158, 26043, 20993, 0, 0, 0, 0, 0, 0, 0, 0], "MCO": [60444, 41670, 36811, 20928, 0, 0, 0, 0, 0, 0, 0, 0], "MLC": [82935, 69902, 59126, 39395, 0, 0, 0, 0, 0, 0, 0, 0], "MEC": [3559, 833, 2934, 828, 0, 0, 0, 0, 0, 0, 0, 0], "MPE": [21920, 19115, 19543, 11716, 0, 0, 0, 0, 0, 0, 0, 0]}};
+const MONTHS=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const SITES=[
+  {c:'MLB',n:'Brasil',f:'🇧🇷'},{c:'MLA',n:'Argentina',f:'🇦🇷'},{c:'MLM',n:'México',f:'🇲🇽'},
+  {c:'MCO',n:'Colômbia',f:'🇨🇴'},{c:'MLC',n:'Chile',f:'🇨🇱'},{c:'MPE',n:'Peru',f:'🇵🇪'},
+  {c:'MLU',n:'Uruguai',f:'🇺🇾'},{c:'MEC',n:'Equador',f:'🇪🇨'}
+];
+const CC=['#4d9fff','#2ecc8a','#f5a623','#ff4f4f','#a374ff','#00d4c8','#ff6eb4','#ffd166'];
+const YTD=4;
+const CH={};
+function dc(id){if(CH[id]){CH[id].destroy();delete CH[id];}}
+const f$=v=>v>0?'$'+Math.round(v).toLocaleString('pt-BR'):'—';
+const fp=v=>isFinite(v)&&v>0?Math.round(v)+'%':'—';
+const sm=a=>Array.isArray(a)?a.reduce((s,x)=>s+x,0):0;
+
+// ── FILTER HELPERS ──
+function getSites(){const f=document.getElementById('fC').value;return f==='all'?SITES:SITES.filter(s=>s.c===f);}
+function getTipo(){return document.getElementById('fT').value;}  // 'all','cc','seg'
+
+// Returns the correct recBpp/recNonBpp arrays based on tipo filter
+function recBpp(site){
+  const t=getTipo();
+  if(t==='cc')  return D.recBpp_cc[site]||new Array(12).fill(0);
+  if(t==='seg') return D.recBpp_seg[site]||new Array(12).fill(0);
+  return D.recBpp_all[site]||new Array(12).fill(0);
+}
+function recNB(site){
+  const t=getTipo();
+  if(t==='cc')  return D.recNB_cc[site]||new Array(12).fill(0);
+  if(t==='seg') return D.recNB_seg[site]||new Array(12).fill(0);
+  return D.recNB_all[site]||new Array(12).fill(0);
+}
+
+function filterLabel(elId){
+  const t=getTipo(),p=document.getElementById('fC').value;
+  const tl=t==='all'?'CC + Seguros':t==='cc'?'Só Commercial Carrier':'Só Seguros';
+  const pl=p==='all'?'Todos os países':SITES.find(s=>s.c===p)?.n||p;
+  if(elId) document.getElementById(elId).textContent=tl+' · '+pl;
+}
+
+function baseOpts(type){
+  return{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{backgroundColor:'#181c24',borderColor:'rgba(255,255,255,.12)',borderWidth:1,
+      titleColor:'#dde1ea',bodyColor:'#7c8696',callbacks:{label:c=>' '+f$(c.raw)}}},
+    scales:(type==='pie'||type==='doughnut')?{}:{
+      x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10}}},
+      y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10},callback:v=>'$'+Math.round(v/1000)+'k'}}
+    }};
+}
+
+// ── BPP ──
+function renderBpp(){
+  const sites=getSites(); filterLabel('fl-bpp');
+  const real=sites.reduce((a,s)=>a+sm((D.bppReal[s.c]||[]).slice(0,YTD)),0);
+  const plan=sites.reduce((a,s)=>a+sm((D.plan[s.c]||[]).slice(0,YTD)),0);
+  const rec =sites.reduce((a,s)=>a+sm(recBpp(s.c).slice(0,YTD)),0);
+  const pp=plan>0?rec/plan*100:0, pr=real>0?rec/real*100:0;
+  document.getElementById('k-real').textContent=f$(real);
+  document.getElementById('k-plan').textContent=f$(plan);
+  document.getElementById('k-rec').textContent=f$(rec);
+  document.getElementById('k-rec-s').textContent=fp(pp)+' do plano';
+  document.getElementById('k-pp').textContent=fp(pp);
+  const pps=document.getElementById('k-pp-s');
+  pps.textContent=pp>=100?'✓ meta atingida':pp>=70?'próximo da meta':'faltam '+f$(plan-rec);
+  pps.className='ks '+(pp>=100?'up':pp>=70?'wn':'dn');
+  document.getElementById('k-pr').textContent=fp(pr);
+
+  document.getElementById('gauges').innerHTML=sites.map(s=>{
+    const pl=sm((D.plan[s.c]||[]).slice(0,YTD));
+    const rc=sm(recBpp(s.c).slice(0,YTD));
+    const p=pl>0?Math.min(200,rc/pl*100):0;
+    const col=p>=100?'var(--grn)':p>=70?'var(--amb)':'var(--red)';
+    return `<div class="gau"><div class="gau-l">${s.f} ${s.n}</div>
+      <div class="gau-t"><div class="gau-f" style="width:${Math.min(100,p)}%;background:${col}"></div></div>
+      <div class="gau-v"><span style="color:${col};font-weight:500">${Math.round(p)}%</span><span style="color:var(--m)">${f$(rc)}</span></div></div>`;
+  }).join('');
+
+  dc('cBM');
+  CH['cBM']=new Chart(document.getElementById('cBM'),{type:'bar',data:{labels:MONTHS,datasets:[
+    {label:'BPP Real',   data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D.bppReal[s.c]?.[i]||0),0)),backgroundColor:'rgba(255,79,79,.35)',borderRadius:3},
+    {label:'Recuperado', data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(recBpp(s.c)[i]||0),0)),      backgroundColor:'rgba(46,204,138,.8)',borderRadius:3},
+    {label:'Plano',      data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D.plan[s.c]?.[i]||0),0)),    type:'line',borderColor:'rgba(77,159,255,.6)',backgroundColor:'transparent',borderWidth:2,borderDash:[4,4],pointRadius:2,tension:.3},
+  ]},options:baseOpts('bar')});
+
+  dc('cBD');
+  CH['cBD']=new Chart(document.getElementById('cBD'),{type:'doughnut',data:{
+    labels:sites.map(s=>s.f+' '+s.n),
+    datasets:[{data:sites.map(s=>sm(recBpp(s.c).slice(0,YTD))),backgroundColor:CC.slice(0,sites.length),borderWidth:2,borderColor:'#111419'}]
+  },options:{...baseOpts('doughnut'),cutout:'62%'}});
+
+  document.getElementById('tB').innerHTML=sites.map(s=>{
+    const rl=sm((D.bppReal[s.c]||[]).slice(0,YTD));
+    const pl=sm((D.plan[s.c]||[]).slice(0,YTD));
+    const m=recBpp(s.c);
+    const rc=sm(m.slice(0,YTD));
+    const pp=pl>0?rc/pl*100:0, pr=rl>0?rc/rl*100:0;
+    const cp=pp>=100?'var(--grn)':pp>=70?'var(--amb)':'var(--red)';
+    const cr=pr>=80?'var(--grn)':pr>=50?'var(--amb)':'var(--red)';
+    return `<tr><td class="tcc">${s.f} ${s.n}</td><td class="tr t-r">${f$(rl)}</td><td class="tr tb">${f$(pl)}</td>
+      <td class="tr">${f$(m[0])}</td><td class="tr">${f$(m[1])}</td><td class="tr">${f$(m[2])}</td><td class="tr">${f$(m[3])}</td>
+      <td class="tr tg" style="font-weight:500">${f$(rc)}</td>
+      <td class="tr" style="color:${cr}">${rl>0?Math.round(pr)+'%':'—'}</td>
+      <td class="tr" style="color:${cp}">${Math.round(pp)}%</td>
+      <td><div class="pb"><div class="pf" style="width:${Math.min(100,pp)}%;background:${cp}"></div></div></td></tr>`;
+  }).join('');
+}
+
+// ── NÃO-BPP ──
+function renderNonBpp(){
+  const sites=getSites(); filterLabel('fl-nb');
+  const CM=YTD;
+  let tot=0,bestMV=0,bestMI=-1,bestCV='',bestCN=0;
+  const mT=MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(recNB(s.c)[i]||0),0));
+  mT.forEach((v,i)=>{if(v>bestMV){bestMV=v;bestMI=i;}});
+  sites.forEach(s=>{const t=sm(recNB(s.c).slice(0,CM));tot+=t;if(t>bestCN){bestCN=t;bestCV=s.f+' '+s.n;}});
+  document.getElementById('k-nb-t').textContent=f$(tot);
+  document.getElementById('k-nb-top').textContent=bestCV||'—';
+  document.getElementById('k-nb-top-v').textContent=f$(bestCN);
+  document.getElementById('k-nb-mon').textContent=bestMI>=0?MONTHS[bestMI]:'—';
+  document.getElementById('k-nb-mon-v').textContent=f$(bestMV);
+  document.getElementById('k-nb-avg').textContent=CM>0?f$(tot/CM):'—';
+
+  const mx=Math.max(...sites.flatMap(s=>recNB(s.c).slice(0,CM)));
+  document.getElementById('hH').innerHTML='<th>País</th>'+MONTHS.slice(0,CM).map(m=>`<th class="tr">${m}</th>`).join('')+'<th class="tr">Total</th>';
+  document.getElementById('hB').innerHTML=sites.map(s=>{
+    const v=recNB(s.c);const t=sm(v.slice(0,CM));
+    return `<tr><td class="tcc">${s.f} ${s.n}</td>
+      ${v.slice(0,CM).map(x=>{const a=mx>0?x/mx:0;const bg=x>0?`rgba(245,166,35,${(a*.65+.06).toFixed(2)})`:'transparent';
+        return `<td style="background:${bg};border-radius:3px;text-align:right;padding:6px 8px;font-family:var(--mono);font-size:11px">${x>0?f$(x):'—'}</td>`;}).join('')}
+      <td class="tr ta" style="font-weight:500">${f$(t)}</td></tr>`;
+  }).join('');
+
+  dc('cNM');
+  CH['cNM']=new Chart(document.getElementById('cNM'),{type:'bar',data:{
+    labels:MONTHS.slice(0,CM),
+    datasets:sites.map((s,i)=>({label:s.n,data:recNB(s.c).slice(0,CM),backgroundColor:CC[i]+'bb',borderRadius:3,stack:'s'}))
+  },options:{...baseOpts('bar'),plugins:{...baseOpts('bar').plugins,legend:{display:true,labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10},boxWidth:7,boxHeight:7}}}}});
+
+  dc('cND');
+  CH['cND']=new Chart(document.getElementById('cND'),{type:'doughnut',data:{
+    labels:sites.map(s=>s.f+' '+s.n),
+    datasets:[{data:sites.map(s=>sm(recNB(s.c).slice(0,CM))),backgroundColor:CC.slice(0,sites.length),borderWidth:2,borderColor:'#111419'}]
+  },options:{...baseOpts('doughnut'),cutout:'62%'}});
+
+  const gt=tot||1;
+  document.getElementById('tN').innerHTML=sites.map(s=>{
+    const v=recNB(s.c);const t=sm(v.slice(0,CM));
+    return `<tr><td class="tcc">${s.f} ${s.n}</td>
+      ${v.slice(0,CM).map(x=>`<td class="tr">${f$(x)}</td>`).join('')}
+      <td class="tr ta" style="font-weight:500">${f$(t)}</td>
+      <td class="tr" style="color:var(--m2)">${t>0?(t/gt*100).toFixed(1)+'%':'—'}</td></tr>`;
+  }).join('');
+}
+
+// ── CARRIERS — separado por site ──
+function renderCarriers(){
+  const fc=document.getElementById('fC').value; filterLabel('fl-car');
+  const t=getTipo();
+  const CM=YTD;
+
+  // Build rows: one per (carrier, site) pair
+  const rows=[];
+  Object.entries(D.carrierBySite||{}).forEach(([car,sites])=>{
+    Object.entries(sites).forEach(([site,vals])=>{
+      if(fc!=='all'&&site!==fc) return;
+      const bppArr = vals.bpp||new Array(12).fill(0);
+      const nbArr  = vals.nonbpp||new Array(12).fill(0);
+      const b=sm(bppArr.slice(0,CM));
+      const n=sm(nbArr.slice(0,CM));
+      if(b+n===0) return;
+      rows.push({car,site,b,n,bppArr,nbArr});
+    });
+  });
+  rows.sort((a,b)=>(b.b+b.n)-(a.b+a.n));
+  const top20=rows.slice(0,20);
+  const gB=sm(rows.map(r=>r.b)), gN=sm(rows.map(r=>r.n)), g=gB+gN;
+
+  const topBpp =rows.reduce((a,r)=>r.b>a.b?r:a,{b:0});
+  const topNbpp=rows.reduce((a,r)=>r.n>a.n?r:a,{n:0});
+
+  document.getElementById('k-cn').textContent=rows.length;
+  document.getElementById('k-cb').textContent=topBpp.car||'—';
+  document.getElementById('k-cb-v').textContent=f$(topBpp.b);
+  document.getElementById('k-cn2').textContent=topNbpp.car||'—';
+  document.getElementById('k-cn2-v').textContent=f$(topNbpp.n);
+  document.getElementById('k-cp').textContent=g>0?Math.round(gB/g*100)+'%':'—';
+
+  const siteFlag=c=>{const s=SITES.find(x=>x.c===c);return s?s.f+' '+c:c;};
+
+  dc('cCar');
+  CH['cCar']=new Chart(document.getElementById('cCar'),{type:'bar',
+    data:{labels:top20.map(r=>r.car+' ['+r.site+']'),datasets:[
+      {label:'BPP',    data:top20.map(r=>r.b),backgroundColor:'rgba(46,204,138,.75)',borderRadius:3,stack:'s'},
+      {label:'Não-BPP',data:top20.map(r=>r.n),backgroundColor:'rgba(245,166,35,.75)',borderRadius:3,stack:'s'},
+    ]},
+    options:{...baseOpts('bar'),indexAxis:'y',
+      scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10},callback:v=>'$'+Math.round(v/1000)+'k'}},
+              y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10}}}}}});
+
+  // Top 5 trend (combined carrier+site)
+  const top5=rows.slice(0,5);
+  const lc=['#2ecc8a','#f5a623','#4d9fff','#a374ff','#ff6eb4'];
+  dc('cCT');
+  CH['cCT']=new Chart(document.getElementById('cCT'),{type:'line',
+    data:{labels:MONTHS.slice(0,CM),datasets:top5.map((r,i)=>({
+      label:r.car+' ['+r.site+']',
+      data:r.bppArr.slice(0,CM).map((b,j)=>b+(r.nbArr[j]||0)),
+      borderColor:lc[i],backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.4
+    }))},
+    options:{...baseOpts('line'),plugins:{...baseOpts('line').plugins,legend:{display:true,labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10},boxWidth:7,boxHeight:7}}}}});
+
+  document.getElementById('tCar').innerHTML=top20.map(r=>{
+    const tot=r.b+r.n;
+    return `<tr><td style="font-family:var(--sans);font-weight:500;font-size:12px">${r.car}</td>
+      <td style="color:var(--m2);font-size:11px">${siteFlag(r.site)}</td>
+      <td class="tr tg">${f$(r.b)}</td><td class="tr ta">${f$(r.n)}</td>
+      <td class="tr" style="font-weight:500">${f$(tot)}</td>
+      <td class="tr" style="color:var(--m2)">${tot>0?Math.round(r.b/tot*100)+'%':'—'}</td></tr>`;
+  }).join('');
+}
+
+// ── OVERVIEW ──
+function renderOverview(){
+  const sites=getSites(); filterLabel('fl-ov');
+  const CM=YTD;
+  const bpp =sites.reduce((a,s)=>a+sm(recBpp(s.c).slice(0,CM)),0);
+  const nb  =sites.reduce((a,s)=>a+sm(recNB(s.c).slice(0,CM)),0);
+  const plan=sites.reduce((a,s)=>a+sm((D.plan[s.c]||[]).slice(0,CM)),0);
+  const real=sites.reduce((a,s)=>a+sm((D.bppReal[s.c]||[]).slice(0,CM)),0);
+  const tot=bpp+nb, pp=plan>0?Math.round(bpp/plan*100):0;
+
+  document.getElementById('k-ot').textContent=f$(tot);
+  document.getElementById('k-or').textContent=f$(real);
+  document.getElementById('k-op').textContent=f$(plan);
+  const ps=document.getElementById('k-op-s');
+  ps.textContent=pp+'% do plano BPP';ps.className='ks '+(pp>=100?'up':pp>=70?'wn':'dn');
+  document.getElementById('k-on').textContent=f$(nb);
+  document.getElementById('k-on-s').textContent=tot>0?Math.round(nb/tot*100)+'% do total':'—';
+
+  dc('cOM');
+  CH['cOM']=new Chart(document.getElementById('cOM'),{type:'bar',data:{labels:MONTHS,datasets:[
+    {label:'BPP Real', data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D.bppReal[s.c]?.[i]||0),0)),backgroundColor:'rgba(255,79,79,.3)',borderRadius:3},
+    {label:'BPP Rec.', data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(recBpp(s.c)[i]||0),0)),     backgroundColor:'rgba(46,204,138,.75)',borderRadius:3,stack:'r'},
+    {label:'Não-BPP',  data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(recNB(s.c)[i]||0),0)),      backgroundColor:'rgba(245,166,35,.75)',borderRadius:3,stack:'r'},
+    {label:'Plano',    data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D.plan[s.c]?.[i]||0),0)),   type:'line',borderColor:'rgba(77,159,255,.6)',backgroundColor:'transparent',borderWidth:2,borderDash:[4,4],pointRadius:2,tension:.3},
+  ]},options:baseOpts('bar')});
+
+  dc('cOC');
+  CH['cOC']=new Chart(document.getElementById('cOC'),{type:'bar',data:{
+    labels:sites.map(s=>s.f+' '+s.c),
+    datasets:[
+      {label:'BPP Real',data:sites.map(s=>sm((D.bppReal[s.c]||[]).slice(0,CM))),backgroundColor:'rgba(255,79,79,.4)',borderRadius:3},
+      {label:'BPP Rec.',data:sites.map(s=>sm(recBpp(s.c).slice(0,CM))),          backgroundColor:'rgba(46,204,138,.75)',borderRadius:3},
+      {label:'Não-BPP', data:sites.map(s=>sm(recNB(s.c).slice(0,CM))),           backgroundColor:'rgba(245,166,35,.75)',borderRadius:3},
+    ]},
+    options:{...baseOpts('bar'),plugins:{...baseOpts('bar').plugins,legend:{display:true,labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10},boxWidth:7,boxHeight:7}}}}});
+
+  document.getElementById('tOv').innerHTML=sites.map(s=>{
+    const rl=sm((D.bppReal[s.c]||[]).slice(0,CM));
+    const pl=sm((D.plan[s.c]||[]).slice(0,CM));
+    const b=sm(recBpp(s.c).slice(0,CM));
+    const n=sm(recNB(s.c).slice(0,CM));
+    const pp=pl>0?Math.round(b/pl*100):0, pr=rl>0?Math.round(b/rl*100):0;
+    const cp=pp>=100?'var(--grn)':pp>=70?'var(--amb)':'var(--red)';
+    const cr=pr>=80?'var(--grn)':pr>=50?'var(--amb)':'var(--red)';
+    return `<tr><td class="tcc">${s.f} ${s.n}</td>
+      <td class="tr t-r">${f$(rl)}</td><td class="tr tb">${f$(pl)}</td>
+      <td class="tr tg">${f$(b)}</td>
+      <td class="tr" style="color:${cr}">${rl>0?pr+'%':'—'}</td>
+      <td class="tr" style="color:${cp}">${pp}%</td>
+      <td class="tr ta">${f$(n)}</td>
+      <td class="tr" style="font-weight:500">${f$(b+n)}</td></tr>`;
+  }).join('');
+}
+
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['bpp','nonbpp','carriers','overview'][i]===name));
+  document.querySelectorAll('.tc').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  ({bpp:renderBpp,nonbpp:renderNonBpp,carriers:renderCarriers,overview:renderOverview}[name])();
+}
+function applyFilters(){
+  const i=[...document.querySelectorAll('.tab')].findIndex(t=>t.classList.contains('active'));
+  switchTab(['bpp','nonbpp','carriers','overview'][i]);
+}
+renderBpp();renderNonBpp();renderCarriers();renderOverview();
+</script>
+</body>
+</html>
