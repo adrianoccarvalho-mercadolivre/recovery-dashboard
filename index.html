@@ -12,7 +12,7 @@
   --b:rgba(255,255,255,.06);--b2:rgba(255,255,255,.12);
   --txt:#dde1ea;--m:#5a6170;--m2:#7c8696;
   --grn:#2ecc8a;--blu:#4d9fff;--red:#ff4f4f;
-  --amb:#f5a623;--pur:#a374ff;--cyn:#00d4c8;
+  --amb:#f5a623;--pur:#a374ff;--cyn:#00d4c8;--pnk:#ff6eb4;
   --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -37,11 +37,13 @@ select:hover{border-color:var(--blu)}
 .kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:2px}
 .kpi.g::after{background:var(--grn)}.kpi.b::after{background:var(--blu)}
 .kpi.r::after{background:var(--red)}.kpi.a::after{background:var(--amb)}.kpi.p::after{background:var(--pur)}
+.kpi.c::after{background:var(--cyn)}.kpi.pk::after{background:var(--pnk)}
 .kl{font-size:10px;font-family:var(--mono);color:var(--m);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
 .kv{font-size:20px;font-weight:500;font-family:var(--mono);letter-spacing:-.02em}
 .ks{font-size:11px;margin-top:3px;color:var(--m2)}
 .up{color:var(--grn)}.dn{color:var(--red)}.wn{color:var(--amb)}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
 .gf{margin-bottom:12px}
 .card{background:var(--s1);border:1px solid var(--b);border-radius:12px;padding:16px 20px}
 .ch{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
@@ -50,6 +52,8 @@ select:hover{border-color:var(--blu)}
 .bg{color:var(--grn);border-color:rgba(46,204,138,.3);background:rgba(46,204,138,.07)}
 .bb{color:var(--blu);border-color:rgba(77,159,255,.3);background:rgba(77,159,255,.07)}
 .ba{color:var(--amb);border-color:rgba(245,166,35,.3);background:rgba(245,166,35,.07)}
+.bc{color:var(--cyn);border-color:rgba(0,212,200,.3);background:rgba(0,212,200,.07)}
+.bpk{color:var(--pnk);border-color:rgba(255,110,180,.3);background:rgba(255,110,180,.07)}
 .cw{position:relative;width:100%}
 .tw{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:12px}
@@ -59,7 +63,7 @@ tbody tr:hover{background:rgba(255,255,255,.02)}
 td{padding:8px 10px;font-family:var(--mono);font-size:11px}
 .tcc{font-family:var(--sans);font-weight:500;font-size:12px}
 .tr{text-align:right}
-.tg{color:var(--grn)}.tb{color:var(--blu)}.t-r{color:var(--red)}.ta{color:var(--amb)}
+.tg{color:var(--grn)}.tb{color:var(--blu)}.t-r{color:var(--red)}.ta{color:var(--amb)}.tc2{color:var(--cyn)}.tpk{color:var(--pnk)}
 .gau-row{display:flex;flex-wrap:wrap;gap:10px}
 .gau{flex:1;min-width:120px}
 .gau-l{font-size:11px;color:var(--m2);font-family:var(--mono);margin-bottom:4px}
@@ -73,7 +77,18 @@ td{padding:8px 10px;font-family:var(--mono);font-size:11px}
 .ld{width:8px;height:8px;border-radius:2px;flex-shrink:0}
 .slbl{font-size:10px;color:var(--m);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
 .fbar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(77,159,255,.06);border:1px solid rgba(77,159,255,.15);border-radius:8px;margin-bottom:16px;font-size:11px;color:var(--blu);font-family:var(--mono)}
-@media(max-width:760px){.main{padding:12px}.hdr{padding:10px 12px}.tabs{padding:0 12px}.g2{grid-template-columns:1fr}.krow{grid-template-columns:repeat(2,1fr)}}
+/* Tooltip */
+.tip{position:relative;display:inline-flex;align-items:center;gap:4px;cursor:help}
+.tip-icon{width:14px;height:14px;border-radius:50%;border:1px solid var(--m);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:var(--m);font-style:normal;flex-shrink:0}
+.tip-body{display:none;position:absolute;left:0;top:calc(100% + 6px);background:#1c2030;border:1px solid var(--b2);border-radius:8px;padding:10px 13px;font-size:11px;color:var(--txt);font-family:var(--sans);line-height:1.5;min-width:240px;max-width:320px;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.4);white-space:normal;pointer-events:none}
+.tip:hover .tip-body{display:block}
+/* Concept banner */
+.concept-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.concept{flex:1;min-width:180px;background:var(--s2);border:1px solid var(--b);border-radius:8px;padding:10px 14px}
+.concept-title{font-size:10px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+.concept-text{font-size:11px;color:var(--m2);line-height:1.5}
+.hisp-badge{font-size:9px;font-family:var(--mono);padding:1px 6px;border-radius:3px;background:rgba(163,116,255,.1);border:1px solid rgba(163,116,255,.25);color:var(--pur)}
+@media(max-width:760px){.main{padding:12px}.hdr{padding:10px 12px}.tabs{padding:0 12px}.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr}.krow{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
@@ -82,11 +97,12 @@ td{padding:8px 10px;font-family:var(--mono);font-size:11px}
     <div class="logo">📦</div>
     <div>
       <div class="hdr-title">Recovery Dashboard — Commercial Carriers</div>
-      <div class="hdr-sub">BPP Real · Plano BPP · Recuperado BPP · Recuperado Não-BPP · 2026</div>
+      <div class="hdr-sub">BPP Real · Plano BPP · Recuperado BPP · Não-BPP · Bono Volumen · 2026</div>
     </div>
   </div>
   <div class="hdr-r">
     <span class="pill">● Jan–Abr 2026</span>
+    <span class="pill pill-info">v7 · Apr 2026</span>
     <select id="fC" onchange="applyFilters()">
       <option value="all">Todos os países</option>
       <option value="MLB">🇧🇷 Brasil (MLB)</option>
@@ -106,18 +122,33 @@ td{padding:8px 10px;font-family:var(--mono);font-size:11px}
   </div>
 </div>
 <div class="tabs">
-  <div class="tab active"  onclick="switchTab('bpp')">BPP — Real × Plano × Recuperado</div>
-  <div class="tab"         onclick="switchTab('nonbpp')">Não-BPP por País</div>
-  <div class="tab"         onclick="switchTab('carriers')">Por Transportadora</div>
-  <div class="tab"         onclick="switchTab('overview')">Consolidado</div>
+  <div class="tab active" onclick="switchTab('bpp')">BPP — Real × Plano × Recuperado</div>
+  <div class="tab"        onclick="switchTab('nonbpp')">Não-BPP por País</div>
+  <div class="tab"        onclick="switchTab('bonov')">Bono Volumen</div>
+  <div class="tab"        onclick="switchTab('carriers')">Por Transportadora</div>
+  <div class="tab"        onclick="switchTab('overview')">Consolidado</div>
 </div>
 <div class="main">
 
 <!-- TAB BPP -->
 <div id="tab-bpp" class="tc active">
   <div class="fbar">🔍 Filtro ativo: <strong id="fl-bpp">CC + Seguros · Todos os países</strong></div>
+  <div class="concept-bar">
+    <div class="concept">
+      <div class="concept-title" style="color:var(--red)">🔴 BPP — Bom Para o Pago</div>
+      <div class="concept-text">Valor perdido pelo Mercado Livre quando um pacote <strong>não foi entregue</strong>: extravíos, roubos, avarias, PNR (Paguei Não Recebi), atrasos. O transportador é cobrado pelo prejuízo.</div>
+    </div>
+    <div class="concept">
+      <div class="concept-title" style="color:var(--grn)">✅ BPP Recuperado</div>
+      <div class="concept-text">Parte do BPP cobrada com sucesso do transportador via Nota de Débito / compensação. Meta = atingir o <strong>Plano BPP</strong> definido para o ano.</div>
+    </div>
+    <div class="concept">
+      <div class="concept-title" style="color:var(--blu)">📊 Plano BPP</div>
+      <div class="concept-text">Meta anual de recuperação BPP acordada com a área de Business Control, distribuída mensalmente por país.</div>
+    </div>
+  </div>
   <div class="krow">
-    <div class="kpi r"><div class="kl">BPP Real (cashout)</div><div class="kv" id="k-real">—</div><div class="ks">Custo ao mercado livre</div></div>
+    <div class="kpi r"><div class="kl">BPP Real (cashout)</div><div class="kv" id="k-real">—</div><div class="ks">Custo ao Mercado Livre</div></div>
     <div class="kpi b"><div class="kl">Plano BPP (YTD)</div><div class="kv" id="k-plan">—</div><div class="ks">Meta Jan–Abr</div></div>
     <div class="kpi g"><div class="kl">BPP Recuperado (YTD)</div><div class="kv" id="k-rec">—</div><div class="ks" id="k-rec-s">—</div></div>
     <div class="kpi a"><div class="kl">Rec ÷ Plano</div><div class="kv" id="k-pp">—</div><div class="ks" id="k-pp-s">—</div></div>
@@ -156,14 +187,25 @@ td{padding:8px 10px;font-family:var(--mono);font-size:11px}
 <!-- TAB NÃO-BPP -->
 <div id="tab-nonbpp" class="tc">
   <div class="fbar">🔍 Filtro ativo: <strong id="fl-nb">CC + Seguros · Todos os países</strong></div>
+  <div class="concept-bar">
+    <div class="concept">
+      <div class="concept-title" style="color:var(--amb)">🟡 Não-BPP</div>
+      <div class="concept-text">Recuperos por <strong>erros de faturamento</strong> do transportador, casos não conciliados (inexistentes, duplicados) e violações de <strong>SLA</strong> (contrato e prazos). Não houve perda de BPP — é recupero de cobranças indevidas.</div>
+    </div>
+    <div class="concept">
+      <div class="concept-title" style="color:var(--pur)">🟣 Bono Volumen <span class="hisp-badge">Hispânicos</span></div>
+      <div class="concept-text">Subcategoria de Não-BPP exclusiva para países de língua espanhola (MLA, MLM, MLC, MPE, MCO, MLU). Inclui descontos comerciais negociados por volume — separados para análise específica.</div>
+    </div>
+  </div>
   <div class="krow">
-    <div class="kpi a"><div class="kl">Não-BPP Total (YTD)</div><div class="kv" id="k-nb-t">—</div><div class="ks">Tarifas · não conciliados</div></div>
+    <div class="kpi a"><div class="kl">Não-BPP Total (YTD)</div><div class="kv" id="k-nb-t">—</div><div class="ks">Tarifas · SLA · não conciliados</div></div>
+    <div class="kpi pk"><div class="kl">Bono Volumen (YTD)</div><div class="kv" id="k-bv-t">—</div><div class="ks">Países hispânicos</div></div>
     <div class="kpi"><div class="kl">Maior País</div><div class="kv" id="k-nb-top">—</div><div class="ks" id="k-nb-top-v">—</div></div>
     <div class="kpi"><div class="kl">Melhor Mês</div><div class="kv" id="k-nb-mon">—</div><div class="ks" id="k-nb-mon-v">—</div></div>
-    <div class="kpi"><div class="kl">Média Mensal</div><div class="kv" id="k-nb-avg">—</div><div class="ks">Não-BPP</div></div>
+    <div class="kpi"><div class="kl">Média Mensal</div><div class="kv" id="k-nb-avg">—</div><div class="ks">Não-BPP std</div></div>
   </div>
   <div class="card gf">
-    <div class="slbl">Heatmap — Não-BPP por País × Mês</div>
+    <div class="slbl">Heatmap — Não-BPP (Standard) por País × Mês</div>
     <div class="tw"><table style="min-width:650px"><thead><tr id="hH"></tr></thead><tbody id="hB"></tbody></table></div>
   </div>
   <div class="g2">
@@ -177,11 +219,53 @@ td{padding:8px 10px;font-family:var(--mono);font-size:11px}
     </div>
   </div>
   <div class="card gf">
-    <div class="ch"><div class="ct">Detalhe por País — Não-BPP</div><span class="badge ba">USD</span></div>
+    <div class="ch"><div class="ct">Detalhe por País — Não-BPP Standard + Bono Volumen</div><span class="badge ba">USD</span></div>
     <div class="tw"><table>
-      <thead><tr><th>País</th><th class="tr">Jan</th><th class="tr">Fev</th><th class="tr">Mar</th><th class="tr">Abr</th><th class="tr">Total</th><th class="tr">%</th></tr></thead>
+      <thead><tr>
+        <th>País</th><th class="tr">Jan</th><th class="tr">Fev</th><th class="tr">Mar</th><th class="tr">Abr</th>
+        <th class="tr">Std NB</th><th class="tr">Bono Vol</th><th class="tr">Total NB</th><th class="tr">%</th>
+      </tr></thead>
       <tbody id="tN"></tbody>
     </table></div>
+  </div>
+</div>
+
+<!-- TAB BONO VOLUMEN -->
+<div id="tab-bonov" class="tc">
+  <div class="fbar">🔍 Filtro ativo: <strong id="fl-bv">CC + Seguros · Todos os países</strong></div>
+  <div class="concept-bar">
+    <div class="concept" style="border-color:rgba(163,116,255,.2)">
+      <div class="concept-title" style="color:var(--pur)">📋 O que é Bono Volumen?</div>
+      <div class="concept-text">Desconto comercial negociado contratualmente com transportadores, baseado em <strong>volume de pacotes</strong>. Quando o Meli atinge determinadas faixas de volume, o transportador concede um bônus/desconto retroativo. Recuperado via crédito ou compensação. Aplicável a: <strong>MLA, MLM, MLC, MPE, MCO, MLU</strong>.</div>
+    </div>
+    <div class="concept" style="border-color:rgba(163,116,255,.2)">
+      <div class="concept-title" style="color:var(--pur)">🔍 Diferença NB Standard × Bono</div>
+      <div class="concept-text"><strong>NB Standard:</strong> Erro de tarifação, cobranças duplicadas, casos não conciliados, SLA/prazo contratual.<br><strong>Bono Volumen:</strong> Desconto comercial por atingir faixas de volume. É um benefício contratual, não um erro do transportador.</div>
+    </div>
+  </div>
+  <div class="krow">
+    <div class="kpi pk"><div class="kl">Bono Volumen YTD</div><div class="kv" id="k-bv-total">—</div><div class="ks">Jan–Abr 2026</div></div>
+    <div class="kpi"><div class="kl">% do Total NB</div><div class="kv" id="k-bv-pct">—</div><div class="ks">Bono ÷ (NB + Bono)</div></div>
+    <div class="kpi"><div class="kl">Maior País</div><div class="kv" id="k-bv-top">—</div><div class="ks" id="k-bv-top-v">—</div></div>
+    <div class="kpi"><div class="kl">Melhor Mês</div><div class="kv" id="k-bv-mon">—</div><div class="ks" id="k-bv-mon-v">—</div></div>
+  </div>
+  <div class="card gf">
+    <div class="ch"><div class="ct">Bono Volumen por País e Mês</div><span class="badge bpk">USD · Países Hispânicos</span></div>
+    <div class="tw"><table>
+      <thead><tr><th>País</th><th class="tr">Jan</th><th class="tr">Fev</th><th class="tr">Mar</th><th class="tr">Abr</th><th class="tr">Total</th><th class="tr">% do NB</th></tr></thead>
+      <tbody id="tBV"></tbody>
+    </table></div>
+    <div id="bv-note" style="margin-top:12px;padding:10px 14px;background:rgba(163,116,255,.06);border:1px solid rgba(163,116,255,.15);border-radius:8px;font-size:11px;color:var(--m2);font-family:var(--mono)"></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div><div class="ct">Bono Volumen — Evolução Mensal</div></div><span class="badge bpk">2026</span></div>
+      <div class="cw" style="height:240px"><canvas id="cBV"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div><div class="ct">NB Standard vs Bono — Mix por País</div></div><span class="badge bpk">YTD</span></div>
+      <div class="cw" style="height:240px"><canvas id="cBVD"></canvas></div>
+    </div>
   </div>
 </div>
 
@@ -221,24 +305,26 @@ td{padding:8px 10px;font-family:var(--mono);font-size:11px}
 <div id="tab-overview" class="tc">
   <div class="fbar">🔍 Filtro ativo: <strong id="fl-ov">CC + Seguros · Todos os países</strong></div>
   <div class="krow">
-    <div class="kpi g"><div class="kl">Total Recuperado (YTD)</div><div class="kv" id="k-ot">—</div><div class="ks">BPP + Não-BPP</div></div>
+    <div class="kpi g"><div class="kl">Total Recuperado (YTD)</div><div class="kv" id="k-ot">—</div><div class="ks">BPP + Não-BPP + Bono</div></div>
     <div class="kpi r"><div class="kl">BPP Real Total</div><div class="kv" id="k-or">—</div><div class="ks">Cashout</div></div>
     <div class="kpi b"><div class="kl">Plano BPP (YTD)</div><div class="kv" id="k-op">—</div><div class="ks" id="k-op-s">—</div></div>
-    <div class="kpi a"><div class="kl">Não-BPP Recuperado</div><div class="kv" id="k-on">—</div><div class="ks" id="k-on-s">—</div></div>
+    <div class="kpi a"><div class="kl">Não-BPP Std</div><div class="kv" id="k-on">—</div><div class="ks" id="k-on-s">—</div></div>
+    <div class="kpi pk"><div class="kl">Bono Volumen</div><div class="kv" id="k-obv">—</div><div class="ks">Países hispânicos</div></div>
   </div>
   <div class="g2">
     <div class="card">
-      <div class="ch"><div><div class="ct">BPP Real × Plano × BPP Rec × Não-BPP — Mensal</div></div></div>
+      <div class="ch"><div><div class="ct">BPP Real × Plano × Recuperado — Mensal</div></div></div>
       <div class="cw" style="height:260px"><canvas id="cOM"></canvas></div>
       <div class="leg">
         <div class="li"><div class="ld" style="background:rgba(255,79,79,.5)"></div>BPP Real</div>
         <div class="li"><div class="ld" style="background:var(--grn)"></div>BPP Rec.</div>
         <div class="li"><div class="ld" style="background:var(--amb)"></div>Não-BPP</div>
+        <div class="li"><div class="ld" style="background:var(--pnk)"></div>Bono Vol.</div>
         <div class="li"><div class="ld" style="background:var(--blu);opacity:.5"></div>Plano</div>
       </div>
     </div>
     <div class="card">
-      <div class="ch"><div><div class="ct">Por País — BPP Real vs Rec vs Não-BPP</div></div></div>
+      <div class="ch"><div><div class="ct">Por País — Composição do Recuperado</div></div></div>
       <div class="cw" style="height:260px"><canvas id="cOC"></canvas></div>
     </div>
   </div>
@@ -248,7 +334,7 @@ td{padding:8px 10px;font-family:var(--mono);font-size:11px}
       <thead><tr>
         <th>País</th><th class="tr">BPP Real</th><th class="tr">Plano BPP</th>
         <th class="tr">BPP Rec.</th><th class="tr">Rec/Real</th><th class="tr">Rec/Plano</th>
-        <th class="tr">Não-BPP</th><th class="tr">Total Rec.</th>
+        <th class="tr">Não-BPP Std</th><th class="tr">Bono Vol.</th><th class="tr">Total Rec.</th>
       </tr></thead>
       <tbody id="tOv"></tbody>
     </table></div>
@@ -257,12 +343,25 @@ td{padding:8px 10px;font-family:var(--mono);font-size:11px}
 
 </div>
 <script>
-const D={"recBpp_all": {"MLB": [406698, 923239, 1679904, 302708, 0, 0, 0, 0, 0, 0, 0, 0], "MLA": [207582, 247013, 543023, 239205, 0, 0, 0, 0, 0, 0, 0, 0], "MLM": [256234, 458426, 491413, 1144758, 0, 0, 0, 0, 0, 0, 0, 0], "MCO": [1149, 5726, 7337, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLC": [29117, 80344, 1451, 46350, 0, 0, 0, 0, 0, 0, 0, 0], "MPE": [0, 0, 10257, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLU": [6642, 7576, 6499, 17812, 0, 0, 0, 0, 0, 0, 0, 0], "MEC": [0, 0, 4796, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, "recNB_all": {"MLB": [201076, 301956, 49569, 146773, 0, 0, 0, 0, 0, 0, 0, 0], "MLA": [585892, 677783, 642993, 14720, 0, 0, 0, 0, 0, 0, 0, 0], "MLM": [23151, 265169, 51827, 29074, 0, 0, 0, 0, 0, 0, 0, 0], "MCO": [169, 0, 270, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLC": [46199, 45951, 38280, 4012, 0, 0, 0, 0, 0, 0, 0, 0], "MPE": [27824, 31750, 31791, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLU": [24431, 10911, 10515, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MEC": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, "recBpp_cc": {"MLB": [406698, 557184, 1349557, 302708, 0, 0, 0, 0, 0, 0, 0, 0], "MLA": [207582, 247013, 543023, 239205, 0, 0, 0, 0, 0, 0, 0, 0], "MLM": [256234, 77694, 130207, 220408, 0, 0, 0, 0, 0, 0, 0, 0], "MCO": [1149, 5726, 7337, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLC": [29117, 80344, 1451, 46350, 0, 0, 0, 0, 0, 0, 0, 0], "MPE": [0, 0, 10257, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLU": [6642, 7576, 6499, 17812, 0, 0, 0, 0, 0, 0, 0, 0], "MEC": [0, 0, 4796, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, "recNB_cc": {"MLB": [201076, 301956, 49569, 146773, 0, 0, 0, 0, 0, 0, 0, 0], "MLA": [585892, 677783, 642993, 14720, 0, 0, 0, 0, 0, 0, 0, 0], "MLM": [23151, 265169, 51827, 29074, 0, 0, 0, 0, 0, 0, 0, 0], "MCO": [169, 0, 270, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLC": [46199, 45951, 38280, 4012, 0, 0, 0, 0, 0, 0, 0, 0], "MPE": [27824, 31750, 31791, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLU": [24431, 10911, 10515, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MEC": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, "recBpp_seg": {"MLB": [0, 366055, 330347, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLA": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLM": [0, 380732, 361206, 924350, 0, 0, 0, 0, 0, 0, 0, 0], "MCO": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLC": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MPE": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLU": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MEC": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, "recNB_seg": {"MLB": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLA": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLM": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MCO": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLC": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MPE": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MLU": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "MEC": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, "carrierBySite": {"DAC": {"MLU": {"bpp": [504, 7576, 0, 345, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Urbano": {"MEC": {"bpp": [0, 0, 4796, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, "MLA": {"bpp": [11272, 6987, 0, 12961, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Chilexpress": {"MLC": {"bpp": [8787, 32590, 0, 24765, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [8185, 6156, 4696, 4012, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Envia": {"MCO": {"bpp": [0, 0, 4659, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [169, 0, 270, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Urbano MPE": {"MPE": {"bpp": [0, 0, 10257, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [27824, 31750, 31791, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Punto HOP": {"MLA": {"bpp": [0, 0, 38932, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 5111, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Correo Argentino": {"MLA": {"bpp": [0, 71891, 62951, 89103, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [456108, 553095, 537916, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Carvalima": {"MLB": {"bpp": [15525, 9382, 15653, 30694, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [2592, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "HDI SEGUROS GLOBAL SA": {"MLM": {"bpp": [149952, 380732, 361206, 924350, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "DHL": {"MLM": {"bpp": [575, 4421, 6717, 1506, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 125301, 47398, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "FedEx": {"MLM": {"bpp": [99416, 47871, 70057, 98502, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [23032, 54000, 0, 29074, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Estafeta": {"MLM": {"bpp": [5623, 0, 1502, 4322, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 13000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Correios": {"MLB": {"bpp": [46679, 41305, 21111, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [562, 11762, 13800, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Loggi": {"MLB": {"bpp": [0, 178169, 675264, 99575, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 11734, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Correos Chile": {"MLC": {"bpp": [465, 1304, 0, 5108, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Pickit": {"MLA": {"bpp": [14339, 44723, 56953, 45910, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Webpack": {"MLA": {"bpp": [5150, 0, 2613, 4371, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [23654, 11016, 12021, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "UES": {"MLU": {"bpp": [6138, 0, 6499, 17467, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [24431, 10911, 10515, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Blue Express": {"MLC": {"bpp": [19865, 46450, 1451, 16477, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [38014, 39795, 33584, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Cainiao Domestic": {"MLM": {"bpp": [668, 411, 0, 7027, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 4429, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "J&T Express": {"MLM": {"bpp": [0, 24991, 35989, 87207, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 72868, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}, "MLB": {"bpp": [0, 191662, 518185, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Paquetexpress": {"MLM": {"bpp": [0, 0, 15942, 21844, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [119, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "OCA": {"MLA": {"bpp": [35510, 35803, 35803, 17722, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [24168, 12506, 14386, 14720, 0, 0, 0, 0, 0, 0, 0, 0]}}, "TNT": {"MLB": {"bpp": [0, 8083, 4443, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [4124, 6013, 6105, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Jad Logistica Ltda": {"MLB": {"bpp": [132228, 128583, 114901, 172439, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [193798, 272447, 29664, 146773, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Servientrega": {"MCO": {"bpp": [1149, 3777, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Argo Seguros": {"MLB": {"bpp": [212266, 366055, 330347, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Andreani": {"MLA": {"bpp": [54781, 0, 292803, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "OCASA": {"MLA": {"bpp": [86530, 87609, 52968, 69138, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [81962, 101166, 73559, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}, "Coordinadora": {"MCO": {"bpp": [0, 1949, 2678, 0, 0, 0, 0, 0, 0, 0, 0, 0], "nonbpp": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}}}, "carrierSites": {"Jad Logistica Ltda": ["MLB"], "Paquetexpress": ["MLM"], "OCASA": ["MLA"], "Servientrega": ["MCO"], "FedEx": ["MLM"], "Pickit": ["MLA"], "Andreani": ["MLA"], "Webpack": ["MLA"], "Cainiao Domestic": ["MLM"], "Carvalima": ["MLB"], "Urbano": ["MEC", "MLA"], "OCA": ["MLA"], "Chilexpress": ["MLC"], "UES": ["MLU"], "TNT": ["MLB"], "Estafeta": ["MLM"], "DHL": ["MLM"], "DAC": ["MLU"], "Correios": ["MLB"], "Blue Express": ["MLC"], "HDI SEGUROS GLOBAL SA": ["MLM"], "Correos Chile": ["MLC"], "Envia": ["MCO"], "Urbano MPE": ["MPE"], "Correo Argentino": ["MLA"], "Argo Seguros": ["MLB"], "Loggi": ["MLB"], "J&T Express": ["MLB", "MLM"], "Coordinadora": ["MCO"], "Punto HOP": ["MLA"]}, "plan": {"MLB": [550355, 507110, 577394, 533073, 637304, 597146, 626097, 615996, 593158, 637045, 740489, 737993], "MLA": [332555, 306424, 348893, 322112, 385094, 360828, 378322, 372219, 358419, 384938, 447444, 445936], "MLM": [181500, 167238, 190417, 175801, 210175, 196931, 206479, 203148, 195616, 210089, 244204, 243381], "MLU": [32787, 30211, 34398, 31758, 37967, 35575, 37299, 36698, 35337, 37952, 44114, 43966], "MCO": [4684, 79, 88, 79, 87, 84, 99, 92, 94, 99, 110, 125], "MLC": [59719, 55027, 62653, 57844, 69154, 64797, 67938, 66842, 64364, 69126, 80351, 80080], "MEC": [1171, 1079, 1228, 1134, 1356, 1271, 1332, 1311, 1262, 1355, 1576, 1570], "MPE": [8197, 7553, 8599, 7939, 9492, 8894, 9325, 9174, 8834, 9488, 11029, 10991]}, "bppReal": {"MLB": [1395481, 900318, 1258797, 850785, 0, 0, 0, 0, 0, 0, 0, 0], "MLA": [750345, 509811, 656055, 384720, 0, 0, 0, 0, 0, 0, 0, 0], "MLM": [532818, 392540, 293061, 183512, 0, 0, 0, 0, 0, 0, 0, 0], "MLU": [35294, 22158, 26043, 20993, 0, 0, 0, 0, 0, 0, 0, 0], "MCO": [60444, 41670, 36811, 20928, 0, 0, 0, 0, 0, 0, 0, 0], "MLC": [82935, 69902, 59126, 39395, 0, 0, 0, 0, 0, 0, 0, 0], "MEC": [3559, 833, 2934, 828, 0, 0, 0, 0, 0, 0, 0, 0], "MPE": [21920, 19115, 19543, 11716, 0, 0, 0, 0, 0, 0, 0, 0]}};
+const D={
+"recBpp_all":{"MLB":[406698,923239,1679904,302708,0,0,0,0,0,0,0,0],"MLA":[207582,247013,543023,239205,0,0,0,0,0,0,0,0],"MLM":[256234,458426,491413,1144758,0,0,0,0,0,0,0,0],"MCO":[1149,5726,7337,0,0,0,0,0,0,0,0,0],"MLC":[29117,80344,1451,46350,0,0,0,0,0,0,0,0],"MPE":[0,0,10257,0,0,0,0,0,0,0,0,0],"MLU":[6642,7576,6499,17812,0,0,0,0,0,0,0,0],"MEC":[0,0,4796,0,0,0,0,0,0,0,0,0]},
+"recNB_all":{"MLB":[201076,301956,49569,146773,0,0,0,0,0,0,0,0],"MLA":[585892,677783,642993,14720,0,0,0,0,0,0,0,0],"MLM":[23151,265169,51827,29074,0,0,0,0,0,0,0,0],"MCO":[169,0,270,0,0,0,0,0,0,0,0,0],"MLC":[46199,45951,38280,4012,0,0,0,0,0,0,0,0],"MPE":[27824,31750,31791,0,0,0,0,0,0,0,0,0],"MLU":[24431,10911,10515,0,0,0,0,0,0,0,0,0],"MEC":[0,0,0,0,0,0,0,0,0,0,0,0]},
+"recBpp_cc":{"MLB":[406698,557184,1349557,302708,0,0,0,0,0,0,0,0],"MLA":[207582,247013,543023,239205,0,0,0,0,0,0,0,0],"MLM":[256234,77694,130207,220408,0,0,0,0,0,0,0,0],"MCO":[1149,5726,7337,0,0,0,0,0,0,0,0,0],"MLC":[29117,80344,1451,46350,0,0,0,0,0,0,0,0],"MPE":[0,0,10257,0,0,0,0,0,0,0,0,0],"MLU":[6642,7576,6499,17812,0,0,0,0,0,0,0,0],"MEC":[0,0,4796,0,0,0,0,0,0,0,0,0]},
+"recNB_cc":{"MLB":[201076,301956,49569,146773,0,0,0,0,0,0,0,0],"MLA":[585892,677783,642993,14720,0,0,0,0,0,0,0,0],"MLM":[23151,265169,51827,29074,0,0,0,0,0,0,0,0],"MCO":[169,0,270,0,0,0,0,0,0,0,0,0],"MLC":[46199,45951,38280,4012,0,0,0,0,0,0,0,0],"MPE":[27824,31750,31791,0,0,0,0,0,0,0,0,0],"MLU":[24431,10911,10515,0,0,0,0,0,0,0,0,0],"MEC":[0,0,0,0,0,0,0,0,0,0,0,0]},
+"recBpp_seg":{"MLB":[0,366055,330347,0,0,0,0,0,0,0,0,0],"MLA":[0,0,0,0,0,0,0,0,0,0,0,0],"MLM":[0,380732,361206,924350,0,0,0,0,0,0,0,0],"MCO":[0,0,0,0,0,0,0,0,0,0,0,0],"MLC":[0,0,0,0,0,0,0,0,0,0,0,0],"MPE":[0,0,0,0,0,0,0,0,0,0,0,0],"MLU":[0,0,0,0,0,0,0,0,0,0,0,0],"MEC":[0,0,0,0,0,0,0,0,0,0,0,0]},
+"recNB_seg":{"MLB":[0,0,0,0,0,0,0,0,0,0,0,0],"MLA":[0,0,0,0,0,0,0,0,0,0,0,0],"MLM":[0,0,0,0,0,0,0,0,0,0,0,0],"MCO":[0,0,0,0,0,0,0,0,0,0,0,0],"MLC":[0,0,0,0,0,0,0,0,0,0,0,0],"MPE":[0,0,0,0,0,0,0,0,0,0,0,0],"MLU":[0,0,0,0,0,0,0,0,0,0,0,0],"MEC":[0,0,0,0,0,0,0,0,0,0,0,0]},
+"recNB_bonov":{"MLB":[0,0,0,0,0,0,0,0,0,0,0,0],"MLA":[10491,0,0,0,0,0,0,0,0,0,0,0],"MLM":[0,0,0,0,0,0,0,0,0,0,0,0],"MCO":[0,0,0,0,0,0,0,0,0,0,0,0],"MLC":[0,0,0,0,0,0,0,0,0,0,0,0],"MPE":[0,0,0,0,0,0,0,0,0,0,0,0],"MLU":[0,0,0,0,0,0,0,0,0,0,0,0],"MEC":[0,0,0,0,0,0,0,0,0,0,0,0]},
+"carrierBySite":{"DAC":{"MLU":{"bpp":[504,7576,0,345,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]}},"Urbano":{"MEC":{"bpp":[0,0,4796,0,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]},"MLA":{"bpp":[11272,6987,0,12961,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]}},"Chilexpress":{"MLC":{"bpp":[8787,32590,0,24765,0,0,0,0,0,0,0,0],"nonbpp":[8185,6156,4696,4012,0,0,0,0,0,0,0,0]}},"Envia":{"MCO":{"bpp":[0,0,4659,0,0,0,0,0,0,0,0,0],"nonbpp":[169,0,270,0,0,0,0,0,0,0,0,0]}},"Urbano MPE":{"MPE":{"bpp":[0,0,10257,0,0,0,0,0,0,0,0,0],"nonbpp":[27824,31750,31791,0,0,0,0,0,0,0,0,0]}},"Punto HOP":{"MLA":{"bpp":[0,0,38932,0,0,0,0,0,0,0,0,0],"nonbpp":[0,0,5111,0,0,0,0,0,0,0,0,0]}},"Correo Argentino":{"MLA":{"bpp":[0,71891,62951,89103,0,0,0,0,0,0,0,0],"nonbpp":[456108,553095,537916,0,0,0,0,0,0,0,0,0]}},"Carvalima":{"MLB":{"bpp":[15525,9382,15653,30694,0,0,0,0,0,0,0,0],"nonbpp":[2592,0,0,0,0,0,0,0,0,0,0,0]}},"HDI SEGUROS GLOBAL SA":{"MLM":{"bpp":[149952,380732,361206,924350,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]}},"DHL":{"MLM":{"bpp":[575,4421,6717,1506,0,0,0,0,0,0,0,0],"nonbpp":[0,125301,47398,0,0,0,0,0,0,0,0,0]}},"FedEx":{"MLM":{"bpp":[99416,47871,70057,98502,0,0,0,0,0,0,0,0],"nonbpp":[23032,54000,0,29074,0,0,0,0,0,0,0,0]}},"Estafeta":{"MLM":{"bpp":[5623,0,1502,4322,0,0,0,0,0,0,0,0],"nonbpp":[0,13000,0,0,0,0,0,0,0,0,0,0]}},"Correios":{"MLB":{"bpp":[46679,41305,21111,0,0,0,0,0,0,0,0,0],"nonbpp":[562,11762,13800,0,0,0,0,0,0,0,0,0]}},"Loggi":{"MLB":{"bpp":[0,178169,675264,99575,0,0,0,0,0,0,0,0],"nonbpp":[0,11734,0,0,0,0,0,0,0,0,0,0]}},"Correos Chile":{"MLC":{"bpp":[465,1304,0,5108,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]}},"Pickit":{"MLA":{"bpp":[14339,44723,56953,45910,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]}},"Webpack":{"MLA":{"bpp":[5150,0,2613,4371,0,0,0,0,0,0,0,0],"nonbpp":[23654,11016,12021,0,0,0,0,0,0,0,0,0]}},"UES":{"MLU":{"bpp":[6138,0,6499,17467,0,0,0,0,0,0,0,0],"nonbpp":[24431,10911,10515,0,0,0,0,0,0,0,0,0]}},"Blue Express":{"MLC":{"bpp":[19865,46450,1451,16477,0,0,0,0,0,0,0,0],"nonbpp":[38014,39795,33584,0,0,0,0,0,0,0,0,0]}},"Cainiao Domestic":{"MLM":{"bpp":[668,411,0,7027,0,0,0,0,0,0,0,0],"nonbpp":[0,0,4429,0,0,0,0,0,0,0,0,0]}},"J&T Express":{"MLM":{"bpp":[0,24991,35989,87207,0,0,0,0,0,0,0,0],"nonbpp":[0,72868,0,0,0,0,0,0,0,0,0,0]},"MLB":{"bpp":[0,191662,518185,0,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]}},"Paquetexpress":{"MLM":{"bpp":[0,0,15942,21844,0,0,0,0,0,0,0,0],"nonbpp":[119,0,0,0,0,0,0,0,0,0,0,0]}},"OCA":{"MLA":{"bpp":[35510,35803,35803,17722,0,0,0,0,0,0,0,0],"nonbpp":[24168,12506,14386,14720,0,0,0,0,0,0,0,0]}},"TNT":{"MLB":{"bpp":[0,8083,4443,0,0,0,0,0,0,0,0,0],"nonbpp":[4124,6013,6105,0,0,0,0,0,0,0,0,0]}},"Jad Logistica Ltda":{"MLB":{"bpp":[132228,128583,114901,172439,0,0,0,0,0,0,0,0],"nonbpp":[193798,272447,29664,146773,0,0,0,0,0,0,0,0]}},"Servientrega":{"MCO":{"bpp":[1149,3777,0,0,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]}},"Argo Seguros":{"MLB":{"bpp":[212266,366055,330347,0,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]}},"Andreani":{"MLA":{"bpp":[54781,0,292803,0,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]}},"OCASA":{"MLA":{"bpp":[86530,87609,52968,69138,0,0,0,0,0,0,0,0],"nonbpp":[81962,101166,73559,0,0,0,0,0,0,0,0,0]}},"Coordinadora":{"MCO":{"bpp":[0,1949,2678,0,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]}}},
+"carrierSites":{"Jad Logistica Ltda":["MLB"],"Paquetexpress":["MLM"],"OCASA":["MLA"],"Servientrega":["MCO"],"FedEx":["MLM"],"Pickit":["MLA"],"Andreani":["MLA"],"Webpack":["MLA"],"Cainiao Domestic":["MLM"],"Carvalima":["MLB"],"Urbano":["MEC","MLA"],"OCA":["MLA"],"Chilexpress":["MLC"],"UES":["MLU"],"TNT":["MLB"],"Estafeta":["MLM"],"DHL":["MLM"],"DAC":["MLU"],"Correios":["MLB"],"Blue Express":["MLC"],"HDI SEGUROS GLOBAL SA":["MLM"],"Correos Chile":["MLC"],"Envia":["MCO"],"Urbano MPE":["MPE"],"Correo Argentino":["MLA"],"Argo Seguros":["MLB"],"Loggi":["MLB"],"J&T Express":["MLB","MLM"],"Coordinadora":["MCO"],"Punto HOP":["MLA"]},
+"plan":{"MLB":[550355,507110,577394,533073,637304,597146,626097,615996,593158,637045,740489,737993],"MLA":[332555,306424,348893,322112,385094,360828,378322,372219,358419,384938,447444,445936],"MLM":[181500,167238,190417,175801,210175,196931,206479,203148,195616,210089,244204,243381],"MLU":[32787,30211,34398,31758,37967,35575,37299,36698,35337,37952,44114,43966],"MCO":[4684,79,88,79,87,84,99,92,94,99,110,125],"MLC":[59719,55027,62653,57844,69154,64797,67938,66842,64364,69126,80351,80080],"MEC":[1171,1079,1228,1134,1356,1271,1332,1311,1262,1355,1576,1570],"MPE":[8197,7553,8599,7939,9492,8894,9325,9174,8834,9488,11029,10991]},
+"bppReal":{"MLB":[1395481,900318,1258797,850785,0,0,0,0,0,0,0,0],"MLA":[750345,509811,656055,384720,0,0,0,0,0,0,0,0],"MLM":[532818,392540,293061,183512,0,0,0,0,0,0,0,0],"MLU":[35294,22158,26043,20993,0,0,0,0,0,0,0,0],"MCO":[60444,41670,36811,20928,0,0,0,0,0,0,0,0],"MLC":[82935,69902,59126,39395,0,0,0,0,0,0,0,0],"MEC":[3559,833,2934,828,0,0,0,0,0,0,0,0],"MPE":[21920,19115,19543,11716,0,0,0,0,0,0,0,0]}
+};
+
 const MONTHS=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 const SITES=[
-  {c:'MLB',n:'Brasil',f:'🇧🇷'},{c:'MLA',n:'Argentina',f:'🇦🇷'},{c:'MLM',n:'México',f:'🇲🇽'},
-  {c:'MCO',n:'Colômbia',f:'🇨🇴'},{c:'MLC',n:'Chile',f:'🇨🇱'},{c:'MPE',n:'Peru',f:'🇵🇪'},
-  {c:'MLU',n:'Uruguai',f:'🇺🇾'},{c:'MEC',n:'Equador',f:'🇪🇨'}
+  {c:'MLB',n:'Brasil',f:'🇧🇷',hisp:false},{c:'MLA',n:'Argentina',f:'🇦🇷',hisp:true},{c:'MLM',n:'México',f:'🇲🇽',hisp:true},
+  {c:'MCO',n:'Colômbia',f:'🇨🇴',hisp:true},{c:'MLC',n:'Chile',f:'🇨🇱',hisp:true},{c:'MPE',n:'Peru',f:'🇵🇪',hisp:true},
+  {c:'MLU',n:'Uruguai',f:'🇺🇾',hisp:true},{c:'MEC',n:'Equador',f:'🇪🇨',hisp:false}
 ];
 const CC=['#4d9fff','#2ecc8a','#f5a623','#ff4f4f','#a374ff','#00d4c8','#ff6eb4','#ffd166'];
 const YTD=4;
@@ -272,11 +371,9 @@ const f$=v=>v>0?'$'+Math.round(v).toLocaleString('pt-BR'):'—';
 const fp=v=>isFinite(v)&&v>0?Math.round(v)+'%':'—';
 const sm=a=>Array.isArray(a)?a.reduce((s,x)=>s+x,0):0;
 
-// ── FILTER HELPERS ──
 function getSites(){const f=document.getElementById('fC').value;return f==='all'?SITES:SITES.filter(s=>s.c===f);}
-function getTipo(){return document.getElementById('fT').value;}  // 'all','cc','seg'
+function getTipo(){return document.getElementById('fT').value;}
 
-// Returns the correct recBpp/recNonBpp arrays based on tipo filter
 function recBpp(site){
   const t=getTipo();
   if(t==='cc')  return D.recBpp_cc[site]||new Array(12).fill(0);
@@ -288,6 +385,12 @@ function recNB(site){
   if(t==='cc')  return D.recNB_cc[site]||new Array(12).fill(0);
   if(t==='seg') return D.recNB_seg[site]||new Array(12).fill(0);
   return D.recNB_all[site]||new Array(12).fill(0);
+}
+function recBonov(site){return D.recNB_bonov[site]||new Array(12).fill(0);}
+// Standard NB = total NB minus bono volumen
+function recNBstd(site){
+  const nb=recNB(site),bv=recBonov(site);
+  return nb.map((v,i)=>Math.max(0,v-(bv[i]||0)));
 }
 
 function filterLabel(elId){
@@ -368,22 +471,25 @@ function renderBpp(){
 function renderNonBpp(){
   const sites=getSites(); filterLabel('fl-nb');
   const CM=YTD;
-  let tot=0,bestMV=0,bestMI=-1,bestCV='',bestCN=0;
-  const mT=MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(recNB(s.c)[i]||0),0));
+  let tot=0,totBV=0,bestMV=0,bestMI=-1,bestCV='',bestCN=0;
+  const mT=MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(recNBstd(s.c)[i]||0),0));
   mT.forEach((v,i)=>{if(v>bestMV){bestMV=v;bestMI=i;}});
-  sites.forEach(s=>{const t=sm(recNB(s.c).slice(0,CM));tot+=t;if(t>bestCN){bestCN=t;bestCV=s.f+' '+s.n;}});
+  sites.forEach(s=>{const t=sm(recNBstd(s.c).slice(0,CM));tot+=t;if(t>bestCN){bestCN=t;bestCV=s.f+' '+s.n;}});
+  sites.forEach(s=>{totBV+=sm(recBonov(s.c).slice(0,CM));});
+
   document.getElementById('k-nb-t').textContent=f$(tot);
+  document.getElementById('k-bv-t').textContent=totBV>0?f$(totBV):'a extrair';
   document.getElementById('k-nb-top').textContent=bestCV||'—';
   document.getElementById('k-nb-top-v').textContent=f$(bestCN);
   document.getElementById('k-nb-mon').textContent=bestMI>=0?MONTHS[bestMI]:'—';
   document.getElementById('k-nb-mon-v').textContent=f$(bestMV);
   document.getElementById('k-nb-avg').textContent=CM>0?f$(tot/CM):'—';
 
-  const mx=Math.max(...sites.flatMap(s=>recNB(s.c).slice(0,CM)));
+  const mx=Math.max(...sites.flatMap(s=>recNBstd(s.c).slice(0,CM)));
   document.getElementById('hH').innerHTML='<th>País</th>'+MONTHS.slice(0,CM).map(m=>`<th class="tr">${m}</th>`).join('')+'<th class="tr">Total</th>';
   document.getElementById('hB').innerHTML=sites.map(s=>{
-    const v=recNB(s.c);const t=sm(v.slice(0,CM));
-    return `<tr><td class="tcc">${s.f} ${s.n}</td>
+    const v=recNBstd(s.c);const t=sm(v.slice(0,CM));
+    return `<tr><td class="tcc">${s.f} ${s.n}${s.hisp?' <span class="hisp-badge">HISP</span>':''}</td>
       ${v.slice(0,CM).map(x=>{const a=mx>0?x/mx:0;const bg=x>0?`rgba(245,166,35,${(a*.65+.06).toFixed(2)})`:'transparent';
         return `<td style="background:${bg};border-radius:3px;text-align:right;padding:6px 8px;font-family:var(--mono);font-size:11px">${x>0?f$(x):'—'}</td>`;}).join('')}
       <td class="tr ta" style="font-weight:500">${f$(t)}</td></tr>`;
@@ -392,38 +498,91 @@ function renderNonBpp(){
   dc('cNM');
   CH['cNM']=new Chart(document.getElementById('cNM'),{type:'bar',data:{
     labels:MONTHS.slice(0,CM),
-    datasets:sites.map((s,i)=>({label:s.n,data:recNB(s.c).slice(0,CM),backgroundColor:CC[i]+'bb',borderRadius:3,stack:'s'}))
+    datasets:sites.map((s,i)=>({label:s.n,data:recNBstd(s.c).slice(0,CM),backgroundColor:CC[i]+'bb',borderRadius:3,stack:'s'}))
   },options:{...baseOpts('bar'),plugins:{...baseOpts('bar').plugins,legend:{display:true,labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10},boxWidth:7,boxHeight:7}}}}});
 
   dc('cND');
   CH['cND']=new Chart(document.getElementById('cND'),{type:'doughnut',data:{
     labels:sites.map(s=>s.f+' '+s.n),
-    datasets:[{data:sites.map(s=>sm(recNB(s.c).slice(0,CM))),backgroundColor:CC.slice(0,sites.length),borderWidth:2,borderColor:'#111419'}]
+    datasets:[{data:sites.map(s=>sm(recNBstd(s.c).slice(0,CM))),backgroundColor:CC.slice(0,sites.length),borderWidth:2,borderColor:'#111419'}]
   },options:{...baseOpts('doughnut'),cutout:'62%'}});
 
-  const gt=tot||1;
+  const gt=sites.reduce((a,s)=>a+sm(recNB(s.c).slice(0,CM)),0)||1;
   document.getElementById('tN').innerHTML=sites.map(s=>{
-    const v=recNB(s.c);const t=sm(v.slice(0,CM));
-    return `<tr><td class="tcc">${s.f} ${s.n}</td>
+    const v=recNBstd(s.c);const t=sm(v.slice(0,CM));
+    const bv=sm(recBonov(s.c).slice(0,CM));
+    const tot2=t+bv;
+    return `<tr><td class="tcc">${s.f} ${s.n}${s.hisp?' <span class="hisp-badge">HISP</span>':''}</td>
       ${v.slice(0,CM).map(x=>`<td class="tr">${f$(x)}</td>`).join('')}
       <td class="tr ta" style="font-weight:500">${f$(t)}</td>
-      <td class="tr" style="color:var(--m2)">${t>0?(t/gt*100).toFixed(1)+'%':'—'}</td></tr>`;
+      <td class="tr tpk">${bv>0?f$(bv):'—'}</td>
+      <td class="tr" style="font-weight:500">${f$(tot2)}</td>
+      <td class="tr" style="color:var(--m2)">${tot2>0?(tot2/gt*100).toFixed(1)+'%':'—'}</td></tr>`;
   }).join('');
 }
 
-// ── CARRIERS — separado por site ──
+// ── BONO VOLUMEN ──
+function renderBonoVolumen(){
+  const sites=getSites(); filterLabel('fl-bv');
+  const CM=YTD;
+  const hispSites=sites.filter(s=>s.hisp);
+  let totBV=0,bestMV=0,bestMI=-1,bestCV='',bestCN=0;
+  const mT=MONTHS.map((_,i)=>hispSites.reduce((a,s)=>a+(recBonov(s.c)[i]||0),0));
+  mT.forEach((v,i)=>{if(v>bestMV){bestMV=v;bestMI=i;}});
+  hispSites.forEach(s=>{const t=sm(recBonov(s.c).slice(0,CM));totBV+=t;if(t>bestCN){bestCN=t;bestCV=s.f+' '+s.n;}});
+  const totNB=sites.reduce((a,s)=>a+sm(recNB(s.c).slice(0,CM)),0);
+
+  document.getElementById('k-bv-total').textContent=totBV>0?f$(totBV):'a extrair ⚠️';
+  document.getElementById('k-bv-pct').textContent=totNB>0&&totBV>0?Math.round(totBV/(totNB)*100)+'%':'—';
+  document.getElementById('k-bv-top').textContent=bestCV||'—';
+  document.getElementById('k-bv-top-v').textContent=bestCN>0?f$(bestCN):'—';
+  document.getElementById('k-bv-mon').textContent=bestMI>=0&&bestMV>0?MONTHS[bestMI]:'—';
+  document.getElementById('k-bv-mon-v').textContent=bestMV>0?f$(bestMV):'—';
+
+  const note=document.getElementById('bv-note');
+  const hasData=hispSites.some(s=>sm(recBonov(s.c).slice(0,CM))>0);
+  if(!hasData){
+    note.innerHTML='⚠️ PENDENTE: Dados de Bono Volumen precisam ser extraídos da planilha filtrando a coluna "Motivo del recupero" = "Descuento Comercial (Bonovolumen) CC". Parcialmente identificado: MLA Jan = $10.491 (Webpack). Solicite ao responsável a extração completa por país e mês.';
+  } else {
+    note.innerHTML='ℹ️ Dados parcialmente populados. Atualize extraindo "Descuento Comercial (Bonovolumen) CC" da planilha de recuperos.';
+  }
+
+  const gt=totNB||1;
+  document.getElementById('tBV').innerHTML=hispSites.map(s=>{
+    const v=recBonov(s.c);const t=sm(v.slice(0,CM));
+    const nb=sm(recNB(s.c).slice(0,CM));
+    return `<tr><td class="tcc">${s.f} ${s.n}</td>
+      ${v.slice(0,CM).map(x=>`<td class="tr tpk">${x>0?f$(x):'—'}</td>`).join('')}
+      <td class="tr tpk" style="font-weight:500">${t>0?f$(t):'—'}</td>
+      <td class="tr" style="color:var(--m2)">${nb>0&&t>0?(t/nb*100).toFixed(1)+'%':'—'}</td></tr>`;
+  }).join('');
+
+  dc('cBV');
+  CH['cBV']=new Chart(document.getElementById('cBV'),{type:'bar',data:{
+    labels:MONTHS.slice(0,CM),
+    datasets:hispSites.map((s,i)=>({label:s.n,data:recBonov(s.c).slice(0,CM),backgroundColor:CC[i]+'bb',borderRadius:3,stack:'s'}))
+  },options:{...baseOpts('bar'),plugins:{...baseOpts('bar').plugins,legend:{display:true,labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10},boxWidth:7,boxHeight:7}}}}});
+
+  dc('cBVD');
+  CH['cBVD']=new Chart(document.getElementById('cBVD'),{type:'bar',data:{
+    labels:hispSites.map(s=>s.f+' '+s.c),
+    datasets:[
+      {label:'NB Standard',  data:hispSites.map(s=>sm(recNBstd(s.c).slice(0,CM))),backgroundColor:'rgba(245,166,35,.7)',borderRadius:3,stack:'s'},
+      {label:'Bono Volumen', data:hispSites.map(s=>sm(recBonov(s.c).slice(0,CM))),backgroundColor:'rgba(255,110,180,.7)',borderRadius:3,stack:'s'},
+    ]},
+    options:{...baseOpts('bar'),plugins:{...baseOpts('bar').plugins,legend:{display:true,labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10},boxWidth:7,boxHeight:7}}}}});
+}
+
+// ── CARRIERS ──
 function renderCarriers(){
   const fc=document.getElementById('fC').value; filterLabel('fl-car');
-  const t=getTipo();
   const CM=YTD;
-
-  // Build rows: one per (carrier, site) pair
   const rows=[];
   Object.entries(D.carrierBySite||{}).forEach(([car,sites])=>{
     Object.entries(sites).forEach(([site,vals])=>{
       if(fc!=='all'&&site!==fc) return;
-      const bppArr = vals.bpp||new Array(12).fill(0);
-      const nbArr  = vals.nonbpp||new Array(12).fill(0);
+      const bppArr=vals.bpp||new Array(12).fill(0);
+      const nbArr =vals.nonbpp||new Array(12).fill(0);
       const b=sm(bppArr.slice(0,CM));
       const n=sm(nbArr.slice(0,CM));
       if(b+n===0) return;
@@ -433,7 +592,6 @@ function renderCarriers(){
   rows.sort((a,b)=>(b.b+b.n)-(a.b+a.n));
   const top20=rows.slice(0,20);
   const gB=sm(rows.map(r=>r.b)), gN=sm(rows.map(r=>r.n)), g=gB+gN;
-
   const topBpp =rows.reduce((a,r)=>r.b>a.b?r:a,{b:0});
   const topNbpp=rows.reduce((a,r)=>r.n>a.n?r:a,{n:0});
 
@@ -443,8 +601,6 @@ function renderCarriers(){
   document.getElementById('k-cn2').textContent=topNbpp.car||'—';
   document.getElementById('k-cn2-v').textContent=f$(topNbpp.n);
   document.getElementById('k-cp').textContent=g>0?Math.round(gB/g*100)+'%':'—';
-
-  const siteFlag=c=>{const s=SITES.find(x=>x.c===c);return s?s.f+' '+c:c;};
 
   dc('cCar');
   CH['cCar']=new Chart(document.getElementById('cCar'),{type:'bar',
@@ -456,7 +612,6 @@ function renderCarriers(){
       scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10},callback:v=>'$'+Math.round(v/1000)+'k'}},
               y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10}}}}}});
 
-  // Top 5 trend (combined carrier+site)
   const top5=rows.slice(0,5);
   const lc=['#2ecc8a','#f5a623','#4d9fff','#a374ff','#ff6eb4'];
   dc('cCT');
@@ -471,7 +626,7 @@ function renderCarriers(){
   document.getElementById('tCar').innerHTML=top20.map(r=>{
     const tot=r.b+r.n;
     return `<tr><td style="font-family:var(--sans);font-weight:500;font-size:12px">${r.car}</td>
-      <td style="color:var(--m2);font-size:11px">${siteFlag(r.site)}</td>
+      <td style="color:var(--m2);font-size:11px">${SITES.find(x=>x.c===r.site)?.f||''} ${r.site}</td>
       <td class="tr tg">${f$(r.b)}</td><td class="tr ta">${f$(r.n)}</td>
       <td class="tr" style="font-weight:500">${f$(tot)}</td>
       <td class="tr" style="color:var(--m2)">${tot>0?Math.round(r.b/tot*100)+'%':'—'}</td></tr>`;
@@ -483,10 +638,11 @@ function renderOverview(){
   const sites=getSites(); filterLabel('fl-ov');
   const CM=YTD;
   const bpp =sites.reduce((a,s)=>a+sm(recBpp(s.c).slice(0,CM)),0);
-  const nb  =sites.reduce((a,s)=>a+sm(recNB(s.c).slice(0,CM)),0);
+  const nb  =sites.reduce((a,s)=>a+sm(recNBstd(s.c).slice(0,CM)),0);
+  const bv  =sites.reduce((a,s)=>a+sm(recBonov(s.c).slice(0,CM)),0);
   const plan=sites.reduce((a,s)=>a+sm((D.plan[s.c]||[]).slice(0,CM)),0);
   const real=sites.reduce((a,s)=>a+sm((D.bppReal[s.c]||[]).slice(0,CM)),0);
-  const tot=bpp+nb, pp=plan>0?Math.round(bpp/plan*100):0;
+  const tot=bpp+nb+bv, pp=plan>0?Math.round(bpp/plan*100):0;
 
   document.getElementById('k-ot').textContent=f$(tot);
   document.getElementById('k-or').textContent=f$(real);
@@ -495,12 +651,14 @@ function renderOverview(){
   ps.textContent=pp+'% do plano BPP';ps.className='ks '+(pp>=100?'up':pp>=70?'wn':'dn');
   document.getElementById('k-on').textContent=f$(nb);
   document.getElementById('k-on-s').textContent=tot>0?Math.round(nb/tot*100)+'% do total':'—';
+  document.getElementById('k-obv').textContent=bv>0?f$(bv):'a extrair';
 
   dc('cOM');
   CH['cOM']=new Chart(document.getElementById('cOM'),{type:'bar',data:{labels:MONTHS,datasets:[
     {label:'BPP Real', data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D.bppReal[s.c]?.[i]||0),0)),backgroundColor:'rgba(255,79,79,.3)',borderRadius:3},
     {label:'BPP Rec.', data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(recBpp(s.c)[i]||0),0)),     backgroundColor:'rgba(46,204,138,.75)',borderRadius:3,stack:'r'},
-    {label:'Não-BPP',  data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(recNB(s.c)[i]||0),0)),      backgroundColor:'rgba(245,166,35,.75)',borderRadius:3,stack:'r'},
+    {label:'Não-BPP',  data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(recNBstd(s.c)[i]||0),0)),   backgroundColor:'rgba(245,166,35,.75)',borderRadius:3,stack:'r'},
+    {label:'Bono Vol.', data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(recBonov(s.c)[i]||0),0)),  backgroundColor:'rgba(255,110,180,.75)',borderRadius:3,stack:'r'},
     {label:'Plano',    data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D.plan[s.c]?.[i]||0),0)),   type:'line',borderColor:'rgba(77,159,255,.6)',backgroundColor:'transparent',borderWidth:2,borderDash:[4,4],pointRadius:2,tension:.3},
   ]},options:baseOpts('bar')});
 
@@ -508,9 +666,10 @@ function renderOverview(){
   CH['cOC']=new Chart(document.getElementById('cOC'),{type:'bar',data:{
     labels:sites.map(s=>s.f+' '+s.c),
     datasets:[
-      {label:'BPP Real',data:sites.map(s=>sm((D.bppReal[s.c]||[]).slice(0,CM))),backgroundColor:'rgba(255,79,79,.4)',borderRadius:3},
-      {label:'BPP Rec.',data:sites.map(s=>sm(recBpp(s.c).slice(0,CM))),          backgroundColor:'rgba(46,204,138,.75)',borderRadius:3},
-      {label:'Não-BPP', data:sites.map(s=>sm(recNB(s.c).slice(0,CM))),           backgroundColor:'rgba(245,166,35,.75)',borderRadius:3},
+      {label:'BPP Real',  data:sites.map(s=>sm((D.bppReal[s.c]||[]).slice(0,CM))),backgroundColor:'rgba(255,79,79,.4)',borderRadius:3},
+      {label:'BPP Rec.',  data:sites.map(s=>sm(recBpp(s.c).slice(0,CM))),          backgroundColor:'rgba(46,204,138,.75)',borderRadius:3},
+      {label:'Não-BPP',   data:sites.map(s=>sm(recNBstd(s.c).slice(0,CM))),        backgroundColor:'rgba(245,166,35,.75)',borderRadius:3},
+      {label:'Bono Vol.', data:sites.map(s=>sm(recBonov(s.c).slice(0,CM))),        backgroundColor:'rgba(255,110,180,.75)',borderRadius:3},
     ]},
     options:{...baseOpts('bar'),plugins:{...baseOpts('bar').plugins,legend:{display:true,labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10},boxWidth:7,boxHeight:7}}}}});
 
@@ -518,31 +677,33 @@ function renderOverview(){
     const rl=sm((D.bppReal[s.c]||[]).slice(0,CM));
     const pl=sm((D.plan[s.c]||[]).slice(0,CM));
     const b=sm(recBpp(s.c).slice(0,CM));
-    const n=sm(recNB(s.c).slice(0,CM));
+    const n=sm(recNBstd(s.c).slice(0,CM));
+    const bv2=sm(recBonov(s.c).slice(0,CM));
     const pp=pl>0?Math.round(b/pl*100):0, pr=rl>0?Math.round(b/rl*100):0;
     const cp=pp>=100?'var(--grn)':pp>=70?'var(--amb)':'var(--red)';
     const cr=pr>=80?'var(--grn)':pr>=50?'var(--amb)':'var(--red)';
-    return `<tr><td class="tcc">${s.f} ${s.n}</td>
+    return `<tr><td class="tcc">${s.f} ${s.n}${s.hisp?' <span class="hisp-badge">HISP</span>':''}</td>
       <td class="tr t-r">${f$(rl)}</td><td class="tr tb">${f$(pl)}</td>
       <td class="tr tg">${f$(b)}</td>
       <td class="tr" style="color:${cr}">${rl>0?pr+'%':'—'}</td>
       <td class="tr" style="color:${cp}">${pp}%</td>
       <td class="tr ta">${f$(n)}</td>
-      <td class="tr" style="font-weight:500">${f$(b+n)}</td></tr>`;
+      <td class="tr tpk">${bv2>0?f$(bv2):'—'}</td>
+      <td class="tr" style="font-weight:500">${f$(b+n+bv2)}</td></tr>`;
   }).join('');
 }
 
 function switchTab(name){
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['bpp','nonbpp','carriers','overview'][i]===name));
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['bpp','nonbpp','bonov','carriers','overview'][i]===name));
   document.querySelectorAll('.tc').forEach(c=>c.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
-  ({bpp:renderBpp,nonbpp:renderNonBpp,carriers:renderCarriers,overview:renderOverview}[name])();
+  ({bpp:renderBpp,nonbpp:renderNonBpp,bonov:renderBonoVolumen,carriers:renderCarriers,overview:renderOverview}[name])();
 }
 function applyFilters(){
   const i=[...document.querySelectorAll('.tab')].findIndex(t=>t.classList.contains('active'));
-  switchTab(['bpp','nonbpp','carriers','overview'][i]);
+  switchTab(['bpp','nonbpp','bonov','carriers','overview'][i]);
 }
-renderBpp();renderNonBpp();renderCarriers();renderOverview();
+renderBpp();renderNonBpp();renderBonoVolumen();renderCarriers();renderOverview();
 </script>
 
 <!-- PASSWORD GATE -->
@@ -563,7 +724,7 @@ renderBpp();renderNonBpp();renderCarriers();renderOverview();
     <div class="pw-logo">📦</div>
     <div style="text-align:center">
       <div class="pw-title">Recovery Dashboard</div>
-      <div class="pw-sub">Commercial Carriers &middot; 2026</div>
+      <div class="pw-sub">Commercial Carriers &middot; 2026 &middot; v7</div>
     </div>
     <input id="pw-field" type="password" placeholder="••••••••••••••••" autocomplete="off">
     <button id="pw-submit">Acessar &rarr;</button>
@@ -572,30 +733,25 @@ renderBpp();renderNonBpp();renderCarriers();renderOverview();
 </div>
 <script>
 (function(){
-  var PASS = 'Businesscontrol2026';
+  var PASS='Businesscontrol2026';
   function unlock(){
-    var v = document.getElementById('pw-field').value;
-    if(v === PASS){
-      var gate = document.getElementById('pw-gate');
-      gate.style.transition = 'opacity .3s';
-      gate.style.opacity = '0';
-      setTimeout(function(){ gate.style.display = 'none'; }, 300);
+    var v=document.getElementById('pw-field').value;
+    if(v===PASS){
+      var gate=document.getElementById('pw-gate');
+      gate.style.transition='opacity .3s';gate.style.opacity='0';
+      setTimeout(function(){gate.style.display='none';},300);
     } else {
-      document.getElementById('pw-err').style.display = 'block';
-      document.getElementById('pw-field').value = '';
+      document.getElementById('pw-err').style.display='block';
+      document.getElementById('pw-field').value='';
       document.getElementById('pw-field').focus();
     }
   }
-  document.addEventListener('DOMContentLoaded', function(){
+  document.addEventListener('DOMContentLoaded',function(){
     document.getElementById('pw-field').focus();
-    document.getElementById('pw-submit').addEventListener('click', unlock);
-    document.getElementById('pw-field').addEventListener('keydown', function(e){
-      if(e.key === 'Enter') unlock();
-    });
+    document.getElementById('pw-submit').addEventListener('click',unlock);
+    document.getElementById('pw-field').addEventListener('keydown',function(e){if(e.key==='Enter')unlock();});
   });
 })();
 </script>
-<!-- END PASSWORD GATE -->
-
 </body>
 </html>
