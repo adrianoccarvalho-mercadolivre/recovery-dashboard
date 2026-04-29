@@ -707,8 +707,7 @@ function renderTgmvFull(){
     <div class="kpi c"><div class="kl">TGMV YTD</div><div class="kv">${fk(totTG)}</div><div class="ks">NMV Jan–Abr</div></div>
     <div class="kpi r"><div class="kl">BPP Real YTD</div><div class="kv">${fk(totBPP)}</div><div class="ks">${totTG>0?(totBPP/totTG*100).toFixed(3)+'% do TGMV':'—'}</div></div>
     <div class="kpi g"><div class="kl">BPP Rec YTD</div><div class="kv">${fk(totRB)}</div><div class="ks">${totTG>0?(totRB/totTG*100).toFixed(3)+'% do TGMV':'—'}</div></div>
-    <div class="kpi a"><div class="kl">Não-BPP YTD</div><div class="kv">${fk(totRN)}</div><div class="ks">${totTG>0?(totRN/totTG*100).toFixed(3)+'% do TGMV':'—'}</div></div>
-    <div class="kpi p"><div class="kl">Rec Total / TGMV</div><div class="kv">${totTG>0?((totRB+totRN)/totTG*100).toFixed(3)+'%':'—'}</div><div class="ks">BPP+NB / NMV</div></div>
+    <div class="kpi p"><div class="kl">BPP Rec / TGMV</div><div class="kv">${totTG>0?(totRB/totTG*100).toFixed(3)+'%':'—'}</div><div class="ks">Rec BPP / NMV</div></div>
     <div class="kpi b"><div class="kl">Rec BPP / BPP Real</div><div class="kv">${totBPP>0?(totRB/totBPP*100).toFixed(1)+'%':'—'}</div><div class="ks">Eficiência recupero</div></div>
   </div>
   <div class="g2">
@@ -719,7 +718,6 @@ function renderTgmvFull(){
         <div class="li"><div class="ld" style="background:rgba(0,212,200,.5)"></div>TGMV (escala ÷1000)</div>
         <div class="li"><div class="ld" style="background:rgba(255,79,79,.5)"></div>BPP Real</div>
         <div class="li"><div class="ld" style="background:var(--grn)"></div>BPP Rec.</div>
-        <div class="li"><div class="ld" style="background:var(--amb)"></div>Não-BPP</div>
       </div>
     </div>
     <div class="card">
@@ -731,39 +729,34 @@ function renderTgmvFull(){
     <div class="ch"><div class="ct">Visão Completa por País</div><span class="badge bc">USD + Ratios · YTD Jan–Abr</span></div>
     <div class="tw"><table><thead><tr>
       <th>País</th><th class="tr">TGMV</th><th class="tr">BPP Real</th><th class="tr">BPP/TGMV</th>
-      <th class="tr">BPP Rec.</th><th class="tr">Não-BPP</th><th class="tr">Total Rec.</th>
-      <th class="tr">Rec/BPP</th><th class="tr">Rec/TGMV</th>
+      <th class="tr">BPP Rec.</th><th class="tr">BPP Rec/BPP</th><th class="tr">BPP Rec/TGMV</th>
     </tr></thead><tbody id="tTF"></tbody></table></div>
   </div>`;
 
   dc('cTFM');
   CH['cTFM']=new Chart(document.getElementById('cTFM'),{type:'bar',data:{labels:MONTHS.slice(getMF().s,getMF().e),datasets:[
-    {label:'TGMV÷1k', data:tgmvM.slice(getMF().s,getMF().e).map(v=>v/1000),backgroundColor:'rgba(0,212,200,.2)',borderRadius:3,order:4},
-    {label:'BPP Real', data:bppM.slice(getMF().s,getMF().e), backgroundColor:'rgba(255,79,79,.5)', borderRadius:3,stack:'bpp',order:3},
-    {label:'BPP Rec.', data:recBM.slice(getMF().s,getMF().e),backgroundColor:'rgba(46,204,138,.8)', borderRadius:3,stack:'r',order:2},
-    {label:'Não-BPP',  data:recNM.slice(getMF().s,getMF().e),backgroundColor:'rgba(245,166,35,.75)',borderRadius:3,stack:'r',order:1},
+    {label:'TGMV÷1k', data:tgmvM.slice(getMF().s,getMF().e).map(v=>v/1000),backgroundColor:'rgba(0,212,200,.2)',borderRadius:3,order:3},
+    {label:'BPP Real', data:bppM.slice(getMF().s,getMF().e), backgroundColor:'rgba(255,79,79,.5)', borderRadius:3,stack:'bpp',order:2},
+    {label:'BPP Rec.', data:recBM.slice(getMF().s,getMF().e),backgroundColor:'rgba(46,204,138,.8)', borderRadius:3,stack:'r',order:1},
   ]},options:baseOpts('bar')});
 
   dc('cTFR');
   {const mf=getMF(),tg=tgmvM.slice(mf.s,mf.e),bp=bppM.slice(mf.s,mf.e),rb=recBM.slice(mf.s,mf.e),rn=recNM.slice(mf.s,mf.e);
   CH['cTFR']=new Chart(document.getElementById('cTFR'),{type:'line',data:{labels:MONTHS.slice(mf.s,mf.e),datasets:[
     {label:'BPP/TGMV %',data:tg.map((t,i)=>t>0?(bp[i]/t*100):null),borderColor:'rgba(255,79,79,.8)',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.4},
-    {label:'Rec/TGMV %',data:tg.map((t,i)=>t>0?((rb[i]+rn[i])/t*100):null),borderColor:'var(--pur)',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.4},
+    {label:'BPP Rec/TGMV %',data:tg.map((t,i)=>t>0?(rb[i]/t*100):null),borderColor:'var(--pur)',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.4},
   ]},options:{...baseOpts('line'),plugins:{...baseOpts('line').plugins,legend:{display:true,labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},boxWidth:6,boxHeight:6}}},scales:{x:baseOpts('line').scales.x,y:{...baseOpts('line').scales.y,ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>v!=null?v.toFixed(3)+'%':null}}}}});}
 
   document.getElementById('tTF').innerHTML=sites.map(s=>{
     const tg=sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e));
     const br=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));
     const rb=sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e));
-    const rn=sm((D_REC_NB[s.c]||[]).slice(getMF().s,getMF().e));
-    const tot2=rb+rn;
     const bpt=tg>0?(br/tg*100).toFixed(3)+'%':'—';
     const rrt=br>0?(rb/br*100).toFixed(1)+'%':'—';
-    const rtt=tg>0?(tot2/tg*100).toFixed(3)+'%':'—';
+    const rtt=tg>0?(rb/tg*100).toFixed(3)+'%':'—';
     return `<tr><td class="tcc">${s.f} ${s.n}</td>
       <td class="tr tc2">${fk(tg)}</td><td class="tr tr2">${f$(br)}</td>
       <td class="tr">${bpt}</td><td class="tr tg">${f$(rb)}</td>
-      <td class="tr ta">${f$(rn)}</td><td class="tr" style="font-weight:500">${f$(tot2)}</td>
       <td class="tr">${rrt}</td><td class="tr tp">${rtt}</td></tr>`;
   }).join('');
 }
