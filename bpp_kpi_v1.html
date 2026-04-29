@@ -350,8 +350,8 @@ let CARRIERS_LOADED=[];
 
 // ── Alias CBS → BigQuery CARRIER_ID (quando o nome diverge) ──
 const _TGMV_ALIAS={
-  'J&T EXPRESS|MLB':'J&T EXPRESS BRAZIL|MLB',
   'PICKIT|MLA':'PICKIT-PLACES|MLA'
+  // J&T Express Brazil|MLB agora usa chave direta (sem alias necessário)
 };
 // Apenas as chaves BigQuery dos carriers mapeados no dashboard (CBS)
 // TNT|MLB e ARGO SEGUROS|MLB não constam no BigQuery como carrier
@@ -671,7 +671,36 @@ function renderCarriers(){
 
   // Build carrier rows from existing carrierBySite structure
   const carData={};
-  const CBS={"DAC":{"MLU":{"bpp":[504,7576,0,345],"nonbpp":[0,0,0,0]}},"Urbano":{"MLA":{"bpp":[11272,6987,0,12961],"nonbpp":[0,0,0,0]}},"Chilexpress":{"MLC":{"bpp":[8787,32590,0,24765],"nonbpp":[8185,6156,4696,4012]}},"FedEx":{"MLM":{"bpp":[99416,47871,70057,98502],"nonbpp":[23032,54000,0,29074]}},"Estafeta":{"MLM":{"bpp":[5623,0,1502,4322],"nonbpp":[0,13000,0,0]}},"Correios":{"MLB":{"bpp":[46679,41305,21111,0],"nonbpp":[562,11762,13800,0]}},"Loggi":{"MLB":{"bpp":[0,178169,675264,99575],"nonbpp":[0,11734,0,0]}},"Pickit":{"MLA":{"bpp":[14339,44723,56953,45910],"nonbpp":[0,0,0,0]}},"Webpack":{"MLA":{"bpp":[5150,0,2613,4371],"nonbpp":[23654,11016,12021,0]}},"UES":{"MLU":{"bpp":[6138,0,6499,17467],"nonbpp":[24431,10911,10515,0]}},"Blue Express":{"MLC":{"bpp":[19865,46450,1451,16477],"nonbpp":[38014,39795,33584,0]}},"Cainiao Domestic":{"MLM":{"bpp":[668,411,0,7027],"nonbpp":[0,0,4429,0]}},"J&T Express":{"MLM":{"bpp":[0,24991,35989,87207],"nonbpp":[0,72868,0,0]},"MLB":{"bpp":[0,191662,518185,0],"nonbpp":[0,0,0,0]}},"Paquetexpress":{"MLM":{"bpp":[0,0,15942,21844],"nonbpp":[119,0,0,0]}},"OCA":{"MLA":{"bpp":[35510,35803,35803,17722],"nonbpp":[24168,12506,14386,14720]}},"TNT":{"MLB":{"bpp":[0,8083,4443,0],"nonbpp":[4124,6013,6105,0]}},"Jad Logistica Ltda":{"MLB":{"bpp":[132228,128583,114901,172439],"nonbpp":[193798,272447,29664,146773]}},"Servientrega":{"MCO":{"bpp":[1149,3777,0,0],"nonbpp":[0,0,0,0]}},"Argo Seguros":{"MLB":{"bpp":[212266,366055,330347,0],"nonbpp":[0,0,0,0]}},"Andreani":{"MLA":{"bpp":[54781,0,292803,0],"nonbpp":[0,0,0,0]}},"OCASA":{"MLA":{"bpp":[86530,87609,52968,69138],"nonbpp":[81962,101166,73559,0]}},"Coordinadora":{"MCO":{"bpp":[0,1949,2678,0],"nonbpp":[0,0,0,0]}},"Correo Argentino":{"MLA":{"bpp":[0,71891,62951,89103],"nonbpp":[456108,553095,537916,0]}},"Carvalima":{"MLB":{"bpp":[15525,9382,15653,30694],"nonbpp":[2592,0,0,0]}},"DHL":{"MLM":{"bpp":[575,4421,6717,1506],"nonbpp":[0,125301,47398,0]}},"Correos Chile":{"MLC":{"bpp":[465,1304,0,5108],"nonbpp":[0,0,0,0]}}};
+  // CBS = dados recuperados Jan–Abr 2026 (fonte: Planilha Recuperado Real, atualizado 2026-04-29)
+  const CBS={
+    "Andreani":      {"MLA":{"bpp":[54781,0,292803,0],       "nonbpp":[0,0,0,0]}},
+    "Blue Express":  {"MLC":{"bpp":[19865,46449,1451,16477],  "nonbpp":[0,0,0,0]}},
+    "Cainiao Domestic":{"MLM":{"bpp":[668,411,0,7026],        "nonbpp":[0,0,4429,0]}},
+    "Carvalima":     {"MLB":{"bpp":[15526,9382,15653,30694],  "nonbpp":[2592,0,0,0]}},
+    "Chilexpress":   {"MLC":{"bpp":[8787,32589,0,24765],      "nonbpp":[8185,6156,4696,4012]}},
+    "Coordinadora":  {"MCO":{"bpp":[0,1949,2678,0],           "nonbpp":[0,0,0,0]}},
+    "Correo Argentino":{"MLA":{"bpp":[0,71891,62951,89103],   "nonbpp":[0,0,0,0]}},
+    "Correos Chile": {"MLC":{"bpp":[465,1304,0,5108],         "nonbpp":[0,0,0,0]}},
+    "Correios":      {"MLB":{"bpp":[46679,41305,21111,0],      "nonbpp":[562,11762,13800,0]}},
+    "DAC":           {"MLU":{"bpp":[503,7576,0,345],           "nonbpp":[0,0,0,0]}},
+    "DHL":           {"MLM":{"bpp":[574,4420,6715,1506],       "nonbpp":[0,125301,47398,0]}},
+    "Estafeta":      {"MLM":{"bpp":[5625,0,1502,4322],         "nonbpp":[0,13000,0,0]}},
+    "FedEx":         {"MLM":{"bpp":[99417,47872,70058,98503],  "nonbpp":[23032,54000,0,29074]}},
+    "J&T Express":   {"MLM":{"bpp":[0,24991,35989,87208],      "nonbpp":[0,72868,0,0]}},
+    "J&T Express Brazil":{"MLB":{"bpp":[0,191663,518186,0],    "nonbpp":[0,0,0,0]}},
+    "Jad Logistica Ltda":{"MLB":{"bpp":[132228,128583,114901,172439],"nonbpp":[193797,272447,29664,146773]}},
+    "Loggi":         {"MLB":{"bpp":[0,178169,675264,99575],    "nonbpp":[0,11734,0,0]}},
+    "OCA":           {"MLA":{"bpp":[35510,35803,35803,17723],  "nonbpp":[595,0,0,14720]}},
+    "OCASA":         {"MLA":{"bpp":[86529,87609,52968,69137],  "nonbpp":[0,0,0,0]}},
+    "Paquetexpress": {"MLM":{"bpp":[0,0,15942,21845],          "nonbpp":[119,0,0,0]}},
+    "Pickit":        {"MLA":{"bpp":[14339,44723,56953,45910],  "nonbpp":[0,0,0,0]}},
+    "Servientrega":  {"MCO":{"bpp":[1150,3778,0,0],            "nonbpp":[0,0,0,0]}},
+    "TNT":           {"MLB":{"bpp":[0,8083,4443,0],             "nonbpp":[4124,6012,6105,0]}},
+    "UES":           {"MLU":{"bpp":[6138,0,6499,17467],         "nonbpp":[13410,0,0,0]}},
+    "Urbano":        {"MLA":{"bpp":[11272,6987,0,12961],        "nonbpp":[0,0,0,0]}},
+    "Webpack":       {"MLA":{"bpp":[5150,0,2613,4371],          "nonbpp":[0,0,0,0]}},
+    "Argo Seguros":  {"MLB":{"bpp":[212266,0,0,0],              "nonbpp":[0,0,0,0]}}
+  };
 
   // Populate fCarrier dropdown filtered by selected country
   const fcarEl=document.getElementById('fCarrier');
@@ -705,7 +734,8 @@ function renderCarriers(){
       if(fc!=='all'&&site!==fc) return;
       if(cf!=='all'&&car!==cf) return;
       const b=sm(vals.bpp.slice(getMF().s,getMF().e)),n=sm(vals.nonbpp.slice(getMF().s,getMF().e));
-      if(b+n===0) return;
+      // só oculta zero quando nenhum carrier específico está selecionado
+      if(b+n===0&&cf==='all') return;
       const _tgKey=car.toUpperCase()+'|'+site;
       // usa _TGMV_ALIAS global (inclui J&T e Pickit)
       const _tgResolved=_TGMV_ALIAS[_tgKey]||_tgKey;
