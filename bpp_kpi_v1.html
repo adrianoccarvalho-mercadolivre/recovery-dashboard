@@ -618,7 +618,31 @@ function renderCarriers(){
   const carData={};
   const CBS={"DAC":{"MLU":{"bpp":[504,7576,0,345],"nonbpp":[0,0,0,0]}},"Urbano":{"MLA":{"bpp":[11272,6987,0,12961],"nonbpp":[0,0,0,0]}},"Chilexpress":{"MLC":{"bpp":[8787,32590,0,24765],"nonbpp":[8185,6156,4696,4012]}},"FedEx":{"MLM":{"bpp":[99416,47871,70057,98502],"nonbpp":[23032,54000,0,29074]}},"Estafeta":{"MLM":{"bpp":[5623,0,1502,4322],"nonbpp":[0,13000,0,0]}},"Correios":{"MLB":{"bpp":[46679,41305,21111,0],"nonbpp":[562,11762,13800,0]}},"Loggi":{"MLB":{"bpp":[0,178169,675264,99575],"nonbpp":[0,11734,0,0]}},"Pickit":{"MLA":{"bpp":[14339,44723,56953,45910],"nonbpp":[0,0,0,0]}},"Webpack":{"MLA":{"bpp":[5150,0,2613,4371],"nonbpp":[23654,11016,12021,0]}},"UES":{"MLU":{"bpp":[6138,0,6499,17467],"nonbpp":[24431,10911,10515,0]}},"Blue Express":{"MLC":{"bpp":[19865,46450,1451,16477],"nonbpp":[38014,39795,33584,0]}},"Cainiao Domestic":{"MLM":{"bpp":[668,411,0,7027],"nonbpp":[0,0,4429,0]}},"J&T Express":{"MLM":{"bpp":[0,24991,35989,87207],"nonbpp":[0,72868,0,0]},"MLB":{"bpp":[0,191662,518185,0],"nonbpp":[0,0,0,0]}},"Paquetexpress":{"MLM":{"bpp":[0,0,15942,21844],"nonbpp":[119,0,0,0]}},"OCA":{"MLA":{"bpp":[35510,35803,35803,17722],"nonbpp":[24168,12506,14386,14720]}},"TNT":{"MLB":{"bpp":[0,8083,4443,0],"nonbpp":[4124,6013,6105,0]}},"Jad Logistica Ltda":{"MLB":{"bpp":[132228,128583,114901,172439],"nonbpp":[193798,272447,29664,146773]}},"Servientrega":{"MCO":{"bpp":[1149,3777,0,0],"nonbpp":[0,0,0,0]}},"Argo Seguros":{"MLB":{"bpp":[212266,366055,330347,0],"nonbpp":[0,0,0,0]}},"Andreani":{"MLA":{"bpp":[54781,0,292803,0],"nonbpp":[0,0,0,0]}},"OCASA":{"MLA":{"bpp":[86530,87609,52968,69138],"nonbpp":[81962,101166,73559,0]}},"Coordinadora":{"MCO":{"bpp":[0,1949,2678,0],"nonbpp":[0,0,0,0]}},"Correo Argentino":{"MLA":{"bpp":[0,71891,62951,89103],"nonbpp":[456108,553095,537916,0]}},"Carvalima":{"MLB":{"bpp":[15525,9382,15653,30694],"nonbpp":[2592,0,0,0]}},"DHL":{"MLM":{"bpp":[575,4421,6717,1506],"nonbpp":[0,125301,47398,0]}},"Correos Chile":{"MLC":{"bpp":[465,1304,0,5108],"nonbpp":[0,0,0,0]}}};
 
+  // Populate fCarrier dropdown filtered by selected country
+  const fcarEl=document.getElementById('fCarrier');
   const fc=document.getElementById('fC').value;
+  {
+    const prevVal=fcarEl.value;
+    // Build carrier list for selected country
+    const availCars=[...new Set(
+      Object.entries(CBS).filter(([,sitesMap])=>fc==='all'||sitesMap[fc])
+        .map(([car])=>car)
+    )].sort((a,b)=>a.localeCompare(b));
+    // Only rebuild if the set changed
+    const cur=[...fcarEl.options].slice(1).map(o=>o.value);
+    const changed=availCars.length!==cur.length||availCars.some((c,i)=>c!==cur[i]);
+    if(changed){
+      while(fcarEl.options.length>1) fcarEl.remove(1);
+      availCars.forEach(car=>{
+        const opt=document.createElement('option');
+        opt.value=car; opt.textContent=car;
+        fcarEl.appendChild(opt);
+      });
+      // Restore previous selection if still available
+      if(availCars.includes(prevVal)) fcarEl.value=prevVal;
+      else fcarEl.value='all';
+    }
+  }
   const cf=getCarrierFilter();
   const rows=[];
   Object.entries(CBS).forEach(([car,sitesMap])=>{
