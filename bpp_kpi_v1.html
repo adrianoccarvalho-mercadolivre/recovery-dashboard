@@ -276,10 +276,10 @@ td{padding:7px 9px;font-family:var(--mono);font-size:10px}
     🔍 Filtro: <strong id="fl-caus">Todos os países</strong>
     &nbsp;·&nbsp; Período:
     <select id="fCausPeriod" onchange="renderCausisticas()" style="background:var(--s2);color:var(--txt);border:1px solid var(--b2);border-radius:5px;padding:3px 6px;font-size:11px;font-family:var(--mono)">
-      <option value="ytd">YTD Jan–Abr 2026</option>
+      <option value="ytd" selected>YTD Jan–Abr 2026</option>
       <option value="6m">Out-25–Abr-26 (7M)</option>
       <option value="q4">Q4 2025 (Out+Nov+Dez)</option>
-      <option value="q1" selected>Q1 2026 (Jan+Fev+Mar)</option>
+      <option value="q1">Q1 2026 (Jan+Fev+Mar)</option>
       <option value="6">Abril 2026</option>
       <option value="3">Janeiro 2026</option>
       <option value="4">Fevereiro 2026</option>
@@ -1029,7 +1029,7 @@ function renderPaises(){
 
 // ══════════════ RENDER: REC. REAL POR CAUSÍSTICA ══════════════
 function getCausPeriod(){
-  const v=document.getElementById('fCausPeriod')?.value||'q1';
+  const v=document.getElementById('fCausPeriod')?.value||'ytd';
   if(v==='ytd') return {s:3,e:7,label:'YTD Jan–Abr 2026'};
   if(v==='6m')  return {s:0,e:7,label:'Out-25–Abr-26 (7M)'};
   if(v==='q4')  return {s:0,e:3,label:'Q4 2025'};
