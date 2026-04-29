@@ -1061,15 +1061,16 @@ function renderCausisticas(){
   const totTgmv=activeSites.reduce((a,s)=>a+causTgmvSite(s,cp.s,cp.e),0);
   const has2026=(cp.s<7&&cp.e>3);
 
-  // Monthly totals per causística (all 6 months, for trend chart)
+  // Gráfico de tendência: apenas 2026 (Jan–Abr, índices 3–6)
+  const CAUS_2026=CAUS_PERIODS.slice(3); // ['Jan-26','Fev-26','Mar-26','Abr-26']
   const trendDs=CAUS_TYPES.map((type,i)=>({
     label:type,
-    data:CAUS_PERIODS.map((_,pi)=>activeSites.reduce((a,s)=>a+sumC(s,type,pi,pi+1),0)),
+    data:CAUS_2026.map((_,j)=>activeSites.reduce((a,s)=>a+sumC(s,type,j+3,j+4),0)),
     backgroundColor:CAUS_COLORS[i]+'cc',borderRadius:2,stack:'s',yAxisID:'y'
   }));
-  // BPP Real line (null for Q4 2025 months)
-  const bppLine=CAUS_PERIODS.map((_,i)=>i>=3&&i<=6?activeSites.reduce((a,s)=>a+((D_BPP_REAL[s]||[])[i-3]||0),0):null);
-  const tgmvLine=CAUS_PERIODS.map((_,i)=>i>=3&&i<=6?activeSites.reduce((a,s)=>a+((D_TGMV_CBS[s]||[])[i-3]||0),0):null);
+  // BPP Real e TGMV apenas 2026
+  const bppLine=CAUS_2026.map((_,j)=>activeSites.reduce((a,s)=>a+((D_BPP_REAL[s]||[])[j]||0),0));
+  const tgmvLine=CAUS_2026.map((_,j)=>activeSites.reduce((a,s)=>a+((D_TGMV_CBS[s]||[])[j]||0),0));
 
   // Donut data for selected period
   const donutVals=CAUS_TYPES.map((t)=>activeSites.reduce((a,s)=>a+sumC(s,t,cp.s,cp.e),0));
@@ -1108,7 +1109,7 @@ function renderCausisticas(){
     <div class="ch">
       <div>
         <div class="ct">Evolução Mensal — Recuperado Real por Causística vs BPP Real vs TGMV</div>
-        <div style="font-size:10px;color:var(--m2);margin-top:2px">⏱ Ciclo de fechamento: reclamos enviados no dia 15 do mês seguinte → 3 janelas de 15 dias com o carrier (~75 dias do mês de origem) · BPP Real e TGMV disponíveis apenas Jan–Mar 2026 (eixo direito)</div>
+        <div style="font-size:10px;color:var(--m2);margin-top:2px">⏱ Ciclo de fechamento: reclamos enviados no dia 15 do mês seguinte → 3 janelas de 15 dias com o carrier (~75 dias do mês de origem) · BPP Real e TGMV Jan–Abr 2026 (eixo direito) · Abr-26: Rec. Real em aberto</div>
       </div>
       <span class="badge bg">USD</span>
     </div>
@@ -1166,7 +1167,7 @@ function renderCausisticas(){
   CH['cCausBar']=new Chart(document.getElementById('cCausBar'),{
     type:'bar',
     data:{
-      labels:CAUS_PERIODS,
+      labels:CAUS_2026,
       datasets:[
         ...trendDs,
         {label:'BPP Real',data:bppLine,type:'line',borderColor:'#ef4444',backgroundColor:'transparent',
