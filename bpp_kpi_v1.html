@@ -299,10 +299,17 @@ td{padding:7px 9px;font-family:var(--mono);font-size:10px}
 <script>
 // ══════════════ DATA ══════════════
 const MONTHS=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+// flag() returns an <img> tag — emoji flags don't render on Windows
+function flag(iso){return `<img src="https://flagcdn.com/20x15/${iso}.png" width="20" height="15" style="border-radius:2px;vertical-align:middle;margin-right:5px" alt="${iso}">`;}
 const SITES=[
-  {c:'MLB',n:'Brasil',f:'🇧🇷'},{c:'MLA',n:'Argentina',f:'🇦🇷'},{c:'MLM',n:'México',f:'🇲🇽'},
-  {c:'MCO',n:'Colômbia',f:'🇨🇴'},{c:'MLC',n:'Chile',f:'🇨🇱'},{c:'MPE',n:'Peru',f:'🇵🇪'},
-  {c:'MLU',n:'Uruguai',f:'🇺🇾'},{c:'MEC',n:'Equador',f:'🇪🇨'}
+  {c:'MLB',n:'Brasil',  f:flag('br'),iso:'br'},
+  {c:'MLA',n:'Argentina',f:flag('ar'),iso:'ar'},
+  {c:'MLM',n:'México', f:flag('mx'),iso:'mx'},
+  {c:'MCO',n:'Colômbia',f:flag('co'),iso:'co'},
+  {c:'MLC',n:'Chile',  f:flag('cl'),iso:'cl'},
+  {c:'MPE',n:'Peru',   f:flag('pe'),iso:'pe'},
+  {c:'MLU',n:'Uruguai',f:flag('uy'),iso:'uy'},
+  {c:'MEC',n:'Equador',f:flag('ec'),iso:'ec'}
 ];
 const CC=['#4d9fff','#2ecc8a','#f5a623','#ff4f4f','#a374ff','#00d4c8','#ff6eb4','#ffd166'];
 const YTD=4;
@@ -382,7 +389,7 @@ function renderConsolidado(){
 
   dc('cConPie');
   CH['cConPie']=new Chart(document.getElementById('cConPie'),{type:'doughnut',data:{
-    labels:sites.map(s=>s.f+' '+s.n),
+    labels:sites.map(s=>s.n),
     datasets:[{data:sites.map(s=>sm((D_REC_BPP[s.c]||[]).slice(0,YTD))+sm((D_REC_NB[s.c]||[]).slice(0,YTD))),backgroundColor:CC.slice(0,sites.length),borderWidth:2,borderColor:'#111419'}]
   },options:{...baseOpts('doughnut'),cutout:'60%'}});
 
@@ -444,7 +451,7 @@ function renderBppRec(){
 
   dc('cBRD');
   CH['cBRD']=new Chart(document.getElementById('cBRD'),{type:'bar',data:{
-    labels:sites.map(s=>s.f+' '+s.c),
+    labels:sites.map(s=>s.n),
     datasets:[
       {label:'Rec/Real %',data:sites.map(s=>{const b=sm((D_BPP_REAL[s.c]||[]).slice(0,YTD));const r=sm((D_REC_BPP[s.c]||[]).slice(0,YTD));return b>0?Math.round(r/b*100):0;}),
        backgroundColor:sites.map(s=>{const b=sm((D_BPP_REAL[s.c]||[]).slice(0,YTD));const r=sm((D_REC_BPP[s.c]||[]).slice(0,YTD));const p=b>0?r/b*100:0;return p>=80?'rgba(46,204,138,.75)':p>=50?'rgba(245,166,35,.75)':'rgba(255,79,79,.75)';}),borderRadius:4}
@@ -888,9 +895,69 @@ document.addEventListener('DOMContentLoaded',function(){
     const names=['consolidado','bpp-rec','tgmv-rec','tgmv-full','carriers','paises'];
     t.onclick=()=>switchTab(names[i]);
   });
+  // Update data status pill based on actual data state
+  const pill=document.getElementById('pill-data-status');
+  if(hasTGMV()&&hasBppCar()){
+    pill.textContent='✅ Dados carregados';
+    pill.className='pill pill-g';
+  } else if(hasTGMV()){
+    pill.textContent='✅ TGMV carregado';
+    pill.className='pill pill-g';
+  } else {
+    pill.textContent='⚠ TGMV pendente';
+    pill.className='pill pill-o';
+  }
   switchMtab('tgmv');
   switchTab('consolidado');
 });
+</script>
+
+<!-- ══════════════ PASSWORD GATE ══════════════ -->
+<style>
+#pw-gate{position:fixed;inset:0;background:#0b0d11;display:flex;align-items:center;justify-content:center;z-index:9999}
+#pw-card{background:#111419;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:40px 44px;display:flex;flex-direction:column;align-items:center;gap:18px;width:340px;max-width:90vw}
+.pw-logo{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,#2ecc8a,#4d9fff);display:flex;align-items:center;justify-content:center;font-size:24px}
+.pw-title{font-size:17px;font-weight:600;color:#dde1ea;letter-spacing:.01em}
+.pw-sub{font-size:11px;color:#5a6170;font-family:monospace;margin-top:-10px}
+#pw-field{width:100%;background:#0b0d11;border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#dde1ea;font-size:15px;padding:12px 16px;outline:none;text-align:center;letter-spacing:.15em}
+#pw-field:focus{border-color:#4d9fff;box-shadow:0 0 0 3px rgba(77,159,255,.15)}
+#pw-submit{width:100%;background:linear-gradient(135deg,#4d9fff,#2ecc8a);border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:600;padding:13px;cursor:pointer;letter-spacing:.03em;transition:opacity .2s}
+#pw-submit:hover{opacity:.88}
+#pw-err{font-size:12px;color:#ff4f4f;font-family:monospace;display:none;text-align:center}
+</style>
+<div id="pw-gate">
+  <div id="pw-card">
+    <div class="pw-logo">📦</div>
+    <div style="text-align:center">
+      <div class="pw-title">BPP KPI Dashboard</div>
+      <div class="pw-sub">Commercial Carriers &middot; 2026</div>
+    </div>
+    <input id="pw-field" type="password" placeholder="••••••••••••••••" autocomplete="off">
+    <button id="pw-submit">Acessar &rarr;</button>
+    <div id="pw-err">Senha incorreta. Tente novamente.</div>
+  </div>
+</div>
+<script>
+(function(){
+  var PASS='Businesscontrol2026';
+  function unlock(){
+    var v=document.getElementById('pw-field').value;
+    if(v===PASS){
+      var gate=document.getElementById('pw-gate');
+      gate.style.transition='opacity .3s';gate.style.opacity='0';
+      setTimeout(function(){gate.style.display='none';},300);
+    } else {
+      document.getElementById('pw-err').style.display='block';
+      document.getElementById('pw-field').value='';
+      document.getElementById('pw-field').focus();
+    }
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    document.getElementById('pw-field').focus();
+    document.getElementById('pw-submit').addEventListener('click',unlock);
+    document.getElementById('pw-field').addEventListener('keydown',function(e){if(e.key==='Enter')unlock();});
+  });
+})();
 </script>
 </body>
 </html>
