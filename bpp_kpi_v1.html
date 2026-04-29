@@ -1153,12 +1153,11 @@ function renderCausisticas(){
   <div class="card gf" style="margin-top:14px">
     <div class="ch">
       <div class="ct">Detalhe por Carrier × País — ${cp.label}</div>
-      <span class="badge bc">CBS · BPP + Não-BPP Recovery${cp.s<3?'  ·  ⚠️ Q4/2025 sem dados CBS':''}</span>
+      <span class="badge bc">CBS · BPP Recovery${cp.s<3?'  ·  ⚠️ Q4/2025 sem dados CBS':''}</span>
     </div>
     <div class="tw"><table><thead><tr>
       <th>Carrier</th><th>País</th>
-      <th class="tr">BPP Rec.</th><th class="tr">Não-BPP</th><th class="tr">Total Rec.</th>
-      <th class="tr">% BPP</th><th class="tr">TGMV</th><th class="tr tp">Rec/TGMV</th>
+      <th class="tr">BPP Rec.</th><th class="tr tc2">TGMV</th><th class="tr tp">BPP Rec/TGMV</th>
     </tr></thead><tbody id="tCausCar"></tbody></table></div>
   </div>`;
 
@@ -1287,30 +1286,22 @@ function renderCausisticas(){
   document.getElementById('tCausCar').innerHTML=hasCbs&&cbsRows.length>0
     ? cbsRows.map(r=>{
         const sf=sfMap[r.site]||{};
-        const tot=r.b+r.n;
-        const pctBpp=tot>0?Math.round(r.b/tot*100)+'%':'—';
-        const rtgmv=r.tg>0?(tot/r.tg*100).toFixed(3)+'%':'—';
+        const rtgmv=r.tg>0?(r.b/r.tg*100).toFixed(3)+'%':'—';
         return `<tr>
           <td style="font-size:12px;padding:6px 10px">${r.car}</td>
           <td class="tcc">${sf.f||''} ${sf.n||r.site}</td>
           <td class="tr tg">${f$(r.b)}</td>
-          <td class="tr ta">${r.n>0?f$(r.n):'—'}</td>
-          <td class="tr" style="font-weight:500">${f$(tot)}</td>
-          <td class="tr">${pctBpp}</td>
           <td class="tr tc2">${r.tg>0?fk(r.tg):'—'}</td>
           <td class="tr tp">${rtgmv}</td>
         </tr>`;
       }).join('')+`<tr style="border-top:1px solid var(--b2);font-weight:600">
         <td colspan="2" style="padding:6px 10px;font-size:12px">TOTAL (${cbsRows.length} carriers)</td>
         <td class="tr tg">${f$(cbsRows.reduce((a,r)=>a+r.b,0))}</td>
-        <td class="tr ta">${f$(cbsRows.reduce((a,r)=>a+r.n,0))}</td>
-        <td class="tr">${f$(cbsRows.reduce((a,r)=>a+r.b+r.n,0))}</td>
-        <td class="tr">—</td>
         <td class="tr tc2">${hasTGMV()?fk(cbsRows.reduce((a,r)=>a+r.tg,0)):'—'}</td>
         <td class="tr tp">—</td>
       </tr>`
-    : `<tr><td colspan="8" style="text-align:center;color:var(--m2);padding:20px;font-size:12px">
-        ${hasCbs?'Nenhum dado CBS para este filtro':'⚠️ Período Q4/2025 não tem dados CBS — selecione Q1 2026 ou 6M'}
+    : `<tr><td colspan="5" style="text-align:center;color:var(--m2);padding:20px;font-size:12px">
+        ${hasCbs?'Nenhum dado CBS para este filtro':'⚠️ Período Q4/2025 não tem dados CBS — selecione YTD, Q1 ou mês individual 2026'}
       </td></tr>`;
 }
 
