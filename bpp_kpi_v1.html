@@ -1156,12 +1156,14 @@ function renderCausisticas(){
 
   <div class="card gf" style="margin-top:14px">
     <div class="ch">
-      <div class="ct">Detalhe por Carrier × País — ${cp.label}</div>
-      <span class="badge bc">CBS · BPP Recovery${cp.s<3?'  ·  ⚠️ Q4/2025 sem dados CBS':''}</span>
+      <div class="ct">BPP Recovery por Carrier × Mês — ${cp.label}</div>
+      <span class="badge bc">CBS · evolução mensal Jan–Abr 2026${cp.s<3?'  ·  ⚠️ Q4/2025 sem dados CBS':''}</span>
     </div>
     <div class="tw"><table><thead><tr>
       <th>Carrier</th><th>País</th>
-      <th class="tr">BPP Rec.</th><th class="tr tc2">TGMV</th><th class="tr tp">BPP Rec/TGMV</th>
+      <th class="tr">Jan</th><th class="tr">Fev</th><th class="tr">Mar</th><th class="tr">Abr</th>
+      <th class="tr tg">Total (${cp.label})</th>
+      <th class="tr tc2">TGMV</th><th class="tr tp">BPP Rec/TGMV</th>
     </tr></thead><tbody id="tCausCar"></tbody></table></div>
   </div>`;
 
@@ -1281,30 +1283,36 @@ function renderCausisticas(){
         const _tgKey=car.toUpperCase()+'|'+site;
         const _tgResolved=_TGMV_ALIAS[_tgKey]||_tgKey;
         const tg=hasTGMV()?sm((D_TGMV_CAR[_tgResolved]||D_TGMV_CAR[_tgKey]||[]).slice(cbsS,cbsE)):0;
-        cbsRows.push({car,site,b,n,tg});
+        cbsRows.push({car,site,b,n,tg,bppArr:vals.bpp.slice(0,4)});
       });
     });
     cbsRows.sort((a,b2)=>(b2.b+b2.n)-(a.b+a.n));
   }
   const sfMap=Object.fromEntries(SITES.map(x=>[x.c,x]));
+  // CBS months fixed Jan-Apr (indices 0-3); Total/TGMV filtered by period
+  const CBS_MONTHS=['Jan','Fev','Mar','Abr'];
   document.getElementById('tCausCar').innerHTML=hasCbs&&cbsRows.length>0
     ? cbsRows.map(r=>{
         const sf=sfMap[r.site]||{};
+        const months=r.bppArr; // [Jan,Fev,Mar,Abr]
         const rtgmv=r.tg>0?(r.b/r.tg*100).toFixed(3)+'%':'—';
+        const fv=v=>v>0?f$(v):'<span style="color:var(--m2)">—</span>';
         return `<tr>
           <td style="font-size:12px;padding:6px 10px">${r.car}</td>
           <td class="tcc">${sf.f||''} ${sf.n||r.site}</td>
-          <td class="tr tg">${f$(r.b)}</td>
+          ${months.map(v=>`<td class="tr">${fv(v)}</td>`).join('')}
+          <td class="tr tg" style="font-weight:600">${f$(r.b)}</td>
           <td class="tr tc2">${r.tg>0?fk(r.tg):'—'}</td>
           <td class="tr tp">${rtgmv}</td>
         </tr>`;
       }).join('')+`<tr style="border-top:1px solid var(--b2);font-weight:600">
         <td colspan="2" style="padding:6px 10px;font-size:12px">TOTAL (${cbsRows.length} carriers)</td>
+        ${[0,1,2,3].map(i=>`<td class="tr">${f$(cbsRows.reduce((a,r)=>a+(r.bppArr[i]||0),0))}</td>`).join('')}
         <td class="tr tg">${f$(cbsRows.reduce((a,r)=>a+r.b,0))}</td>
         <td class="tr tc2">${hasTGMV()?fk(cbsRows.reduce((a,r)=>a+r.tg,0)):'—'}</td>
         <td class="tr tp">—</td>
       </tr>`
-    : `<tr><td colspan="5" style="text-align:center;color:var(--m2);padding:20px;font-size:12px">
+    : `<tr><td colspan="9" style="text-align:center;color:var(--m2);padding:20px;font-size:12px">
         ${hasCbs?'Nenhum dado CBS para este filtro':'⚠️ Período Q4/2025 não tem dados CBS — selecione YTD, Q1 ou mês individual 2026'}
       </td></tr>`;
 }
