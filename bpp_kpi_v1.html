@@ -276,9 +276,11 @@ td{padding:7px 9px;font-family:var(--mono);font-size:10px}
     🔍 Filtro: <strong id="fl-caus">Todos os países</strong>
     &nbsp;·&nbsp; Período:
     <select id="fCausPeriod" onchange="renderCausisticas()" style="background:var(--s2);color:var(--txt);border:1px solid var(--b2);border-radius:5px;padding:3px 6px;font-size:11px;font-family:var(--mono)">
-      <option value="6m">Out-25–Mar-26 (6M)</option>
+      <option value="ytd">YTD Jan–Abr 2026</option>
+      <option value="6m">Out-25–Abr-26 (7M)</option>
       <option value="q4">Q4 2025 (Out+Nov+Dez)</option>
       <option value="q1" selected>Q1 2026 (Jan+Fev+Mar)</option>
+      <option value="6">Abril 2026</option>
       <option value="3">Janeiro 2026</option>
       <option value="4">Fevereiro 2026</option>
       <option value="5">Março 2026</option>
@@ -374,82 +376,83 @@ let CARRIERS_LOADED=[];
 // Índices: [Out-25, Nov-25, Dez-25, Jan-26, Fev-26, Mar-26]
 // Regra de negócio: recupero = caixa recebido NO mês (independente do período de origem)
 // Ciclo de 90 dias: casos de Q4-2025 ainda se fecham em Q1-2026
-const CAUS_PERIODS=['Out-25','Nov-25','Dez-25','Jan-26','Fev-26','Mar-26'];
+const CAUS_PERIODS=['Out-25','Nov-25','Dez-25','Jan-26','Fev-26','Mar-26','Abr-26'];
 const CAUS_TYPES=['Lost','Stolen','Damaged','Delayed','PNR+EB','Outros'];
 const CAUS_COLORS=['#4d9fff','#ff6eb4','#f5a623','#a374ff','#2ecc8a','#8ab4c0'];
-// CAUS idx 3,4,5 → D_BPP_REAL/D_TGMV_CBS idx 0,1,2 (Jan,Fev,Mar 2026)
+// CAUS idx 3,4,5,6 → D_BPP_REAL/D_TGMV_CBS idx 0,1,2,3 (Jan,Fev,Mar,Abr 2026)
+// Abr-26 (idx 6): BPP Real disponível; Rec.Real = 0 (reclamos enviados 15/Mai, ciclo em aberto)
 const D_REC_CAUS={
   MLB:{
-    Lost:    [234117,154149,250088,120148,0,0],
-    Stolen:  [10234,5898,10362,5149,0,0],
-    Damaged: [110302,145027,123981,138245,0,0],
-    Delayed: [0,685,90492,74468,0,0],
-    'PNR+EB':[54694,73078,165227,179567,0,0],
-    Outros:  [32296,81077,53889,54065,0,0],
-    _total:  [441644,459914,694039,571641,0,0]
+    Lost:    [234117,154149,250088,120148,0,0,0],
+    Stolen:  [10234,5898,10362,5149,0,0,0],
+    Damaged: [110302,145027,123981,138245,0,0,0],
+    Delayed: [0,685,90492,74468,0,0,0],
+    'PNR+EB':[54694,73078,165227,179567,0,0,0],
+    Outros:  [32296,81077,53889,54065,0,0,0],
+    _total:  [441644,459914,694039,571641,0,0,0]
   },
   MLA:{
-    Lost:    [45257,68500,73480,95440,6992,0],
-    Stolen:  [56,3307,5270,35676,531,0],
-    Damaged: [63919,45445,45178,45016,2187,0],
-    Delayed: [23691,289,76538,119203,34975,0],
-    'PNR+EB':[24501,21413,34263,59692,0,0],
-    Outros:  [0,0,0,0,0,0],
-    _total:  [157425,138953,234728,355028,44686,0]
+    Lost:    [45257,68500,73480,95440,6992,0,0],
+    Stolen:  [56,3307,5270,35676,531,0,0],
+    Damaged: [63919,45445,45178,45016,2187,0,0],
+    Delayed: [23691,289,76538,119203,34975,0,0],
+    'PNR+EB':[24501,21413,34263,59692,0,0,0],
+    Outros:  [0,0,0,0,0,0,0],
+    _total:  [157425,138953,234728,355028,44686,0,0]
   },
   MLM:{
-    Lost:    [104853,79653,73380,51159,3407,0],
-    Stolen:  [17523,3110,16,1294,0,0],
-    Damaged: [6560,17621,5071,8445,0,0],
-    Delayed: [0,256,32595,26780,503,0],
-    'PNR+EB':[7376,34631,10585,2032,0,0],
-    Outros:  [0,0,0,0,0,0],
-    _total:  [136312,135271,121647,89710,3910,0]
+    Lost:    [104853,79653,73380,51159,3407,0,0],
+    Stolen:  [17523,3110,16,1294,0,0,0],
+    Damaged: [6560,17621,5071,8445,0,0,0],
+    Delayed: [0,256,32595,26780,503,0,0],
+    'PNR+EB':[7376,34631,10585,2032,0,0,0],
+    Outros:  [0,0,0,0,0,0,0],
+    _total:  [136312,135271,121647,89710,3910,0,0]
   },
   MCO:{
-    Lost:    [1809,2193,1457,4858,0,0],
-    Stolen:  [411,0,0,0,0,0],
-    Damaged: [210,123,689,0,0,0],
-    Delayed: [0,99,655,0,0,0],
-    'PNR+EB':[921,1293,1558,0,0,0],
-    Outros:  [906,922,4303,1080,0,0],
-    _total:  [4257,4630,8662,5938,0,0]
+    Lost:    [1809,2193,1457,4858,0,0,0],
+    Stolen:  [411,0,0,0,0,0,0],
+    Damaged: [210,123,689,0,0,0,0],
+    Delayed: [0,99,655,0,0,0,0],
+    'PNR+EB':[921,1293,1558,0,0,0,0],
+    Outros:  [906,922,4303,1080,0,0,0],
+    _total:  [4257,4630,8662,5938,0,0,0]
   },
   MLU:{
-    Lost:    [10886,10331,2882,0,0,0],
-    Stolen:  [515,434,372,0,0,0],
-    Damaged: [2021,2163,1852,0,0,0],
-    Delayed: [537,466,399,0,0,0],
-    'PNR+EB':[618,595,510,0,0,0],
-    Outros:  [25,22,18,0,0,0],
-    _total:  [14603,14011,6033,6033,6033,6033]
+    Lost:    [10886,10331,2882,0,0,0,0],
+    Stolen:  [515,434,372,0,0,0,0],
+    Damaged: [2021,2163,1852,0,0,0,0],
+    Delayed: [537,466,399,0,0,0,0],
+    'PNR+EB':[618,595,510,0,0,0,0],
+    Outros:  [25,22,18,0,0,0,0],
+    _total:  [14603,14011,6033,6033,6033,6033,0]
   },
   MLC:{
-    Lost:    [10569,17805,17517,12605,11920,0],
-    Stolen:  [4908,2110,3938,142,1228,0],
-    Damaged: [10805,8118,7351,3629,251,0],
-    Delayed: [0,0,15107,7052,1653,0],
-    'PNR+EB':[2526,2198,4012,3479,2341,0],
-    Outros:  [0,0,0,0,0,0],
-    _total:  [28808,30231,47925,26907,17393,0]
+    Lost:    [10569,17805,17517,12605,11920,0,0],
+    Stolen:  [4908,2110,3938,142,1228,0,0],
+    Damaged: [10805,8118,7351,3629,251,0,0],
+    Delayed: [0,0,15107,7052,1653,0,0],
+    'PNR+EB':[2526,2198,4012,3479,2341,0,0],
+    Outros:  [0,0,0,0,0,0,0],
+    _total:  [28808,30231,47925,26907,17393,0,0]
   },
   MPE:{
-    Lost:    [305,153,205,0,0,0],
-    Stolen:  [265,350,460,0,0,0],
-    Damaged: [749,309,412,0,0,0],
-    Delayed: [0,0,0,0,0,0],
-    'PNR+EB':[442,589,344,0,0,0],
-    Outros:  [1190,884,691,0,0,0],
-    _total:  [2951,2285,2111,0,0,0]
+    Lost:    [305,153,205,0,0,0,0],
+    Stolen:  [265,350,460,0,0,0,0],
+    Damaged: [749,309,412,0,0,0,0],
+    Delayed: [0,0,0,0,0,0,0],
+    'PNR+EB':[442,589,344,0,0,0,0],
+    Outros:  [1190,884,691,0,0,0,0],
+    _total:  [2951,2285,2111,0,0,0,0]
   },
   MEC:{
-    Lost:    [0,0,0,0,0,0],
-    Stolen:  [0,0,0,484,0,0],
-    Damaged: [0,0,0,170,0,0],
-    Delayed: [0,0,0,0,0,0],
-    'PNR+EB':[0,0,0,0,97,0],
-    Outros:  [0,0,0,1578,0,0],
-    _total:  [0,0,0,2232,97,0]
+    Lost:    [0,0,0,0,0,0,0],
+    Stolen:  [0,0,0,484,0,0,0],
+    Damaged: [0,0,0,170,0,0,0],
+    Delayed: [0,0,0,0,0,0,0],
+    'PNR+EB':[0,0,0,0,97,0,0],
+    Outros:  [0,0,0,1578,0,0,0],
+    _total:  [0,0,0,2232,97,0,0]
   }
 };
 
@@ -1027,18 +1030,19 @@ function renderPaises(){
 // ══════════════ RENDER: REC. REAL POR CAUSÍSTICA ══════════════
 function getCausPeriod(){
   const v=document.getElementById('fCausPeriod')?.value||'q1';
-  if(v==='6m') return {s:0,e:6,label:'Out-25–Mar-26 (6M)'};
-  if(v==='q4') return {s:0,e:3,label:'Q4 2025'};
-  if(v==='q1') return {s:3,e:6,label:'Q1 2026'};
+  if(v==='ytd') return {s:3,e:7,label:'YTD Jan–Abr 2026'};
+  if(v==='6m')  return {s:0,e:7,label:'Out-25–Abr-26 (7M)'};
+  if(v==='q4')  return {s:0,e:3,label:'Q4 2025'};
+  if(v==='q1')  return {s:3,e:6,label:'Q1 2026'};
   const i=parseInt(v); return {s:i,e:i+1,label:CAUS_PERIODS[i]};
 }
-// Soma BPP Real do intervalo causística [s,e) — só meses 2026 (idx 3,4,5 → BPP 0,1,2)
+// Soma BPP Real do intervalo causística [s,e) — CAUS idx 3..6 → BPP idx 0..3 (Jan–Abr 2026)
 function causBppReal(site,s,e){
-  let t=0; for(let i=s;i<e;i++){if(i>=3&&i<=5)t+=(D_BPP_REAL[site]||[])[i-3]||0;} return t;
+  let t=0; for(let i=s;i<e;i++){if(i>=3&&i<=6)t+=(D_BPP_REAL[site]||[])[i-3]||0;} return t;
 }
-// Soma TGMV CBS do intervalo causística [s,e) — só meses 2026
+// Soma TGMV CBS do intervalo causística [s,e) — CAUS idx 3..6 → TGMV idx 0..3
 function causTgmvSite(site,s,e){
-  let t=0; for(let i=s;i<e;i++){if(i>=3&&i<=5)t+=(D_TGMV_CBS[site]||[])[i-3]||0;} return t;
+  let t=0; for(let i=s;i<e;i++){if(i>=3&&i<=6)t+=(D_TGMV_CBS[site]||[])[i-3]||0;} return t;
 }
 
 function renderCausisticas(){
@@ -1055,7 +1059,7 @@ function renderCausisticas(){
   const totRec=activeSites.reduce((a,s)=>a+sumTot(s,cp.s,cp.e),0);
   const totBpp=activeSites.reduce((a,s)=>a+causBppReal(s,cp.s,cp.e),0);
   const totTgmv=activeSites.reduce((a,s)=>a+causTgmvSite(s,cp.s,cp.e),0);
-  const has2026=(cp.s<6&&cp.e>3);
+  const has2026=(cp.s<7&&cp.e>3);
 
   // Monthly totals per causística (all 6 months, for trend chart)
   const trendDs=CAUS_TYPES.map((type,i)=>({
@@ -1064,8 +1068,8 @@ function renderCausisticas(){
     backgroundColor:CAUS_COLORS[i]+'cc',borderRadius:2,stack:'s',yAxisID:'y'
   }));
   // BPP Real line (null for Q4 2025 months)
-  const bppLine=CAUS_PERIODS.map((_,i)=>i>=3&&i<=5?activeSites.reduce((a,s)=>a+((D_BPP_REAL[s]||[])[i-3]||0),0):null);
-  const tgmvLine=CAUS_PERIODS.map((_,i)=>i>=3&&i<=5?activeSites.reduce((a,s)=>a+((D_TGMV_CBS[s]||[])[i-3]||0),0):null);
+  const bppLine=CAUS_PERIODS.map((_,i)=>i>=3&&i<=6?activeSites.reduce((a,s)=>a+((D_BPP_REAL[s]||[])[i-3]||0),0):null);
+  const tgmvLine=CAUS_PERIODS.map((_,i)=>i>=3&&i<=6?activeSites.reduce((a,s)=>a+((D_TGMV_CBS[s]||[])[i-3]||0),0):null);
 
   // Donut data for selected period
   const donutVals=CAUS_TYPES.map((t)=>activeSites.reduce((a,s)=>a+sumC(s,t,cp.s,cp.e),0));
@@ -1257,6 +1261,7 @@ function renderCausisticas(){
   // Map CAUS period slice → CBS indices (Jan=0,Feb=1,Mar=2,Apr=3)
   // CAUS index 3=Jan-26→CBS[0], 4=Feb-26→CBS[1], 5=Mar-26→CBS[2]
   // Q4 2025 (CAUS 0-2) has no CBS data
+  // CAUS idx → CBS idx: subtract 3 (Jan-26=CAUS3→CBS0, ..., Abr-26=CAUS6→CBS3)
   const cbsS=Math.max(0,cp.s-3), cbsE=Math.min(4,cp.e-3);
   const hasCbs=cbsE>cbsS;
   const fc=document.getElementById('fC').value;
