@@ -191,7 +191,7 @@ td{padding:7px 9px;font-family:var(--mono);font-size:10px}
         <th class="tr">BPP Real</th><th class="tr">Plano BPP</th>
         <th class="tr">BPP Rec.</th><th class="tr">Rec/Real</th><th class="tr">Rec/Plano</th>
         <th class="tr">Não-BPP</th><th class="tr">Total Rec.</th>
-        <th class="tr">TGMV</th><th class="tr">BPP/TGMV</th><th class="tr">Rec/TGMV</th>
+        <th class="tr">TGMV</th><th class="tr">BPP/TGMV</th><th class="tr">BPP Rec/TGMV</th>
       </tr></thead>
       <tbody id="tCon"></tbody>
     </table></div>
@@ -475,25 +475,25 @@ function renderTgmvRec(){
   if(!hasTGMV()){el.innerHTML=noDataBlock('Dados TGMV não carregados','Cole o resultado da query BT_CONTA_CAUSA_BPP (TIPO=NMV) no importador. Colunas: FECHA_CONTA_M, SIT_SITE_ID, CARRIER_ID, NMV');return;}
 
   const tgmvM=MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_TGMV[s.c]?.[i]||0),0));
-  const recM =MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_REC_BPP[s.c]?.[i]||0)+(D_REC_NB[s.c]?.[i]||0),0));
+  const recM =MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_REC_BPP[s.c]?.[i]||0),0)); // só BPP (Não-BPP é outra conta contábil)
   const ratioM=tgmvM.map((t,i)=>t>0?(recM[i]/t*100):null);
 
   const totTGMV=sm(tgmvM.slice(0,YTD)),totRec=sm(recM.slice(0,YTD));
   el.innerHTML=`
   <div class="krow">
     <div class="kpi c"><div class="kl">TGMV YTD</div><div class="kv">${fk(totTGMV)}</div><div class="ks">NMV Jan–Abr · só Carriers</div></div>
-    <div class="kpi g"><div class="kl">Total Recuperado</div><div class="kv">${fk(totRec)}</div><div class="ks">BPP + Não-BPP</div></div>
-    <div class="kpi p"><div class="kl">Rec / TGMV</div><div class="kv">${totTGMV>0?(totRec/totTGMV*100).toFixed(3)+'%':'—'}</div><div class="ks">Taxa de recupero sobre NMV</div></div>
+    <div class="kpi g"><div class="kl">BPP Recuperado</div><div class="kv">${fk(totRec)}</div><div class="ks">Somente BPP · conta BPP</div></div>
+    <div class="kpi p"><div class="kl">BPP Rec / TGMV</div><div class="kv">${totTGMV>0?(totRec/totTGMV*100).toFixed(3)+'%':'—'}</div><div class="ks">BPP recuperado ÷ NMV carriers</div></div>
     <div class="kpi a"><div class="kl">BPP / TGMV</div><div class="kv">${totTGMV>0?(sites.reduce((a,s)=>a+sm((D_BPP_REAL[s.c]||[]).slice(0,YTD)),0)/totTGMV*100).toFixed(3)+'%':'—'}</div><div class="ks">Penetração BPP sobre NMV</div></div>
   </div>
   <div class="g2">
     <div class="card">
-      <div class="ch"><div><div class="ct">TGMV vs Recuperado — Evolução Mensal</div></div><span class="badge bc">USD</span></div>
+      <div class="ch"><div><div class="ct">TGMV vs BPP Recuperado — Evolução Mensal</div></div><span class="badge bc">USD</span></div>
       <div class="cw" style="height:240px"><canvas id="cTRM"></canvas></div>
       <div class="leg"><div class="li"><div class="ld" style="background:var(--cyn)"></div>TGMV (NMV)</div><div class="li"><div class="ld" style="background:var(--grn)"></div>Recuperado Total</div></div>
     </div>
     <div class="card">
-      <div class="ch"><div><div class="ct">Rec/TGMV % — Mensal</div></div><span class="badge bp">%</span></div>
+      <div class="ch"><div><div class="ct">BPP Rec/TGMV % — Mensal</div></div><span class="badge bp">%</span></div>
       <div class="cw" style="height:240px"><canvas id="cTRR"></canvas></div>
     </div>
   </div>
@@ -501,7 +501,7 @@ function renderTgmvRec(){
     <div class="ch"><div class="ct">Rec/TGMV por País (YTD)</div><span class="badge bc">Ratio</span></div>
     <div class="tw"><table><thead><tr>
       <th>País</th><th class="tr">TGMV</th><th class="tr">BPP Real</th><th class="tr">BPP Rec.</th><th class="tr">Não-BPP</th><th class="tr">Total Rec.</th>
-      <th class="tr">BPP/TGMV</th><th class="tr">Rec/TGMV</th>
+      <th class="tr">BPP/TGMV</th><th class="tr">BPP/TGMV</th>
     </tr></thead><tbody id="tTR"></tbody></table></div>
   </div>`;
 
@@ -527,7 +527,7 @@ function renderTgmvRec(){
       <td class="tr tg">${f$(rb)}</td><td class="tr ta">${f$(rn)}</td>
       <td class="tr" style="font-weight:500">${f$(tot2)}</td>
       <td class="tr">${tg>0?(br/tg*100).toFixed(3)+'%':'—'}</td>
-      <td class="tr tp">${tg>0?(tot2/tg*100).toFixed(3)+'%':'—'}</td></tr>`;
+      <td class="tr tp">${tg>0?(rb/tg*100).toFixed(3)+'%':'—'}</td></tr>`; // BPP recuperado / TGMV
   }).join('');
 }
 
@@ -627,7 +627,8 @@ function renderCarriers(){
       if(cf!=='all'&&car!==cf) return;
       const b=sm(vals.bpp.slice(0,YTD)),n=sm(vals.nonbpp.slice(0,YTD));
       if(b+n===0) return;
-      const tg=hasTGMV()?sm((D_TGMV_CAR[car+'|'+site]||[]).slice(0,YTD)):0;
+      const _tgKey=car.toUpperCase()+'|'+site;
+      const tg=hasTGMV()?sm((D_TGMV_CAR[_tgKey]||D_TGMV_CAR[car+'|'+site]||[]).slice(0,YTD)):0;
       rows.push({car,site,b,n,tg,bppArr:vals.bpp,nbArr:vals.nonbpp});
     });
   });
@@ -689,7 +690,7 @@ function renderCarriers(){
       <td class="tr" style="font-weight:500">${f$(tot2)}</td>
       <td class="tr" style="color:var(--m2)">${tot2>0?Math.round(r.b/tot2*100)+'%':'—'}</td>
       <td class="tr tc2">${r.tg>0?fk(r.tg):'—'}</td>
-      <td class="tr tp">${r.tg>0?(tot2/r.tg*100).toFixed(3)+'%':'—'}</td></tr>`;
+      <td class="tr tp">${r.tg>0?(r.b/r.tg*100).toFixed(3)+'%':'—'}</td></tr>`;
   }).join('');
 }
 
