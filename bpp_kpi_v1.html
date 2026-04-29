@@ -1377,6 +1377,9 @@ document.addEventListener('DOMContentLoaded',function(){
     pill.textContent='⚠ TGMV pendente';
     pill.className='pill pill-o';
   }
+  // Forçar valor padrão dos filtros (ignora restauração de form pelo browser)
+  const causPeriodEl=document.getElementById('fCausPeriod');
+  if(causPeriodEl) causPeriodEl.value='ytd';
   switchMtab('tgmv');
   switchTab('consolidado');
 });
