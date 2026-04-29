@@ -310,7 +310,8 @@ WHERE CAST(FECHA_CONTA_M AS STRING) >= '202601'
   AND conta.BPP_BUDGET NOT IN ('online_payment','online_payments')
   AND CASE
     WHEN serv.shp_carrier_id_ajus IN (
-      'MERCADO ENVIOS','REPROCESOS CARRITO','MERCADOENVIOS','MELI LOGISTICS'
+      'MERCADO ENVIOS','REPROCESOS CARRITO','MERCADOENVIOS','MELI LOGISTICS',
+      'FLEX'  -- Mercado Envios Flex = logística própria do vendedor, não carrier comercial
     ) THEN 'Logistics'
     ELSE 'Carrier'
   END = 'Carrier'
