@@ -140,6 +140,13 @@ td{padding:7px 9px;font-family:var(--mono);font-size:10px}
     <select id="fCarrier" onchange="applyFilters()">
       <option value="all">Todos os carriers</option>
     </select>
+    <select id="fMonth" onchange="applyFilters()">
+      <option value="ytd">Jan–Abr (YTD)</option>
+      <option value="0">Janeiro</option>
+      <option value="1">Fevereiro</option>
+      <option value="2">Março</option>
+      <option value="3">Abril</option>
+    </select>
     <button class="btn-import" onclick="openModal()">⬆ Carregar dados BQ</button>
   </div>
 </div>
@@ -314,6 +321,16 @@ const SITES=[
 const CC=['#4d9fff','#2ecc8a','#f5a623','#ff4f4f','#a374ff','#00d4c8','#ff6eb4','#ffd166'];
 const YTD=4;
 const CH={};
+// ── Month filter helpers ──
+function getMF(){
+  const v=document.getElementById('fMonth')?.value||'ytd';
+  if(v==='ytd') return {s:0,e:YTD};
+  const i=parseInt(v); return {s:i,e:i+1};
+}
+function periodLabel(){
+  const v=document.getElementById('fMonth')?.value||'ytd';
+  return v==='ytd'?'Jan–Abr YTD':MONTHS[parseInt(v)]+' 2026';
+}
 function dc(id){if(CH[id]){CH[id].destroy();delete CH[id];}}
 const f$=v=>v>0?'$'+Math.round(v).toLocaleString('pt-BR'):'—';
 const fp=v=>isFinite(v)&&v>0?Math.round(v)+'%':'—';
@@ -391,12 +408,12 @@ function noDataBlock(msg,hint){
 // ══════════════ RENDER: CONSOLIDADO ══════════════
 function renderConsolidado(){
   const sites=getSites(); filterLabel('fl-con');
-  const bppR=sites.reduce((a,s)=>a+sm((D_BPP_REAL[s.c]||[]).slice(0,YTD)),0);
-  const plan=sites.reduce((a,s)=>a+sm((D_PLAN[s.c]||[]).slice(0,YTD)),0);
-  const recB=sites.reduce((a,s)=>a+sm((D_REC_BPP[s.c]||[]).slice(0,YTD)),0);
-  const recN=sites.reduce((a,s)=>a+sm((D_REC_NB[s.c]||[]).slice(0,YTD)),0);
+  const bppR=sites.reduce((a,s)=>a+sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e)),0);
+  const plan=sites.reduce((a,s)=>a+sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e)),0);
+  const recB=sites.reduce((a,s)=>a+sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e)),0);
+  const recN=sites.reduce((a,s)=>a+sm((D_REC_NB[s.c]||[]).slice(getMF().s,getMF().e)),0);
   const tot=recB+recN;
-  const tgmv=hasTGMV()?sites.reduce((a,s)=>a+sm((D_TGMV_CBS[s.c]||[]).slice(0,YTD)),0):0;
+  const tgmv=hasTGMV()?sites.reduce((a,s)=>a+sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e)),0):0;
 
   document.getElementById('k-bpp-real').textContent=fk(bppR);
   document.getElementById('k-rec-bpp').textContent=fk(recB);
@@ -420,16 +437,16 @@ function renderConsolidado(){
   dc('cConPie');
   CH['cConPie']=new Chart(document.getElementById('cConPie'),{type:'doughnut',data:{
     labels:sites.map(s=>s.n),
-    datasets:[{data:sites.map(s=>sm((D_REC_BPP[s.c]||[]).slice(0,YTD))+sm((D_REC_NB[s.c]||[]).slice(0,YTD))),backgroundColor:CC.slice(0,sites.length),borderWidth:2,borderColor:'#111419'}]
+    datasets:[{data:sites.map(s=>sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e))+sm((D_REC_NB[s.c]||[]).slice(getMF().s,getMF().e))),backgroundColor:CC.slice(0,sites.length),borderWidth:2,borderColor:'#111419'}]
   },options:{...baseOpts('doughnut'),cutout:'60%'}});
 
   document.getElementById('tCon').innerHTML=sites.map(s=>{
-    const bpp=sm((D_BPP_REAL[s.c]||[]).slice(0,YTD));
-    const pl=sm((D_PLAN[s.c]||[]).slice(0,YTD));
-    const rb=sm((D_REC_BPP[s.c]||[]).slice(0,YTD));
-    const rn=sm((D_REC_NB[s.c]||[]).slice(0,YTD));
+    const bpp=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));
+    const pl=sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e));
+    const rb=sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e));
+    const rn=sm((D_REC_NB[s.c]||[]).slice(getMF().s,getMF().e));
     const tot2=rb+rn;
-    const tg=hasTGMV()?sm((D_TGMV_CBS[s.c]||[]).slice(0,YTD)):0;
+    const tg=hasTGMV()?sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e)):0;
     const pp=pl>0?Math.round(rb/pl*100):0, pr=bpp>0?Math.round(rb/bpp*100):0;
     const cp=pp>=100?'var(--grn)':pp>=70?'var(--amb)':'var(--red)';
     const cr=pr>=80?'var(--grn)':pr>=50?'var(--amb)':'var(--red)';
@@ -448,9 +465,9 @@ function renderConsolidado(){
 // ══════════════ RENDER: BPP × REC × PLANO ══════════════
 function renderBppRec(){
   const sites=getSites(); filterLabel('fl-bpp');
-  const bppR=sites.reduce((a,s)=>a+sm((D_BPP_REAL[s.c]||[]).slice(0,YTD)),0);
-  const plan=sites.reduce((a,s)=>a+sm((D_PLAN[s.c]||[]).slice(0,YTD)),0);
-  const rec =sites.reduce((a,s)=>a+sm((D_REC_BPP[s.c]||[]).slice(0,YTD)),0);
+  const bppR=sites.reduce((a,s)=>a+sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e)),0);
+  const plan=sites.reduce((a,s)=>a+sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e)),0);
+  const rec =sites.reduce((a,s)=>a+sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e)),0);
   const pp=plan>0?rec/plan*100:0, pr=bppR>0?rec/bppR*100:0;
   document.getElementById('k2-bpp').textContent=fk(bppR);
   document.getElementById('k2-plan').textContent=fk(plan);
@@ -463,8 +480,8 @@ function renderBppRec(){
   document.getElementById('k2-pr').textContent=fp(pr);
 
   document.getElementById('gauges2').innerHTML=sites.map(s=>{
-    const pl=sm((D_PLAN[s.c]||[]).slice(0,YTD));
-    const rc=sm((D_REC_BPP[s.c]||[]).slice(0,YTD));
+    const pl=sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e));
+    const rc=sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e));
     const p=pl>0?Math.min(200,rc/pl*100):0;
     const col=p>=100?'var(--grn)':p>=70?'var(--amb)':'var(--red)';
     return `<div class="gau"><div class="gau-l">${s.f} ${s.n}</div>
@@ -483,16 +500,16 @@ function renderBppRec(){
   CH['cBRD']=new Chart(document.getElementById('cBRD'),{type:'bar',data:{
     labels:sites.map(s=>s.n),
     datasets:[
-      {label:'Rec/Real %',data:sites.map(s=>{const b=sm((D_BPP_REAL[s.c]||[]).slice(0,YTD));const r=sm((D_REC_BPP[s.c]||[]).slice(0,YTD));return b>0?Math.round(r/b*100):0;}),
-       backgroundColor:sites.map(s=>{const b=sm((D_BPP_REAL[s.c]||[]).slice(0,YTD));const r=sm((D_REC_BPP[s.c]||[]).slice(0,YTD));const p=b>0?r/b*100:0;return p>=80?'rgba(46,204,138,.75)':p>=50?'rgba(245,166,35,.75)':'rgba(255,79,79,.75)';}),borderRadius:4}
+      {label:'Rec/Real %',data:sites.map(s=>{const b=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));const r=sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e));return b>0?Math.round(r/b*100):0;}),
+       backgroundColor:sites.map(s=>{const b=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));const r=sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e));const p=b>0?r/b*100:0;return p>=80?'rgba(46,204,138,.75)':p>=50?'rgba(245,166,35,.75)':'rgba(255,79,79,.75)';}),borderRadius:4}
     ]},
     options:{...baseOpts('bar'),plugins:{...baseOpts('bar').plugins},scales:{...baseOpts('bar').scales,y:{...baseOpts('bar').scales.y,ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>v+'%'}}}}});
 
   document.getElementById('tBR').innerHTML=sites.map(s=>{
-    const rl=sm((D_BPP_REAL[s.c]||[]).slice(0,YTD));
-    const pl=sm((D_PLAN[s.c]||[]).slice(0,YTD));
+    const rl=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));
+    const pl=sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e));
     const m=D_REC_BPP[s.c]||new Array(12).fill(0);
-    const rc=sm(m.slice(0,YTD));
+    const rc=sm(m.slice(getMF().s,getMF().e));
     const pp=pl>0?rc/pl*100:0, pr=rl>0?rc/rl*100:0;
     const cp=pp>=100?'var(--grn)':pp>=70?'var(--amb)':'var(--red)';
     const cr=pr>=80?'var(--grn)':pr>=50?'var(--amb)':'var(--red)';
@@ -515,13 +532,13 @@ function renderTgmvRec(){
   const recM =MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_REC_BPP[s.c]?.[i]||0),0)); // só BPP (Não-BPP é outra conta contábil)
   const ratioM=tgmvM.map((t,i)=>t>0?(recM[i]/t*100):null);
 
-  const totTGMV=sm(tgmvM.slice(0,YTD)),totRec=sm(recM.slice(0,YTD));
+  const totTGMV=sm(tgmvM.slice(getMF().s,getMF().e)),totRec=sm(recM.slice(getMF().s,getMF().e));
   el.innerHTML=`
   <div class="krow">
     <div class="kpi c"><div class="kl">TGMV YTD</div><div class="kv">${fk(totTGMV)}</div><div class="ks">NMV Jan–Abr · só Carriers</div></div>
     <div class="kpi g"><div class="kl">BPP Recuperado</div><div class="kv">${fk(totRec)}</div><div class="ks">Somente BPP · conta BPP</div></div>
     <div class="kpi p"><div class="kl">BPP Rec / TGMV</div><div class="kv">${totTGMV>0?(totRec/totTGMV*100).toFixed(3)+'%':'—'}</div><div class="ks">BPP recuperado ÷ NMV carriers</div></div>
-    <div class="kpi a"><div class="kl">BPP / TGMV</div><div class="kv">${totTGMV>0?(sites.reduce((a,s)=>a+sm((D_BPP_REAL[s.c]||[]).slice(0,YTD)),0)/totTGMV*100).toFixed(3)+'%':'—'}</div><div class="ks">Penetração BPP sobre NMV</div></div>
+    <div class="kpi a"><div class="kl">BPP / TGMV</div><div class="kv">${totTGMV>0?(sites.reduce((a,s)=>a+sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e)),0)/totTGMV*100).toFixed(3)+'%':'—'}</div><div class="ks">Penetração BPP sobre NMV</div></div>
   </div>
   <div class="g2">
     <div class="card">
@@ -543,21 +560,21 @@ function renderTgmvRec(){
   </div>`;
 
   dc('cTRM');
-  CH['cTRM']=new Chart(document.getElementById('cTRM'),{type:'bar',data:{labels:MONTHS,datasets:[
-    {label:'TGMV',     data:tgmvM,backgroundColor:'rgba(0,212,200,.25)',borderRadius:3,order:2},
-    {label:'Recuperado',data:recM, type:'line',borderColor:'var(--grn)',backgroundColor:'rgba(46,204,138,.1)',borderWidth:2,pointRadius:3,tension:.3,fill:true,order:1},
+  CH['cTRM']=new Chart(document.getElementById('cTRM'),{type:'bar',data:{labels:MONTHS.slice(getMF().s,getMF().e),datasets:[
+    {label:'TGMV',     data:tgmvM.slice(getMF().s,getMF().e),backgroundColor:'rgba(0,212,200,.25)',borderRadius:3,order:2},
+    {label:'Recuperado',data:recM.slice(getMF().s,getMF().e), type:'line',borderColor:'var(--grn)',backgroundColor:'rgba(46,204,138,.1)',borderWidth:2,pointRadius:3,tension:.3,fill:true,order:1},
   ]},options:{...baseOpts('bar'),scales:{x:baseOpts('bar').scales.x,y:{...baseOpts('bar').scales.y,ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>'$'+Math.round(v/1e6)+'M'}}}}});
 
   dc('cTRR');
-  CH['cTRR']=new Chart(document.getElementById('cTRR'),{type:'line',data:{labels:MONTHS,datasets:[
-    {label:'Rec/TGMV %',data:ratioM,borderColor:'var(--pur)',backgroundColor:'rgba(163,116,255,.12)',borderWidth:2,pointRadius:3,tension:.4,fill:true},
+  CH['cTRR']=new Chart(document.getElementById('cTRR'),{type:'line',data:{labels:MONTHS.slice(getMF().s,getMF().e),datasets:[
+    {label:'Rec/TGMV %',data:ratioM.slice(getMF().s,getMF().e),borderColor:'var(--pur)',backgroundColor:'rgba(163,116,255,.12)',borderWidth:2,pointRadius:3,tension:.4,fill:true},
   ]},options:{...baseOpts('line'),scales:{x:baseOpts('line').scales.x,y:{...baseOpts('line').scales.y,ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>v!=null?v.toFixed(3)+'%':null}}}}});
 
   document.getElementById('tTR').innerHTML=sites.map(s=>{
-    const tg=sm((D_TGMV_CBS[s.c]||[]).slice(0,YTD));
-    const br=sm((D_BPP_REAL[s.c]||[]).slice(0,YTD));
-    const rb=sm((D_REC_BPP[s.c]||[]).slice(0,YTD));
-    const rn=sm((D_REC_NB[s.c]||[]).slice(0,YTD));
+    const tg=sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e));
+    const br=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));
+    const rb=sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e));
+    const rn=sm((D_REC_NB[s.c]||[]).slice(getMF().s,getMF().e));
     const tot2=rb+rn;
     return `<tr><td class="tcc">${s.f} ${s.n}</td>
       <td class="tr tc2">${fk(tg)}</td><td class="tr tr2">${f$(br)}</td>
@@ -578,7 +595,7 @@ function renderTgmvFull(){
   const bppM =MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_BPP_REAL[s.c]?.[i]||0),0));
   const recBM=MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_REC_BPP[s.c]?.[i]||0),0));
   const recNM=MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_REC_NB[s.c]?.[i]||0),0));
-  const totTG=sm(tgmvM.slice(0,YTD)),totBPP=sm(bppM.slice(0,YTD)),totRB=sm(recBM.slice(0,YTD)),totRN=sm(recNM.slice(0,YTD));
+  const totTG=sm(tgmvM.slice(getMF().s,getMF().e)),totBPP=sm(bppM.slice(getMF().s,getMF().e)),totRB=sm(recBM.slice(getMF().s,getMF().e)),totRN=sm(recNM.slice(getMF().s,getMF().e));
 
   el.innerHTML=`
   <div class="krow">
@@ -615,24 +632,25 @@ function renderTgmvFull(){
   </div>`;
 
   dc('cTFM');
-  CH['cTFM']=new Chart(document.getElementById('cTFM'),{type:'bar',data:{labels:MONTHS,datasets:[
-    {label:'TGMV÷1k', data:tgmvM.map(v=>v/1000),backgroundColor:'rgba(0,212,200,.2)',borderRadius:3,order:4},
-    {label:'BPP Real', data:bppM, backgroundColor:'rgba(255,79,79,.5)', borderRadius:3,stack:'bpp',order:3},
-    {label:'BPP Rec.', data:recBM,backgroundColor:'rgba(46,204,138,.8)', borderRadius:3,stack:'r',order:2},
-    {label:'Não-BPP',  data:recNM,backgroundColor:'rgba(245,166,35,.75)',borderRadius:3,stack:'r',order:1},
+  CH['cTFM']=new Chart(document.getElementById('cTFM'),{type:'bar',data:{labels:MONTHS.slice(getMF().s,getMF().e),datasets:[
+    {label:'TGMV÷1k', data:tgmvM.slice(getMF().s,getMF().e).map(v=>v/1000),backgroundColor:'rgba(0,212,200,.2)',borderRadius:3,order:4},
+    {label:'BPP Real', data:bppM.slice(getMF().s,getMF().e), backgroundColor:'rgba(255,79,79,.5)', borderRadius:3,stack:'bpp',order:3},
+    {label:'BPP Rec.', data:recBM.slice(getMF().s,getMF().e),backgroundColor:'rgba(46,204,138,.8)', borderRadius:3,stack:'r',order:2},
+    {label:'Não-BPP',  data:recNM.slice(getMF().s,getMF().e),backgroundColor:'rgba(245,166,35,.75)',borderRadius:3,stack:'r',order:1},
   ]},options:baseOpts('bar')});
 
   dc('cTFR');
-  CH['cTFR']=new Chart(document.getElementById('cTFR'),{type:'line',data:{labels:MONTHS,datasets:[
-    {label:'BPP/TGMV %',data:tgmvM.map((t,i)=>t>0?(bppM[i]/t*100):null),borderColor:'rgba(255,79,79,.8)',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.4},
-    {label:'Rec/TGMV %',data:tgmvM.map((t,i)=>t>0?((recBM[i]+recNM[i])/t*100):null),borderColor:'var(--pur)',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.4},
-  ]},options:{...baseOpts('line'),plugins:{...baseOpts('line').plugins,legend:{display:true,labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},boxWidth:6,boxHeight:6}}},scales:{x:baseOpts('line').scales.x,y:{...baseOpts('line').scales.y,ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>v!=null?v.toFixed(3)+'%':null}}}}});
+  {const mf=getMF(),tg=tgmvM.slice(mf.s,mf.e),bp=bppM.slice(mf.s,mf.e),rb=recBM.slice(mf.s,mf.e),rn=recNM.slice(mf.s,mf.e);
+  CH['cTFR']=new Chart(document.getElementById('cTFR'),{type:'line',data:{labels:MONTHS.slice(mf.s,mf.e),datasets:[
+    {label:'BPP/TGMV %',data:tg.map((t,i)=>t>0?(bp[i]/t*100):null),borderColor:'rgba(255,79,79,.8)',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.4},
+    {label:'Rec/TGMV %',data:tg.map((t,i)=>t>0?((rb[i]+rn[i])/t*100):null),borderColor:'var(--pur)',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.4},
+  ]},options:{...baseOpts('line'),plugins:{...baseOpts('line').plugins,legend:{display:true,labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},boxWidth:6,boxHeight:6}}},scales:{x:baseOpts('line').scales.x,y:{...baseOpts('line').scales.y,ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>v!=null?v.toFixed(3)+'%':null}}}}});}
 
   document.getElementById('tTF').innerHTML=sites.map(s=>{
-    const tg=sm((D_TGMV_CBS[s.c]||[]).slice(0,YTD));
-    const br=sm((D_BPP_REAL[s.c]||[]).slice(0,YTD));
-    const rb=sm((D_REC_BPP[s.c]||[]).slice(0,YTD));
-    const rn=sm((D_REC_NB[s.c]||[]).slice(0,YTD));
+    const tg=sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e));
+    const br=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));
+    const rb=sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e));
+    const rn=sm((D_REC_NB[s.c]||[]).slice(getMF().s,getMF().e));
     const tot2=rb+rn;
     const bpt=tg>0?(br/tg*100).toFixed(3)+'%':'—';
     const rrt=br>0?(rb/br*100).toFixed(1)+'%':'—';
@@ -686,12 +704,12 @@ function renderCarriers(){
     Object.entries(sitesMap).forEach(([site,vals])=>{
       if(fc!=='all'&&site!==fc) return;
       if(cf!=='all'&&car!==cf) return;
-      const b=sm(vals.bpp.slice(0,YTD)),n=sm(vals.nonbpp.slice(0,YTD));
+      const b=sm(vals.bpp.slice(getMF().s,getMF().e)),n=sm(vals.nonbpp.slice(getMF().s,getMF().e));
       if(b+n===0) return;
       const _tgKey=car.toUpperCase()+'|'+site;
       // usa _TGMV_ALIAS global (inclui J&T e Pickit)
       const _tgResolved=_TGMV_ALIAS[_tgKey]||_tgKey;
-      const tg=hasTGMV()?sm((D_TGMV_CAR[_tgResolved]||D_TGMV_CAR[_tgKey]||D_TGMV_CAR[car+'|'+site]||[]).slice(0,YTD)):0;
+      const tg=hasTGMV()?sm((D_TGMV_CAR[_tgResolved]||D_TGMV_CAR[_tgKey]||D_TGMV_CAR[car+'|'+site]||[]).slice(getMF().s,getMF().e)):0;
       rows.push({car,site,b,n,tg,bppArr:vals.bpp,nbArr:vals.nonbpp});
     });
   });
@@ -737,9 +755,9 @@ function renderCarriers(){
 
   dc('cCarTrend');
   CH['cCarTrend']=new Chart(document.getElementById('cCarTrend'),{type:'line',
-    data:{labels:MONTHS.slice(0,YTD),datasets:top5.map((r,i)=>({
+    data:{labels:MONTHS.slice(getMF().s,getMF().e),datasets:top5.map((r,i)=>({
       label:r.car+' ['+r.site+']',
-      data:r.bppArr.map((b,j)=>b+(r.nbArr[j]||0)),
+      data:r.bppArr.slice(getMF().s,getMF().e).map((b,j)=>b+(r.nbArr[getMF().s+j]||0)),
       borderColor:lc[i],backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.4
     }))},
     options:{...baseOpts('line'),plugins:{...baseOpts('line').plugins,legend:{display:true,labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},boxWidth:6,boxHeight:6}}}}});
@@ -767,11 +785,11 @@ function renderPaises(){
 
   let html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px;margin-bottom:16px">';
   sites.forEach(s=>{
-    const bppR = sm((D_BPP_REAL[s.c]||[]).slice(0,YTD));
-    const plan  = sm((D_PLAN[s.c]||[]).slice(0,YTD));
-    const recB  = sm((D_REC_BPP[s.c]||[]).slice(0,YTD));
-    const recN  = sm((D_REC_NB[s.c]||[]).slice(0,YTD));
-    const tgmv  = hasTGMV()?sm((D_TGMV_CBS[s.c]||[]).slice(0,YTD)):0;
+    const bppR = sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));
+    const plan  = sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e));
+    const recB  = sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e));
+    const recN  = sm((D_REC_NB[s.c]||[]).slice(getMF().s,getMF().e));
+    const tgmv  = hasTGMV()?sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e)):0;
     const tot   = recB+recN;
     const pp    = plan>0?recB/plan*100:0;
     const pen   = tgmv>0?bppR/tgmv*100:0;
@@ -783,7 +801,7 @@ function renderPaises(){
     const months=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
     const recArr=(D_REC_BPP[s.c]||new Array(12).fill(0));
     const maxR=Math.max(...recArr,1);
-    const bars=recArr.slice(0,YTD).map((v,i)=>{
+    const bars=recArr.slice(getMF().s,getMF().e).map((v,i)=>{
       const h=Math.round(v/maxR*32);
       return `<div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1">
         <div style="width:100%;background:var(--blu);height:${h}px;border-radius:2px 2px 0 0;min-height:2px"></div>
@@ -835,11 +853,11 @@ function renderPaises(){
 
   // Summary table
   const allRows=sites.map(s=>{
-    const bppR=sm((D_BPP_REAL[s.c]||[]).slice(0,YTD));
-    const plan=sm((D_PLAN[s.c]||[]).slice(0,YTD));
-    const recB=sm((D_REC_BPP[s.c]||[]).slice(0,YTD));
-    const recN=sm((D_REC_NB[s.c]||[]).slice(0,YTD));
-    const tgmv=hasTGMV()?sm((D_TGMV_CBS[s.c]||[]).slice(0,YTD)):0;
+    const bppR=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));
+    const plan=sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e));
+    const recB=sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e));
+    const recN=sm((D_REC_NB[s.c]||[]).slice(getMF().s,getMF().e));
+    const tgmv=hasTGMV()?sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e)):0;
     return {s,bppR,plan,recB,recN,tgmv};
   }).filter(r=>r.bppR+r.plan+r.recB>0);
 
@@ -897,6 +915,8 @@ function switchTab(name){
 }
 
 function applyFilters(){
+  // Update period pill
+  document.getElementById('pill-months').textContent=periodLabel();
   const active=document.querySelector('.tab.active');
   if(!active) return;
   const tabMap=['consolidado','bpp-rec','tgmv-rec','tgmv-full','carriers','paises'];
