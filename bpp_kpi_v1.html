@@ -305,7 +305,7 @@ const SITES=[
   {c:'MLU',n:'Uruguai',f:'🇺🇾'},{c:'MEC',n:'Equador',f:'🇪🇨'}
 ];
 const CC=['#4d9fff','#2ecc8a','#f5a623','#ff4f4f','#a374ff','#00d4c8','#ff6eb4','#ffd166'];
-const YTD=4;
+const YTD=4; // Atualizado 2026-04-28 21:06 // Atualizado 2026-04-28 20:36
 const CH={};
 function dc(id){if(CH[id]){CH[id].destroy();delete CH[id];}}
 const f$=v=>v>0?'$'+Math.round(v).toLocaleString('pt-BR'):'—';
@@ -314,19 +314,18 @@ const sm=a=>Array.isArray(a)?a.reduce((s,x)=>s+x,0):0;
 const fk=v=>v>=1e9?'$'+(v/1e9).toFixed(1)+'B':v>=1e6?'$'+(v/1e6).toFixed(1)+'M':v>=1e3?'$'+(v/1e3).toFixed(0)+'k':f$(v);
 
 // ── Static embedded data (site-level) ──
-const D_PLAN={MLB:[550355,507110,577394,533073,637304,597146,626097,615996,593158,637045,740489,737993],MLA:[332555,306424,348893,322112,385094,360828,378322,372219,358419,384938,447444,445936],MLM:[181500,167238,190417,175801,210175,196931,206479,203148,195616,210089,244204,243381],MLU:[32787,30211,34398,31758,37967,35575,37299,36698,35337,37952,44114,43966],MCO:[4684,79,88,79,87,84,99,92,94,99,110,125],MLC:[59719,55027,62653,57844,69154,64797,67938,66842,64364,69126,80351,80080],MEC:[1171,1079,1228,1134,1356,1271,1332,1311,1262,1355,1576,1570],MPE:[8197,7553,8599,7939,9492,8894,9325,9174,8834,9488,11029,10991]};
-const D_BPP_REAL={MLB:[1395481,900318,1258797,850785,0,0,0,0,0,0,0,0],MLA:[750345,509811,656055,384720,0,0,0,0,0,0,0,0],MLM:[532818,392540,293061,183512,0,0,0,0,0,0,0,0],MLU:[35294,22158,26043,20993,0,0,0,0,0,0,0,0],MCO:[60444,41670,36811,20928,0,0,0,0,0,0,0,0],MLC:[82935,69902,59126,39395,0,0,0,0,0,0,0,0],MEC:[3559,833,2934,828,0,0,0,0,0,0,0,0],MPE:[21920,19115,19543,11716,0,0,0,0,0,0,0,0]};
-const D_REC_BPP={MLB:[406698,923239,1679904,302708,0,0,0,0,0,0,0,0],MLA:[207582,247013,543023,239205,0,0,0,0,0,0,0,0],MLM:[256234,458426,491413,1144758,0,0,0,0,0,0,0,0],MCO:[1149,5726,7337,0,0,0,0,0,0,0,0,0],MLC:[29117,80344,1451,46350,0,0,0,0,0,0,0,0],MPE:[0,0,10257,0,0,0,0,0,0,0,0,0],MLU:[6642,7576,6499,17812,0,0,0,0,0,0,0,0],MEC:[0,0,4796,0,0,0,0,0,0,0,0,0]};
-const D_REC_NB={MLB:[201076,301956,49569,146773,0,0,0,0,0,0,0,0],MLA:[585892,677783,642993,14720,0,0,0,0,0,0,0,0],MLM:[23151,265169,51827,29074,0,0,0,0,0,0,0,0],MCO:[169,0,270,0,0,0,0,0,0,0,0,0],MLC:[46199,45951,38280,4012,0,0,0,0,0,0,0,0],MPE:[27824,31750,31791,0,0,0,0,0,0,0,0,0],MLU:[24431,10911,10515,0,0,0,0,0,0,0,0,0],MEC:[0,0,0,0,0,0,0,0,0,0,0,0]};
+const D_PLAN={MLB:[1395481, 900318, 1258797, 850785, 4405381, 0, 0, 0, 0, 0, 0, 0],MLA:[750345, 509811, 656055, 384720, 2300931, 0, 0, 0, 0, 0, 0, 0],MLM:[532818, 392540, 293061, 183512, 1401931, 0, 0, 0, 0, 0, 0, 0],MCO:[60444, 41670, 36811, 20928, 159853, 0, 0, 0, 0, 0, 0, 0],MLC:[82935, 69902, 59126, 39395, 251358, 0, 0, 0, 0, 0, 0, 0],MPE:[21920, 19115, 19543, 11716, 72294, 0, 0, 0, 0, 0, 0, 0],MLU:[35294, 22158, 26043, 20993, 104488, 0, 0, 0, 0, 0, 0, 0],MEC:[3559, 833, 2934, 828, 8154, 0, 0, 0, 0, 0, 0, 0]};
+const D_BPP_REAL={MLB:[23224337, 23022056, 27311909, 23932528, 0, 0, 0, 0, 0, 0, 0, 0],MLA:[5266463, 4549526, 5767594, 4730390, 0, 0, 0, 0, 0, 0, 0, 0],MLM:[13649533, 10865831, 10874995, 9515817, 0, 0, 0, 0, 0, 0, 0, 0],MCO:[586787, 557037, 493271, 434888, 0, 0, 0, 0, 0, 0, 0, 0],MLC:[1453232, 1200582, 1181676, 1034568, 0, 0, 0, 0, 0, 0, 0, 0],MPE:[106736, 88103, 120543, 71912, 0, 0, 0, 0, 0, 0, 0, 0],MLU:[216380, 154716, 179383, 168470, 0, 0, 0, 0, 0, 0, 0, 0],MEC:[7706, 3358, 6541, 5397, 0, 0, 0, 0, 0, 0, 0, 0]};
+const D_REC_BPP={MLB:[406698, 923239, 1679904, 302708, 0, 0, 0, 0, 0, 0, 0, 0],MLA:[207582, 247013, 543023, 239205, 0, 0, 0, 0, 0, 0, 0, 0],MLM:[256234, 458426, 491413, 1144758, 0, 0, 0, 0, 0, 0, 0, 0],MCO:[1149, 5726, 7337, 0, 0, 0, 0, 0, 0, 0, 0, 0],MLC:[29117, 80344, 1451, 46350, 0, 0, 0, 0, 0, 0, 0, 0],MPE:[0, 0, 10257, 0, 0, 0, 0, 0, 0, 0, 0, 0],MLU:[6642, 7576, 6499, 17812, 0, 0, 0, 0, 0, 0, 0, 0],MEC:[0, 0, 4796, 0, 0, 0, 0, 0, 0, 0, 0, 0]};
+const D_REC_NB={MLB:[201076, 301956, 49569, 146773, 0, 0, 0, 0, 0, 0, 0, 0],MLA:[585892, 677783, 642993, 542138, 0, 0, 0, 0, 0, 0, 0, 0],MLM:[23151, 265169, 51827, 29074, 0, 0, 0, 0, 0, 0, 0, 0],MCO:[169, 0, 270, 0, 0, 0, 0, 0, 0, 0, 0, 0],MLC:[46199, 45951, 38280, 4012, 0, 0, 0, 0, 0, 0, 0, 0],MPE:[27824, 31750, 31791, 0, 0, 0, 0, 0, 0, 0, 0, 0],MLU:[24431, 10911, 10515, 0, 0, 0, 0, 0, 0, 0, 0, 0],MEC:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]};
 
-// ── Dynamic data loaded from BigQuery CSVs ──
-let D_TGMV={};        // site → [12 months]
-let D_TGMV_CAR={};    // 'CARRIER|SITE' → [12 months]
-let D_BPP_CAR={};     // 'CARRIER|SITE' → { causa:{}, monthly:[12] }
+// TGMV BigQuery (Carrier only) — 2026-04-28 20:36
+const D_TGMV={MLB:[248108664, 253795813, 344218530, 298334268, 0, 0, 0, 0, 0, 0, 0, 0],MLA:[371212485, 337917034, 391427801, 322651310, 0, 0, 0, 0, 0, 0, 0, 0],MLM:[79402426, 63807733, 70188073, 65558066, 0, 0, 0, 0, 0, 0, 0, 0],MCO:[22147615, 21213798, 24830416, 20606090, 0, 0, 0, 0, 0, 0, 0, 0],MLC:[53270174, 49881959, 57620337, 49712596, 0, 0, 0, 0, 0, 0, 0, 0],MPE:[15344700, 14554981, 17536684, 18599734, 0, 0, 0, 0, 0, 0, 0, 0],MLU:[33855871, 29936619, 37018355, 27524335, 0, 0, 0, 0, 0, 0, 0, 0],MEC:[722756, 680666, 904866, 919901, 0, 0, 0, 0, 0, 0, 0, 0]};
+const D_TGMV_CAR={"99 MINUTOS PERÚ|MPE":[0, 0, 16482, 270442, 0, 0, 0, 0, 0, 0, 0, 0],"ALMEX|MLM":[509440, 418974, 458355, 489339, 0, 0, 0, 0, 0, 0, 0, 0],"ANDREANI|MLA":[50053380, 43363941, 48233353, 41468885, 0, 0, 0, 0, 0, 0, 0, 0],"ANJUN|MLB":[0, 0, 0, 227, 0, 0, 0, 0, 0, 0, 0, 0],"ARCADIO BUENDIA|MLA":[0, 0, 0, 151, 0, 0, 0, 0, 0, 0, 0, 0],"ARROWCHILE|MLC":[0, 0, 0, 495, 0, 0, 0, 0, 0, 0, 0, 0],"AS20260324155000|MLB":[0, 0, 0, 39, 0, 0, 0, 0, 0, 0, 0, 0],"BASECOSMETICS|MLB":[0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0],"BECAPLIS_ECOMMERCE_BR|MLB":[0, 0, 0, 280, 0, 0, 0, 0, 0, 0, 0, 0],"BFBGACHDE59202|MLB":[0, 0, 0, 26, 0, 0, 0, 0, 0, 0, 0, 0],"BLUE EXPRESS|MLC":[7534628, 7012790, 7650013, 6703098, 0, 0, 0, 0, 0, 0, 0, 0],"CA20260316182002|MLU":[0, 0, 0, 51, 0, 0, 0, 0, 0, 0, 0, 0],"CABIFY|MLA":[115801, 54, 650, 835, 0, 0, 0, 0, 0, 0, 0, 0],"CAINIAO DOMESTIC|MLM":[747442, 818468, 767899, 655180, 0, 0, 0, 0, 0, 0, 0, 0],"CAINIAO|MCO":[3081724, 2288999, 2875394, 3014240, 0, 0, 0, 0, 0, 0, 0, 0],"CAINIAO|MLB":[10127281, 7703593, 10720839, 10759559, 0, 0, 0, 0, 0, 0, 0, 0],"CAINIAO|MLC":[3226854, 2593318, 3401203, 3567744, 0, 0, 0, 0, 0, 0, 0, 0],"CAINIAO|MLM":[24946557, 16064071, 18753267, 18301659, 0, 0, 0, 0, 0, 0, 0, 0],"CAINIAO|MLU":[1093, 144115, 430269, 498218, 0, 0, 0, 0, 0, 0, 0, 0],"CARVALIMA|MLB":[12051306, 7875444, 9510073, 8499277, 0, 0, 0, 0, 0, 0, 0, 0],"CBT ARGENTINA|MLA":[0, 22, 23, 10324, 0, 0, 0, 0, 0, 0, 0, 0],"CBT CHILE|MLC":[0, 0, 338, 261328, 0, 0, 0, 0, 0, 0, 0, 0],"CDBACHFGE96079|MLC":[0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0],"CE20260410201723|MLC":[0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 0, 0],"CHILEXPRESS|MLC":[2814318, 2718292, 2936105, 2752672, 0, 0, 0, 0, 0, 0, 0, 0],"CLAUDIO YULAN|MLA":[0, 0, 0, 184, 0, 0, 0, 0, 0, 0, 0, 0],"COMERCIALIZADORAVJP|MLC":[0, 0, 0, 40, 0, 0, 0, 0, 0, 0, 0, 0],"COMEXSHOP|MLA":[0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 0],"COMPRACERTAMARKETPLACE|MLB":[0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0],"COORDINADORA|MCO":[2203553, 1647282, 1654690, 1263426, 0, 0, 0, 0, 0, 0, 0, 0],"CORREIOS|MLB":[86033455, 106983237, 147365532, 135546681, 0, 0, 0, 0, 0, 0, 0, 0],"CORREO ARGENTINO|MLA":[48900633, 44263102, 50354669, 42066103, 0, 0, 0, 0, 0, 0, 0, 0],"CORREOS CHILE|MLC":[995975, 1071825, 1271269, 350453, 0, 0, 0, 0, 0, 0, 0, 0],"DAC|MLU":[2042328, 1661049, 2015393, 1564618, 0, 0, 0, 0, 0, 0, 0, 0],"DHL|MLM":[2984247, 2791908, 2531240, 2448018, 0, 0, 0, 0, 0, 0, 0, 0],"DKGOFFICIAL|MLA":[0, 34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"DOMINALOG EXPRESS|MLB":[895676, 1638589, 3475114, 3705760, 0, 0, 0, 0, 0, 0, 0, 0],"DV20260417154137|MLA":[0, 0, 0, 114, 0, 0, 0, 0, 0, 0, 0, 0],"EHEDGFACB134|MLB":[0, 0, 0, 56, 0, 0, 0, 0, 0, 0, 0, 0],"ELECTROHOGAR_|MLA":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"ELECTRONICAKOLM|MLC":[0, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"ELEVECOMEPI|MLB":[0, 0, 0, 141, 0, 0, 0, 0, 0, 0, 0, 0],"EMLED2842099|MCO":[0, 0, 0, 46, 0, 0, 0, 0, 0, 0, 0, 0],"EMPORIO_VARANDA|MLB":[0, 46, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"ENVIA|MCO":[6717849, 6594455, 8202440, 6401409, 0, 0, 0, 0, 0, 0, 0, 0],"ERAINHA|MLB":[0, 0, 0, 155, 0, 0, 0, 0, 0, 0, 0, 0],"ESTAFETA|MLM":[1647953, 1295901, 1493047, 1628537, 0, 0, 0, 0, 0, 0, 0, 0],"EVEN7 STORE|MLB":[0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0],"FACUNDO GASTON VERGA|MLA":[0, 0, 0, 353, 0, 0, 0, 0, 0, 0, 0, 0],"FEDEX|MLM":[27086713, 22896922, 24034820, 21869743, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MCO":[7706410, 8385039, 9526679, 7806604, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MEC":[135520, 157907, 190344, 185592, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MLA":[197212543, 182555784, 221810156, 189084244, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MLB":[94079554, 95240647, 114114484, 92270271, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MLC":[38584354, 36373052, 42254903, 36012400, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MLM":[5125715, 4802480, 5276026, 4493230, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MLU":[23739932, 21332298, 26237638, 19435815, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MPE":[6563655, 6183335, 7477315, 7206265, 0, 0, 0, 0, 0, 0, 0, 0],"FREDIORTIGOZAPAIVA|MLA":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"GDFEGCAHB72000|MLB":[0, 0, 0, 49, 0, 0, 0, 0, 0, 0, 0, 0],"GFDHABCEG93876|MLB":[0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0],"GOL|MLB":[0, 0, 0, 77, 0, 0, 0, 0, 0, 0, 0, 0],"IMILE DELIVERY|MLB":[807, 111572, 228219, 317836, 0, 0, 0, 0, 0, 0, 0, 0],"IMPERIUM_FIT|MLB":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"J&T EXPRESS BRAZIL|MLB":[31954358, 19916087, 33418032, 30445702, 0, 0, 0, 0, 0, 0, 0, 0],"J&T EXPRESS|MLB":[0, 0, 0, 504, 0, 0, 0, 0, 0, 0, 0, 0],"J&T EXPRESS|MLM":[6123939, 4727543, 5273005, 5138018, 0, 0, 0, 0, 0, 0, 0, 0],"JAD LOGISTICA LTDA|MLB":[6179243, 8024393, 15289050, 8741110, 0, 0, 0, 0, 0, 0, 0, 0],"KENKOFOODS|MLC":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"KM20260210144718|MLB":[0, 0, 0, 60, 0, 0, 0, 0, 0, 0, 0, 0],"KOFEEK|MLA":[0, 0, 0, 45, 0, 0, 0, 0, 0, 0, 0, 0],"LOGGI|MLB":[5176376, 4526514, 7825468, 5522887, 0, 0, 0, 0, 0, 0, 0, 0],"LOJADOLINDAO|MLB":[0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 0],"LOJAPETONLINE|MLB":[0, 0, 0, 18, 0, 0, 0, 0, 0, 0, 0, 0],"LUCHO_7|MLA":[10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"LY20260116105204|MLB":[0, 0, 0, 160, 0, 0, 0, 0, 0, 0, 0, 0],"MADRETIERRA ONLINE|MCO":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"MAILAMERICAS|MCO":[0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0],"MAILAMERICAS|MLB":[1409567, 1498207, 2001173, 2134194, 0, 0, 0, 0, 0, 0, 0, 0],"MIMIUTILIDADES|MLB":[0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0],"MODONATURAL1|MLA":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MCO":[0, 46, 3536, 2862, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MEC":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MLA":[93, 637, 1346, 17949, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MLB":[28229, 17423, 17765, 205791, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MLC":[0, 9, 272, 4030, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MLM":[1210, 301, 4532, 19845, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MLU":[0, 0, 470, 1227, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MPE":[0, 0, 0, 5974, 0, 0, 0, 0, 0, 0, 0, 0],"NEXUSPA|MLC":[0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0],"OCASA|MLA":[18996294, 17361210, 18957062, 15760270, 0, 0, 0, 0, 0, 0, 0, 0],"OCA|MLA":[9363655, 7670260, 8638166, 6944517, 0, 0, 0, 0, 0, 0, 0, 0],"OLVA|MPE":[1536925, 1523381, 1712238, 1737510, 0, 0, 0, 0, 0, 0, 0, 0],"PAMPAS DECO|MLA":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"PAQUETEXPRESS|MLM":[10214551, 9972699, 11576574, 10496778, 0, 0, 0, 0, 0, 0, 0, 0],"PECASNOVASP|MLB":[0, 0, 0, 294, 0, 0, 0, 0, 0, 0, 0, 0],"PICKIT-PLACES|MLA":[19106732, 18634004, 23144639, 19964450, 0, 0, 0, 0, 0, 0, 0, 0],"PLAGAS|MLA":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"PLANEBRAND|MLB":[9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"PROVINCOM|MLC":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"PUNTO HOP|MLA":[7536652, 6608731, 7735087, 6581331, 0, 0, 0, 0, 0, 0, 0, 0],"QUYO|MLB":[0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0],"RAPIBOY|MLA":[3729, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"RFMULTIMIX|MLB":[0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0],"RIJU081925|MCO":[0, 0, 0, 98, 0, 0, 0, 0, 0, 0, 0, 0],"RODRIGUESMAYCOW20220402000742|MLA":[0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0],"ROYALE ATELIER|MLC":[0, 26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"SALDÃO ELETRO.COM|MLB":[0, 0, 0, 57, 0, 0, 0, 0, 0, 0, 0, 0],"SERVIENTREGA|MCO":[2435588, 2295750, 2564260, 2113504, 0, 0, 0, 0, 0, 0, 0, 0],"SUPPRESSLED|MCO":[0, 0, 0, 76, 0, 0, 0, 0, 0, 0, 0, 0],"SUZER FERRAMENTAS|MLB":[0, 0, 0, 170, 0, 0, 0, 0, 0, 0, 0, 0],"TENDENCIAMODAFITNESS02|MLB":[0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0],"TENDENCIAS GOURMET|MLC":[0, 49, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"THEMBALAGEM|MLB":[0, 0, 0, 18, 0, 0, 0, 0, 0, 0, 0, 0],"TI20250426112241|MLB":[0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0],"UES|MLU":[8060741, 6787794, 8321313, 6017270, 0, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MCO":[2491, 2227, 3418, 3818, 0, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MLA":[369319, 256660, 208642, 193699, 0, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MLB":[172805, 260061, 252774, 182758, 0, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MLC":[114046, 112570, 106235, 60296, 0, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MLM":[14660, 18465, 19308, 17718, 0, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MLU":[11777, 11363, 13272, 7113, 0, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MPE":[7991, 9775, 10787, 11120, 0, 0, 0, 0, 0, 0, 0, 0],"URBANO ECUADOR|MEC":[587236, 522759, 714522, 734309, 0, 0, 0, 0, 0, 0, 0, 0],"URBANO|MLA":[9601166, 7658810, 4843939, 557841, 0, 0, 0, 0, 0, 0, 0, 0],"URBANO|MPE":[7236128, 6838490, 8319862, 9368424, 0, 0, 0, 0, 0, 0, 0, 0],"WEBPACK|MLA":[9952479, 9543784, 7500061, 0, 0, 0, 0, 0, 0, 0, 0, 0],"XEBA_STORE|MLU":[0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0]};
 let CARRIERS_LOADED=[];
 
-function hasTGMV(){return Object.keys(D_TGMV).length>0;}
-function hasBppCar(){return Object.keys(D_BPP_CAR).length>0;}
+function hasTGMV(){return true;}
+function hasBppCar(){return true;}
 
 // ── Helpers ──
 function getSites(){const f=document.getElementById('fC').value;return f==='all'?SITES:SITES.filter(s=>s.c===f);}
@@ -694,189 +693,4 @@ function renderCarriers(){
   }).join('');
 }
 
-// ══════════════ RENDER: POR PAÍS ══════════════
-function renderPaises(){
-  const sites=getSites(); filterLabel('fl-pai');
-  const el=document.getElementById('paises-body');
-  el.innerHTML=`
-  <div class="g3">${sites.map((s,idx)=>{
-    const bpp=sm((D_BPP_REAL[s.c]||[]).slice(0,YTD));
-    const pl=sm((D_PLAN[s.c]||[]).slice(0,YTD));
-    const rb=sm((D_REC_BPP[s.c]||[]).slice(0,YTD));
-    const rn=sm((D_REC_NB[s.c]||[]).slice(0,YTD));
-    const tg=hasTGMV()?sm((D_TGMV[s.c]||[]).slice(0,YTD)):0;
-    const pp=pl>0?Math.round(rb/pl*100):0;
-    const pr=bpp>0?Math.round(rb/bpp*100):0;
-    const col=pp>=100?'var(--grn)':pp>=70?'var(--amb)':'var(--red)';
-    return `<div class="card" style="border-color:rgba(255,255,255,.06)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <div style="font-size:22px">${s.f}</div>
-        <div><div style="font-size:12px;font-weight:500">${s.n}</div><div style="font-size:9px;color:var(--m);font-family:var(--mono)">${s.c}</div></div>
-        <span class="badge" style="color:${col};border-color:${col}44;background:${col}11">${pp}% plano</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-family:var(--mono)">
-        <div><div style="font-size:9px;color:var(--m);text-transform:uppercase;letter-spacing:.07em">BPP Real</div><div style="font-size:13px;color:var(--red)">${f$(bpp)}</div></div>
-        <div><div style="font-size:9px;color:var(--m);text-transform:uppercase;letter-spacing:.07em">Plano BPP</div><div style="font-size:13px;color:var(--blu)">${f$(pl)}</div></div>
-        <div><div style="font-size:9px;color:var(--m);text-transform:uppercase;letter-spacing:.07em">BPP Rec.</div><div style="font-size:13px;color:var(--grn)">${f$(rb)}</div></div>
-        <div><div style="font-size:9px;color:var(--m);text-transform:uppercase;letter-spacing:.07em">Não-BPP</div><div style="font-size:13px;color:var(--amb)">${f$(rn)}</div></div>
-        <div><div style="font-size:9px;color:var(--m);text-transform:uppercase;letter-spacing:.07em">Rec/Real</div><div style="font-size:13px;">${pr}%</div></div>
-        <div><div style="font-size:9px;color:var(--m);text-transform:uppercase;letter-spacing:.07em">TGMV</div><div style="font-size:13px;color:var(--cyn)">${tg>0?fk(tg):'—'}</div></div>
-      </div>
-      <div class="pb" style="margin-top:10px"><div class="pf" style="width:${Math.min(100,pp)}%;background:${col}"></div></div>
-    </div>`;}).join('')}</div>`;
-}
-
-// ══════════════ CSV LOADER ══════════════
-let activeMtab='tgmv';
-function switchMtab(t){
-  activeMtab=t;
-  document.getElementById('mtab-tgmv').classList.toggle('active',t==='tgmv');
-  document.getElementById('mtab-bpp').classList.toggle('active',t==='bpp');
-  document.getElementById('mtab-tgmv-panel').style.display=t==='tgmv'?'block':'none';
-  document.getElementById('mtab-bpp-panel').style.display=t==='bpp'?'block':'none';
-}
-function openModal(){document.getElementById('modal-overlay').classList.add('open');}
-function closeModal(){document.getElementById('modal-overlay').classList.remove('open');}
-
-function parseCsv(text){
-  const lines=text.trim().split('\n');
-  if(lines.length<2) return [];
-  const sep=lines[0].includes(';')?';':',';
-  const header=lines[0].split(sep).map(h=>h.trim().replace(/"/g,'').toLowerCase());
-  return lines.slice(1).map(l=>{
-    const vals=l.split(sep).map(v=>v.trim().replace(/"/g,''));
-    const obj={};
-    header.forEach((h,i)=>obj[h]=vals[i]||'');
-    return obj;
-  }).filter(r=>Object.values(r).some(v=>v));
-}
-
-function monthIdx(m){
-  // m = '202601' → 0, '202602' → 1 etc
-  const s=String(m).replace(/-/g,'');
-  if(s.length===6){const mo=parseInt(s.slice(4))-1;return mo>=0&&mo<12?mo:-1;}
-  return -1;
-}
-
-function loadCsvData(){
-  const tgmvCsv=document.getElementById('csv-tgmv').value.trim();
-  const bppCsv=document.getElementById('csv-bpp').value.trim();
-  let loaded=false;
-
-  if(tgmvCsv){
-    const rows=parseCsv(tgmvCsv);
-    D_TGMV={};D_TGMV_CAR={};
-    const colM=rows[0]?Object.keys(rows[0]).find(k=>k.includes('fecha')||k.includes('month')||k.includes('m')):null;
-    rows.forEach(r=>{
-      const site=(r.sit_site_id||r.site_id||r.site||'').toUpperCase();
-      const carrier=r.carrier_id||r.carrier||'';
-      const nmv=parseFloat((r.nmv||r.valores||'0').replace(',','.'))||0;
-      const mraw=r.fecha_conta_m||r.fecha_m||r[colM]||'';
-      const mi=monthIdx(mraw);
-      if(mi<0||!site) return;
-      if(!D_TGMV[site]) D_TGMV[site]=new Array(12).fill(0);
-      D_TGMV[site][mi]+=nmv;
-      const key=carrier+'|'+site;
-      if(!D_TGMV_CAR[key]) D_TGMV_CAR[key]=new Array(12).fill(0);
-      D_TGMV_CAR[key][mi]+=nmv;
-    });
-    const carriers=[...new Set(rows.map(r=>r.carrier_id||r.carrier||'').filter(Boolean))];
-    CARRIERS_LOADED=carriers;
-    updateCarrierDropdown();
-    loaded=true;
-    document.getElementById('pill-data-status').textContent='✓ TGMV carregado';
-    document.getElementById('pill-data-status').className='pill pill-g';
-  }
-
-  if(bppCsv){
-    const rows=parseCsv(bppCsv);
-    D_BPP_CAR={};
-    rows.forEach(r=>{
-      const site=(r.sit_site_id||r.site_id||r.site||'').toUpperCase();
-      const carrier=r.carrier_id||r.carrier||'';
-      const cashout=parseFloat((r.cashout||r.cov_cashout_bonif_usd||'0').replace(',','.').replace(/[^0-9.]/g,''))||0;
-      const causa=r.l1_causa_bpp||r.causa||'';
-      const mraw=r.fecha_m||r.fecha_conta_m||'';
-      const mi=monthIdx(mraw);
-      if(mi<0||!site||!carrier) return;
-      const key=carrier+'|'+site;
-      if(!D_BPP_CAR[key]) D_BPP_CAR[key]={causas:{},monthly:new Array(12).fill(0)};
-      D_BPP_CAR[key].monthly[mi]+=cashout;
-      if(!D_BPP_CAR[key].causas[causa]) D_BPP_CAR[key].causas[causa]=new Array(12).fill(0);
-      D_BPP_CAR[key].causas[causa][mi]+=cashout;
-    });
-    loaded=true;
-  }
-
-  if(loaded){closeModal();applyFilters();}
-  else alert('Nenhum dado encontrado. Verifique o formato CSV.');
-}
-
-function updateCarrierDropdown(){
-  const sel=document.getElementById('fCarrier');
-  const cur=sel.value;
-  sel.innerHTML='<option value="all">Todos os carriers</option>';
-  CARRIERS_LOADED.slice(0,60).forEach(c=>{
-    const o=document.createElement('option');
-    o.value=c;o.textContent=c;
-    sel.appendChild(o);
-  });
-  if(CARRIERS_LOADED.includes(cur)) sel.value=cur;
-}
-
-// ══════════════ TAB SWITCHING ══════════════
-const TABS=['consolidado','bpp-rec','tgmv-rec','tgmv-full','carriers','paises'];
-const RENDERS={consolidado:renderConsolidado,'bpp-rec':renderBppRec,'tgmv-rec':renderTgmvRec,'tgmv-full':renderTgmvFull,carriers:renderCarriers,paises:renderPaises};
-
-function switchTab(name){
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',TABS[i]===name));
-  document.querySelectorAll('.tc').forEach(c=>c.classList.remove('active'));
-  document.getElementById('tab-'+name).classList.add('active');
-  RENDERS[name]();
-}
-function applyFilters(){
-  const i=TABS.findIndex(t=>document.getElementById('tab-'+t)?.classList.contains('active'));
-  if(i>=0) switchTab(TABS[i]);
-}
-
-// Initial render
-renderConsolidado();renderBppRec();
-</script>
-
-<!-- PASSWORD GATE -->
-<style>
-#pw-gate{position:fixed;inset:0;background:#0b0d11;display:flex;align-items:center;justify-content:center;z-index:9999}
-#pw-card{background:#111419;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:38px 42px;display:flex;flex-direction:column;align-items:center;gap:16px;width:330px;max-width:90vw}
-.pw-logo{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#4d9fff,#a374ff);display:flex;align-items:center;justify-content:center;font-size:22px}
-.pw-title{font-size:16px;font-weight:600;color:#dde1ea}
-.pw-sub{font-size:10px;color:#5a6170;font-family:monospace;margin-top:-8px}
-#pw-field{width:100%;background:#0b0d11;border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#dde1ea;font-size:14px;padding:11px 14px;outline:none;text-align:center;letter-spacing:.15em}
-#pw-field:focus{border-color:#4d9fff;box-shadow:0 0 0 3px rgba(77,159,255,.15)}
-#pw-submit{width:100%;background:linear-gradient(135deg,#4d9fff,#a374ff);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:600;padding:12px;cursor:pointer;letter-spacing:.03em;transition:opacity .2s}
-#pw-submit:hover{opacity:.88}
-#pw-err{font-size:11px;color:#ff4f4f;font-family:monospace;display:none;text-align:center}
-</style>
-<div id="pw-gate">
-  <div id="pw-card">
-    <div class="pw-logo">📊</div>
-    <div style="text-align:center"><div class="pw-title">BPP KPI Dashboard</div><div class="pw-sub">Commercial Carriers · 2026</div></div>
-    <input id="pw-field" type="password" placeholder="••••••••••••••••" autocomplete="off">
-    <button id="pw-submit">Acessar →</button>
-    <div id="pw-err">Senha incorreta.</div>
-  </div>
-</div>
-<script>
-(function(){
-  var P='Businesscontrol2026';
-  function u(){var v=document.getElementById('pw-field').value;
-    if(v===P){var g=document.getElementById('pw-gate');g.style.transition='opacity .3s';g.style.opacity='0';setTimeout(()=>g.style.display='none',300);}
-    else{document.getElementById('pw-err').style.display='block';document.getElementById('pw-field').value='';document.getElementById('pw-field').focus();}}
-  document.addEventListener('DOMContentLoaded',()=>{
-    document.getElementById('pw-field').focus();
-    document.getElementById('pw-submit').addEventListener('click',u);
-    document.getElementById('pw-field').addEventListener('keydown',e=>{if(e.key==='Enter')u();});
-  });
-})();
-</script>
-</body>
-</html>
+// ══════════════ RENDER: POR PAÍS ══════�
