@@ -159,6 +159,7 @@ td{padding:7px 9px;font-family:var(--mono);font-size:10px}
   <div class="tab"        onclick="switchTab('tgmv-full')">🔁 TGMV × BPP × Rec</div>
   <div class="tab"        onclick="switchTab('carriers')">🚚 Por Transportadora</div>
   <div class="tab"        onclick="switchTab('paises')">🌎 Por País</div>
+  <div class="tab"        onclick="switchTab('causisticas')">📊 Rec. Real · Causísticas</div>
 </div>
 
 <div class="main">
@@ -269,6 +270,26 @@ td{padding:7px 9px;font-family:var(--mono);font-size:10px}
   <div id="paises-body"></div>
 </div>
 
+<!-- ══════════════ TAB: REC. REAL POR CAUSÍSTICA ══════════════ -->
+<div id="tab-causisticas" class="tc">
+  <div class="fbar">
+    🔍 Filtro: <strong id="fl-caus">Todos os países</strong>
+    &nbsp;·&nbsp; Período:
+    <select id="fCausPeriod" onchange="renderCausisticas()" style="background:var(--s2);color:var(--txt);border:1px solid var(--b2);border-radius:5px;padding:3px 6px;font-size:11px;font-family:var(--mono)">
+      <option value="6m">Out-25–Mar-26 (6M)</option>
+      <option value="q4">Q4 2025 (Out+Nov+Dez)</option>
+      <option value="q1" selected>Q1 2026 (Jan+Fev+Mar)</option>
+      <option value="3">Janeiro 2026</option>
+      <option value="4">Fevereiro 2026</option>
+      <option value="5">Março 2026</option>
+      <option value="0">Outubro 2025</option>
+      <option value="1">Novembro 2025</option>
+      <option value="2">Dezembro 2025</option>
+    </select>
+  </div>
+  <div id="causisticas-body"></div>
+</div>
+
 </div><!-- /main -->
 
 <!-- ══════════════ MODAL: CARREGAR DADOS ══════════════ -->
@@ -347,6 +368,90 @@ const D_REC_NB={MLB:[201076, 301956, 49569, 146773, 0, 0, 0, 0, 0, 0, 0, 0],MLA:
 const D_TGMV={MLB:[248108664, 253795813, 344218530, 298334268, 0, 0, 0, 0, 0, 0, 0, 0],MLA:[371212485, 337917034, 391427801, 322651310, 0, 0, 0, 0, 0, 0, 0, 0],MLM:[79402426, 63807733, 70188073, 65558066, 0, 0, 0, 0, 0, 0, 0, 0],MCO:[22147615, 21213798, 24830416, 20606090, 0, 0, 0, 0, 0, 0, 0, 0],MLC:[53270174, 49881959, 57620337, 49712596, 0, 0, 0, 0, 0, 0, 0, 0],MPE:[15344700, 14554981, 17536684, 18599734, 0, 0, 0, 0, 0, 0, 0, 0],MLU:[33855871, 29936619, 37018355, 27524335, 0, 0, 0, 0, 0, 0, 0, 0],MEC:[722756, 680666, 904866, 919901, 0, 0, 0, 0, 0, 0, 0, 0]};
 const D_TGMV_CAR={"99 MINUTOS PERÚ|MPE":[0, 0, 16482, 270442, 0, 0, 0, 0, 0, 0, 0, 0],"ALMEX|MLM":[509440, 418974, 458355, 489339, 0, 0, 0, 0, 0, 0, 0, 0],"ANDREANI|MLA":[50053380, 43363941, 48233353, 41468885, 0, 0, 0, 0, 0, 0, 0, 0],"ANJUN|MLB":[0, 0, 0, 227, 0, 0, 0, 0, 0, 0, 0, 0],"ARCADIO BUENDIA|MLA":[0, 0, 0, 151, 0, 0, 0, 0, 0, 0, 0, 0],"ARROWCHILE|MLC":[0, 0, 0, 495, 0, 0, 0, 0, 0, 0, 0, 0],"AS20260324155000|MLB":[0, 0, 0, 39, 0, 0, 0, 0, 0, 0, 0, 0],"BASECOSMETICS|MLB":[0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0],"BECAPLIS_ECOMMERCE_BR|MLB":[0, 0, 0, 280, 0, 0, 0, 0, 0, 0, 0, 0],"BFBGACHDE59202|MLB":[0, 0, 0, 26, 0, 0, 0, 0, 0, 0, 0, 0],"BLUE EXPRESS|MLC":[7534628, 7012790, 7650013, 6703098, 0, 0, 0, 0, 0, 0, 0, 0],"CA20260316182002|MLU":[0, 0, 0, 51, 0, 0, 0, 0, 0, 0, 0, 0],"CABIFY|MLA":[115801, 54, 650, 835, 0, 0, 0, 0, 0, 0, 0, 0],"CAINIAO DOMESTIC|MLM":[747442, 818468, 767899, 655180, 0, 0, 0, 0, 0, 0, 0, 0],"CAINIAO|MCO":[3081724, 2288999, 2875394, 3014240, 0, 0, 0, 0, 0, 0, 0, 0],"CAINIAO|MLB":[10127281, 7703593, 10720839, 10759559, 0, 0, 0, 0, 0, 0, 0, 0],"CAINIAO|MLC":[3226854, 2593318, 3401203, 3567744, 0, 0, 0, 0, 0, 0, 0, 0],"CAINIAO|MLM":[24946557, 16064071, 18753267, 18301659, 0, 0, 0, 0, 0, 0, 0, 0],"CAINIAO|MLU":[1093, 144115, 430269, 498218, 0, 0, 0, 0, 0, 0, 0, 0],"CARVALIMA|MLB":[12051306, 7875444, 9510073, 8499277, 0, 0, 0, 0, 0, 0, 0, 0],"CBT ARGENTINA|MLA":[0, 22, 23, 10324, 0, 0, 0, 0, 0, 0, 0, 0],"CBT CHILE|MLC":[0, 0, 338, 261328, 0, 0, 0, 0, 0, 0, 0, 0],"CDBACHFGE96079|MLC":[0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0],"CE20260410201723|MLC":[0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 0, 0],"CHILEXPRESS|MLC":[2814318, 2718292, 2936105, 2752672, 0, 0, 0, 0, 0, 0, 0, 0],"CLAUDIO YULAN|MLA":[0, 0, 0, 184, 0, 0, 0, 0, 0, 0, 0, 0],"COMERCIALIZADORAVJP|MLC":[0, 0, 0, 40, 0, 0, 0, 0, 0, 0, 0, 0],"COMEXSHOP|MLA":[0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 0],"COMPRACERTAMARKETPLACE|MLB":[0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0],"COORDINADORA|MCO":[2203553, 1647282, 1654690, 1263426, 0, 0, 0, 0, 0, 0, 0, 0],"CORREIOS|MLB":[86033455, 106983237, 147365532, 135546681, 0, 0, 0, 0, 0, 0, 0, 0],"CORREO ARGENTINO|MLA":[48900633, 44263102, 50354669, 42066103, 0, 0, 0, 0, 0, 0, 0, 0],"CORREOS CHILE|MLC":[995975, 1071825, 1271269, 350453, 0, 0, 0, 0, 0, 0, 0, 0],"DAC|MLU":[2042328, 1661049, 2015393, 1564618, 0, 0, 0, 0, 0, 0, 0, 0],"DHL|MLM":[2984247, 2791908, 2531240, 2448018, 0, 0, 0, 0, 0, 0, 0, 0],"DKGOFFICIAL|MLA":[0, 34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"DOMINALOG EXPRESS|MLB":[895676, 1638589, 3475114, 3705760, 0, 0, 0, 0, 0, 0, 0, 0],"DV20260417154137|MLA":[0, 0, 0, 114, 0, 0, 0, 0, 0, 0, 0, 0],"EHEDGFACB134|MLB":[0, 0, 0, 56, 0, 0, 0, 0, 0, 0, 0, 0],"ELECTROHOGAR_|MLA":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"ELECTRONICAKOLM|MLC":[0, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"ELEVECOMEPI|MLB":[0, 0, 0, 141, 0, 0, 0, 0, 0, 0, 0, 0],"EMLED2842099|MCO":[0, 0, 0, 46, 0, 0, 0, 0, 0, 0, 0, 0],"EMPORIO_VARANDA|MLB":[0, 46, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"ENVIA|MCO":[6717849, 6594455, 8202440, 6401409, 0, 0, 0, 0, 0, 0, 0, 0],"ERAINHA|MLB":[0, 0, 0, 155, 0, 0, 0, 0, 0, 0, 0, 0],"ESTAFETA|MLM":[1647953, 1295901, 1493047, 1628537, 0, 0, 0, 0, 0, 0, 0, 0],"EVEN7 STORE|MLB":[0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0],"FACUNDO GASTON VERGA|MLA":[0, 0, 0, 353, 0, 0, 0, 0, 0, 0, 0, 0],"FEDEX|MLM":[27086713, 22896922, 24034820, 21869743, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MCO":[7706410, 8385039, 9526679, 7806604, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MEC":[135520, 157907, 190344, 185592, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MLA":[197212543, 182555784, 221810156, 189084244, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MLB":[94079554, 95240647, 114114484, 92270271, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MLC":[38584354, 36373052, 42254903, 36012400, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MLM":[5125715, 4802480, 5276026, 4493230, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MLU":[23739932, 21332298, 26237638, 19435815, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MPE":[6563655, 6183335, 7477315, 7206265, 0, 0, 0, 0, 0, 0, 0, 0],"FREDIORTIGOZAPAIVA|MLA":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"GDFEGCAHB72000|MLB":[0, 0, 0, 49, 0, 0, 0, 0, 0, 0, 0, 0],"GFDHABCEG93876|MLB":[0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0],"GOL|MLB":[0, 0, 0, 77, 0, 0, 0, 0, 0, 0, 0, 0],"IMILE DELIVERY|MLB":[807, 111572, 228219, 317836, 0, 0, 0, 0, 0, 0, 0, 0],"IMPERIUM_FIT|MLB":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"J&T EXPRESS BRAZIL|MLB":[31954358, 19916087, 33418032, 30445702, 0, 0, 0, 0, 0, 0, 0, 0],"J&T EXPRESS|MLB":[0, 0, 0, 504, 0, 0, 0, 0, 0, 0, 0, 0],"J&T EXPRESS|MLM":[6123939, 4727543, 5273005, 5138018, 0, 0, 0, 0, 0, 0, 0, 0],"JAD LOGISTICA LTDA|MLB":[6179243, 8024393, 15289050, 8741110, 0, 0, 0, 0, 0, 0, 0, 0],"KENKOFOODS|MLC":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"KM20260210144718|MLB":[0, 0, 0, 60, 0, 0, 0, 0, 0, 0, 0, 0],"KOFEEK|MLA":[0, 0, 0, 45, 0, 0, 0, 0, 0, 0, 0, 0],"LOGGI|MLB":[5176376, 4526514, 7825468, 5522887, 0, 0, 0, 0, 0, 0, 0, 0],"LOJADOLINDAO|MLB":[0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 0],"LOJAPETONLINE|MLB":[0, 0, 0, 18, 0, 0, 0, 0, 0, 0, 0, 0],"LUCHO_7|MLA":[10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"LY20260116105204|MLB":[0, 0, 0, 160, 0, 0, 0, 0, 0, 0, 0, 0],"MADRETIERRA ONLINE|MCO":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"MAILAMERICAS|MCO":[0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0],"MAILAMERICAS|MLB":[1409567, 1498207, 2001173, 2134194, 0, 0, 0, 0, 0, 0, 0, 0],"MIMIUTILIDADES|MLB":[0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0],"MODONATURAL1|MLA":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MCO":[0, 46, 3536, 2862, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MEC":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MLA":[93, 637, 1346, 17949, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MLB":[28229, 17423, 17765, 205791, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MLC":[0, 9, 272, 4030, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MLM":[1210, 301, 4532, 19845, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MLU":[0, 0, 470, 1227, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MPE":[0, 0, 0, 5974, 0, 0, 0, 0, 0, 0, 0, 0],"NEXUSPA|MLC":[0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0],"OCASA|MLA":[18996294, 17361210, 18957062, 15760270, 0, 0, 0, 0, 0, 0, 0, 0],"OCA|MLA":[9363655, 7670260, 8638166, 6944517, 0, 0, 0, 0, 0, 0, 0, 0],"OLVA|MPE":[1536925, 1523381, 1712238, 1737510, 0, 0, 0, 0, 0, 0, 0, 0],"PAMPAS DECO|MLA":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"PAQUETEXPRESS|MLM":[10214551, 9972699, 11576574, 10496778, 0, 0, 0, 0, 0, 0, 0, 0],"PECASNOVASP|MLB":[0, 0, 0, 294, 0, 0, 0, 0, 0, 0, 0, 0],"PICKIT-PLACES|MLA":[19106732, 18634004, 23144639, 19964450, 0, 0, 0, 0, 0, 0, 0, 0],"PLAGAS|MLA":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"PLANEBRAND|MLB":[9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"PROVINCOM|MLC":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"PUNTO HOP|MLA":[7536652, 6608731, 7735087, 6581331, 0, 0, 0, 0, 0, 0, 0, 0],"QUYO|MLB":[0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0],"RAPIBOY|MLA":[3729, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"RFMULTIMIX|MLB":[0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0],"RIJU081925|MCO":[0, 0, 0, 98, 0, 0, 0, 0, 0, 0, 0, 0],"RODRIGUESMAYCOW20220402000742|MLA":[0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0],"ROYALE ATELIER|MLC":[0, 26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"SALDÃO ELETRO.COM|MLB":[0, 0, 0, 57, 0, 0, 0, 0, 0, 0, 0, 0],"SERVIENTREGA|MCO":[2435588, 2295750, 2564260, 2113504, 0, 0, 0, 0, 0, 0, 0, 0],"SUPPRESSLED|MCO":[0, 0, 0, 76, 0, 0, 0, 0, 0, 0, 0, 0],"SUZER FERRAMENTAS|MLB":[0, 0, 0, 170, 0, 0, 0, 0, 0, 0, 0, 0],"TENDENCIAMODAFITNESS02|MLB":[0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0],"TENDENCIAS GOURMET|MLC":[0, 49, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"THEMBALAGEM|MLB":[0, 0, 0, 18, 0, 0, 0, 0, 0, 0, 0, 0],"TI20250426112241|MLB":[0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0],"UES|MLU":[8060741, 6787794, 8321313, 6017270, 0, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MCO":[2491, 2227, 3418, 3818, 0, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MLA":[369319, 256660, 208642, 193699, 0, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MLB":[172805, 260061, 252774, 182758, 0, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MLC":[114046, 112570, 106235, 60296, 0, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MLM":[14660, 18465, 19308, 17718, 0, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MLU":[11777, 11363, 13272, 7113, 0, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MPE":[7991, 9775, 10787, 11120, 0, 0, 0, 0, 0, 0, 0, 0],"URBANO ECUADOR|MEC":[587236, 522759, 714522, 734309, 0, 0, 0, 0, 0, 0, 0, 0],"URBANO|MLA":[9601166, 7658810, 4843939, 557841, 0, 0, 0, 0, 0, 0, 0, 0],"URBANO|MPE":[7236128, 6838490, 8319862, 9368424, 0, 0, 0, 0, 0, 0, 0, 0],"WEBPACK|MLA":[9952479, 9543784, 7500061, 0, 0, 0, 0, 0, 0, 0, 0, 0],"XEBA_STORE|MLU":[0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0]};
 let CARRIERS_LOADED=[];
+
+// ══ Recuperado Real por Causística — Q4 2025 + Q1 2026 ══
+// Fonte: Planilha "Recuperado por causística" (2026-04-29)
+// Índices: [Out-25, Nov-25, Dez-25, Jan-26, Fev-26, Mar-26]
+// Regra de negócio: recupero = caixa recebido NO mês (independente do período de origem)
+// Ciclo de 90 dias: casos de Q4-2025 ainda se fecham em Q1-2026
+const CAUS_PERIODS=['Out-25','Nov-25','Dez-25','Jan-26','Fev-26','Mar-26'];
+const CAUS_TYPES=['Lost','Stolen','Damaged','Delayed','PNR+EB','Outros'];
+const CAUS_COLORS=['#4d9fff','#ff6eb4','#f5a623','#a374ff','#2ecc8a','#8ab4c0'];
+// CAUS idx 3,4,5 → D_BPP_REAL/D_TGMV_CBS idx 0,1,2 (Jan,Fev,Mar 2026)
+const D_REC_CAUS={
+  MLB:{
+    Lost:    [234117,154149,250088,120148,0,0],
+    Stolen:  [10234,5898,10362,5149,0,0],
+    Damaged: [110302,145027,123981,138245,0,0],
+    Delayed: [0,685,90492,74468,0,0],
+    'PNR+EB':[54694,73078,165227,179567,0,0],
+    Outros:  [32296,81077,53889,54065,0,0],
+    _total:  [441644,459914,694039,571641,0,0]
+  },
+  MLA:{
+    Lost:    [45257,68500,73480,95440,6992,0],
+    Stolen:  [56,3307,5270,35676,531,0],
+    Damaged: [63919,45445,45178,45016,2187,0],
+    Delayed: [23691,289,76538,119203,34975,0],
+    'PNR+EB':[24501,21413,34263,59692,0,0],
+    Outros:  [0,0,0,0,0,0],
+    _total:  [157425,138953,234728,355028,44686,0]
+  },
+  MLM:{
+    Lost:    [104853,79653,73380,51159,3407,0],
+    Stolen:  [17523,3110,16,1294,0,0],
+    Damaged: [6560,17621,5071,8445,0,0],
+    Delayed: [0,256,32595,26780,503,0],
+    'PNR+EB':[7376,34631,10585,2032,0,0],
+    Outros:  [0,0,0,0,0,0],
+    _total:  [136312,135271,121647,89710,3910,0]
+  },
+  MCO:{
+    Lost:    [1809,2193,1457,4858,0,0],
+    Stolen:  [411,0,0,0,0,0],
+    Damaged: [210,123,689,0,0,0],
+    Delayed: [0,99,655,0,0,0],
+    'PNR+EB':[921,1293,1558,0,0,0],
+    Outros:  [906,922,4303,1080,0,0],
+    _total:  [4257,4630,8662,5938,0,0]
+  },
+  MLU:{
+    Lost:    [10886,10331,2882,0,0,0],
+    Stolen:  [515,434,372,0,0,0],
+    Damaged: [2021,2163,1852,0,0,0],
+    Delayed: [537,466,399,0,0,0],
+    'PNR+EB':[618,595,510,0,0,0],
+    Outros:  [25,22,18,0,0,0],
+    _total:  [14603,14011,6033,6033,6033,6033]
+  },
+  MLC:{
+    Lost:    [10569,17805,17517,12605,11920,0],
+    Stolen:  [4908,2110,3938,142,1228,0],
+    Damaged: [10805,8118,7351,3629,251,0],
+    Delayed: [0,0,15107,7052,1653,0],
+    'PNR+EB':[2526,2198,4012,3479,2341,0],
+    Outros:  [0,0,0,0,0,0],
+    _total:  [28808,30231,47925,26907,17393,0]
+  },
+  MPE:{
+    Lost:    [305,153,205,0,0,0],
+    Stolen:  [265,350,460,0,0,0],
+    Damaged: [749,309,412,0,0,0],
+    Delayed: [0,0,0,0,0,0],
+    'PNR+EB':[442,589,344,0,0,0],
+    Outros:  [1190,884,691,0,0,0],
+    _total:  [2951,2285,2111,0,0,0]
+  },
+  MEC:{
+    Lost:    [0,0,0,0,0,0],
+    Stolen:  [0,0,0,484,0,0],
+    Damaged: [0,0,0,170,0,0],
+    Delayed: [0,0,0,0,0,0],
+    'PNR+EB':[0,0,0,0,97,0],
+    Outros:  [0,0,0,1578,0,0],
+    _total:  [0,0,0,2232,97,0]
+  }
+};
 
 // ── Alias CBS → BigQuery CARRIER_ID (quando o nome diverge) ──
 const _TGMV_ALIAS={
@@ -924,11 +1029,229 @@ function renderPaises(){
   el.innerHTML=html;
 }
 
+// ══════════════ RENDER: REC. REAL POR CAUSÍSTICA ══════════════
+function getCausPeriod(){
+  const v=document.getElementById('fCausPeriod')?.value||'q1';
+  if(v==='6m') return {s:0,e:6,label:'Out-25–Mar-26 (6M)'};
+  if(v==='q4') return {s:0,e:3,label:'Q4 2025'};
+  if(v==='q1') return {s:3,e:6,label:'Q1 2026'};
+  const i=parseInt(v); return {s:i,e:i+1,label:CAUS_PERIODS[i]};
+}
+// Soma BPP Real do intervalo causística [s,e) — só meses 2026 (idx 3,4,5 → BPP 0,1,2)
+function causBppReal(site,s,e){
+  let t=0; for(let i=s;i<e;i++){if(i>=3&&i<=5)t+=(D_BPP_REAL[site]||[])[i-3]||0;} return t;
+}
+// Soma TGMV CBS do intervalo causística [s,e) — só meses 2026
+function causTgmvSite(site,s,e){
+  let t=0; for(let i=s;i<e;i++){if(i>=3&&i<=5)t+=(D_TGMV_CBS[site]||[])[i-3]||0;} return t;
+}
+
+function renderCausisticas(){
+  const el=document.getElementById('causisticas-body');
+  if(!el) return;
+  const sites=getSites();
+  filterLabel('fl-caus');
+  const cp=getCausPeriod();
+  const activeSites=sites.map(s=>s.c);
+
+  const sumC=(site,type,s,e)=>{const a=(D_REC_CAUS[site]||{})[type]||[];return a.slice(s,e).reduce((x,v)=>x+(+v||0),0);};
+  const sumTot=(site,s,e)=>{const a=(D_REC_CAUS[site]||{})._total||[];return a.slice(s,e).reduce((x,v)=>x+(+v||0),0);};
+
+  const totRec=activeSites.reduce((a,s)=>a+sumTot(s,cp.s,cp.e),0);
+  const totBpp=activeSites.reduce((a,s)=>a+causBppReal(s,cp.s,cp.e),0);
+  const totTgmv=activeSites.reduce((a,s)=>a+causTgmvSite(s,cp.s,cp.e),0);
+  const has2026=(cp.s<6&&cp.e>3);
+
+  // Monthly totals per causística (all 6 months, for trend chart)
+  const trendDs=CAUS_TYPES.map((type,i)=>({
+    label:type,
+    data:CAUS_PERIODS.map((_,pi)=>activeSites.reduce((a,s)=>a+sumC(s,type,pi,pi+1),0)),
+    backgroundColor:CAUS_COLORS[i]+'cc',borderRadius:2,stack:'s',yAxisID:'y'
+  }));
+  // BPP Real line (null for Q4 2025 months)
+  const bppLine=CAUS_PERIODS.map((_,i)=>i>=3&&i<=5?activeSites.reduce((a,s)=>a+((D_BPP_REAL[s]||[])[i-3]||0),0):null);
+  const tgmvLine=CAUS_PERIODS.map((_,i)=>i>=3&&i<=5?activeSites.reduce((a,s)=>a+((D_TGMV_CBS[s]||[])[i-3]||0),0):null);
+
+  // Donut data for selected period
+  const donutVals=CAUS_TYPES.map((t)=>activeSites.reduce((a,s)=>a+sumC(s,t,cp.s,cp.e),0));
+  const donutNZ=CAUS_TYPES.map((t,i)=>({t,v:donutVals[i],c:CAUS_COLORS[i]})).filter(x=>x.v>0);
+
+  el.innerHTML=`
+  <div class="krow">
+    <div class="kpi g">
+      <div class="kl">Rec. Real BPP</div>
+      <div class="kv">${fk(totRec)}</div>
+      <div class="ks">${cp.label}</div>
+    </div>
+    <div class="kpi r">
+      <div class="kl">BPP Real (cashout)</div>
+      <div class="kv">${has2026&&totBpp>0?fk(totBpp):'—'}</div>
+      <div class="ks">${has2026&&totBpp>0?'Meses 2026 do período':'Sem dados 2026'}</div>
+    </div>
+    <div class="kpi b">
+      <div class="kl">% Rec / BPP Real</div>
+      <div class="kv">${has2026&&totBpp>0?Math.round(totRec/totBpp*100)+'%':'—'}</div>
+      <div class="ks">${has2026&&totBpp>0?'Meses com dado':'—'}</div>
+    </div>
+    <div class="kpi a">
+      <div class="kl">TGMV CBS</div>
+      <div class="kv">${has2026&&totTgmv>0?fk(totTgmv):'—'}</div>
+      <div class="ks">${has2026&&totTgmv>0?'Meses 2026 do período':'Sem dados 2026'}</div>
+    </div>
+    <div class="kpi" style="background:rgba(163,116,255,.08);border-color:rgba(163,116,255,.25)">
+      <div class="kl">% Rec / TGMV</div>
+      <div class="kv" style="color:var(--pur)">${has2026&&totTgmv>0?(totRec/totTgmv*100).toFixed(2)+'%':'—'}</div>
+      <div class="ks">${has2026&&totTgmv>0?'Meses com dado':'—'}</div>
+    </div>
+  </div>
+
+  <div class="card gf" style="margin-bottom:14px">
+    <div class="ch">
+      <div>
+        <div class="ct">Evolução Mensal — Recuperado Real por Causística vs BPP Real vs TGMV</div>
+        <div style="font-size:10px;color:var(--m2);margin-top:2px">⏱ Ciclo 90 dias: casos Q4-2025 ainda se fecham em 2026 · BPP Real e TGMV disponíveis apenas Jan–Mar 2026 (eixo direito)</div>
+      </div>
+      <span class="badge bg">USD</span>
+    </div>
+    <div class="cw" style="height:310px"><canvas id="cCausBar"></canvas></div>
+    <div class="leg" style="flex-wrap:wrap;gap:6px 12px">
+      ${CAUS_TYPES.map((t,i)=>`<div class="li"><div class="ld" style="background:${CAUS_COLORS[i]}"></div>${t}</div>`).join('')}
+      <div class="li"><div class="ld" style="background:#ef4444;border-radius:0;height:2px;margin-top:6px;width:20px"></div>BPP Real</div>
+      <div class="li"><div class="ld" style="background:#f59e0b;border-radius:0;height:2px;margin-top:6px;width:20px"></div>TGMV CBS</div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div class="ct">Mix de Causísticas — ${cp.label}</div><span class="badge bg">USD</span></div>
+      <div class="cw" style="height:270px"><canvas id="cCausPie"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ct">Recuperado por País — ${cp.label}</div><span class="badge bg">USD</span></div>
+      <div class="cw" style="height:270px"><canvas id="cCausCtry"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card gf">
+    <div class="ch">
+      <div class="ct">Detalhe: País × Causística × BPP Real × TGMV — ${cp.label}</div>
+      <span class="badge bg">USD · Rec. Real = caixa recebido no mês</span>
+    </div>
+    <div class="tw"><table>
+      <thead><tr>
+        <th>País</th>
+        <th class="tr">Lost</th><th class="tr">Stolen</th><th class="tr">Damaged</th>
+        <th class="tr">Delayed</th><th class="tr">PNR+EB</th><th class="tr">Outros</th>
+        <th class="tr tg">Total Rec.</th>
+        <th class="tr">BPP Real</th><th class="tr">% Rec/BPP</th>
+        <th class="tr tc2">TGMV CBS</th><th class="tr tp">% Rec/TGMV</th>
+      </tr></thead>
+      <tbody id="tCauses"></tbody>
+    </table></div>
+  </div>`;
+
+  // ── Chart: Stacked bar + dual axis lines ──
+  dc('cCausBar');
+  CH['cCausBar']=new Chart(document.getElementById('cCausBar'),{
+    type:'bar',
+    data:{
+      labels:CAUS_PERIODS,
+      datasets:[
+        ...trendDs,
+        {label:'BPP Real',data:bppLine,type:'line',borderColor:'#ef4444',backgroundColor:'transparent',
+         borderWidth:2,pointRadius:4,pointBackgroundColor:'#ef4444',borderDash:[5,3],
+         yAxisID:'y2',order:-1,spanGaps:false},
+        {label:'TGMV CBS',data:tgmvLine,type:'line',borderColor:'#f59e0b',backgroundColor:'transparent',
+         borderWidth:2,pointRadius:4,pointBackgroundColor:'#f59e0b',borderDash:[5,3],
+         yAxisID:'y2',order:-2,spanGaps:false}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{backgroundColor:'#181c24',borderColor:'rgba(255,255,255,.12)',borderWidth:1,
+          titleColor:'#dde1ea',bodyColor:'#7c8696',
+          callbacks:{label:c=>' '+c.dataset.label+': '+fk(c.raw||0)}}
+      },
+      scales:{
+        x:{stacked:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9}}},
+        y:{stacked:true,grid:{color:'rgba(255,255,255,.06)'},
+           ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>'$'+Math.round(v/1000)+'k'},
+           title:{display:true,text:'Recuperado (barras)',color:'#5a6170',font:{size:9}}},
+        y2:{type:'linear',display:true,position:'right',grid:{drawOnChartArea:false},
+            ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>fk(v)},
+            title:{display:true,text:'BPP Real / TGMV (linhas)',color:'#5a6170',font:{size:9}}}
+      }
+    }
+  });
+
+  // ── Donut: mix causísticas ──
+  dc('cCausPie');
+  CH['cCausPie']=new Chart(document.getElementById('cCausPie'),{
+    type:'doughnut',
+    data:{labels:donutNZ.map(x=>x.t),datasets:[{data:donutNZ.map(x=>x.v),
+      backgroundColor:donutNZ.map(x=>x.c),borderWidth:1,borderColor:'rgba(0,0,0,.25)'}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'55%',
+      plugins:{legend:{display:true,position:'bottom',labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},boxWidth:8,boxHeight:8}},
+               tooltip:{callbacks:{label:c=>` ${c.label}: ${f$(c.raw)} (${Math.round(c.raw/(donutNZ.reduce((a,x)=>a+x.v,0)||1)*100)}%)`}}}}
+  });
+
+  // ── Country bar: stacked by causística ──
+  dc('cCausCtry');
+  CH['cCausCtry']=new Chart(document.getElementById('cCausCtry'),{
+    type:'bar',
+    data:{
+      labels:activeSites.map(s=>{const sf=SITES.find(x=>x.c===s);return sf?sf.n:s;}),
+      datasets:CAUS_TYPES.map((type,i)=>({
+        label:type,
+        data:activeSites.map(s=>sumC(s,type,cp.s,cp.e)),
+        backgroundColor:CAUS_COLORS[i]+'cc',borderRadius:2,stack:'s'
+      }))
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'bottom',labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},boxWidth:8,boxHeight:8}},
+               tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${f$(c.raw)}`}}},
+      scales:{
+        x:{stacked:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9}}},
+        y:{stacked:true,grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>'$'+Math.round(v/1000)+'k'}}
+      }}
+  });
+
+  // ── Table ──
+  document.getElementById('tCauses').innerHTML=activeSites.map(s=>{
+    const sf=SITES.find(x=>x.c===s);
+    const tots=CAUS_TYPES.map(t=>sumC(s,t,cp.s,cp.e));
+    const rec=sumTot(s,cp.s,cp.e);
+    const bpp=causBppReal(s,cp.s,cp.e);
+    const tgmv=causTgmvSite(s,cp.s,cp.e);
+    const recPbpp=bpp>0&&rec>0?Math.round(rec/bpp*100)+'%':'—';
+    const recPtgmv=tgmv>0&&rec>0?(rec/tgmv*100).toFixed(2)+'%':'—';
+    return `<tr>
+      <td class="tcc">${sf?sf.f:''} ${sf?.n||s}</td>
+      ${tots.map(v=>`<td class="tr">${v>0?f$(v):'—'}</td>`).join('')}
+      <td class="tr tg" style="font-weight:600">${rec>0?f$(rec):'—'}</td>
+      <td class="tr">${bpp>0?f$(bpp):'—'}</td>
+      <td class="tr">${recPbpp}</td>
+      <td class="tr tc2">${tgmv>0?fk(tgmv):'—'}</td>
+      <td class="tr tp">${recPtgmv}</td>
+    </tr>`;
+  }).join('')+`<tr style="border-top:1px solid var(--b2);font-weight:600">
+    <td class="tcc">TOTAL</td>
+    ${CAUS_TYPES.map(t=>{const v=activeSites.reduce((a,s)=>a+sumC(s,t,cp.s,cp.e),0);return`<td class="tr">${v>0?f$(v):'—'}</td>`;}).join('')}
+    <td class="tr tg">${totRec>0?f$(totRec):'—'}</td>
+    <td class="tr">${totBpp>0?f$(totBpp):'—'}</td>
+    <td class="tr">${has2026&&totBpp>0?Math.round(totRec/totBpp*100)+'%':'—'}</td>
+    <td class="tr tc2">${totTgmv>0?fk(totTgmv):'—'}</td>
+    <td class="tr tp">${has2026&&totTgmv>0?(totRec/totTgmv*100).toFixed(2)+'%':'—'}</td>
+  </tr>`;
+}
+
 // ══════════════ TAB SWITCHING ══════════════
 function switchTab(name){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tc').forEach(c=>c.classList.remove('active'));
-  const tabMap={'consolidado':0,'bpp-rec':1,'tgmv-rec':2,'tgmv-full':3,'carriers':4,'paises':5};
+  const tabMap={'consolidado':0,'bpp-rec':1,'tgmv-rec':2,'tgmv-full':3,'carriers':4,'paises':5,'causisticas':6};
   const idx=tabMap[name]??0;
   document.querySelectorAll('.tab')[idx]?.classList.add('active');
   const tc=document.getElementById('tab-'+name);
@@ -939,7 +1262,8 @@ function switchTab(name){
     'tgmv-rec':renderTgmvRec,
     'tgmv-full':renderTgmvFull,
     'carriers':renderCarriers,
-    'paises':renderPaises
+    'paises':renderPaises,
+    'causisticas':renderCausisticas
   };
   if(renderMap[name]) renderMap[name]();
 }
@@ -949,7 +1273,7 @@ function applyFilters(){
   document.getElementById('pill-months').textContent=periodLabel();
   const active=document.querySelector('.tab.active');
   if(!active) return;
-  const tabMap=['consolidado','bpp-rec','tgmv-rec','tgmv-full','carriers','paises'];
+  const tabMap=['consolidado','bpp-rec','tgmv-rec','tgmv-full','carriers','paises','causisticas'];
   const tabs=[...document.querySelectorAll('.tab')];
   const idx=tabs.indexOf(active);
   if(idx>=0) switchTab(tabMap[idx]);
