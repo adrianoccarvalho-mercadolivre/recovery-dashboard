@@ -628,7 +628,10 @@ function renderCarriers(){
       const b=sm(vals.bpp.slice(0,YTD)),n=sm(vals.nonbpp.slice(0,YTD));
       if(b+n===0) return;
       const _tgKey=car.toUpperCase()+'|'+site;
-      const tg=hasTGMV()?sm((D_TGMV_CAR[_tgKey]||D_TGMV_CAR[car+'|'+site]||[]).slice(0,YTD)):0;
+      // Alias map: CBS name → BigQuery CARRIER_ID (quando o nome difere)
+      const _TGMV_ALIAS={'J&T EXPRESS|MLB':'J&T EXPRESS BRAZIL|MLB'};
+      const _tgResolved=_TGMV_ALIAS[_tgKey]||_tgKey;
+      const tg=hasTGMV()?sm((D_TGMV_CAR[_tgResolved]||D_TGMV_CAR[_tgKey]||D_TGMV_CAR[car+'|'+site]||[]).slice(0,YTD)):0;
       rows.push({car,site,b,n,tg,bppArr:vals.bpp,nbArr:vals.nonbpp});
     });
   });
