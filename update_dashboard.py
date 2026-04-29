@@ -512,67 +512,68 @@ def patch_v7(html, rec_bpp, rec_nb, rec_bonov, plan, bpp_real):
     return patched
 
 def patch_kpi(html, plan, bpp_real_site, rec_bpp, rec_nb, tgmv_site, tgmv_car, bpp_car):
-    """Substitui as constantes de dados no bpp_kpi_v1.html."""
+    """
+    Substitui as constantes de dados no bpp_kpi_v1.html.
+
+    Mapeamento correto:
+      D_PLAN       = plan (metas do plano, não cashout real)
+      D_BPP_REAL   = bpp_real_site (cashout BPP CC-específico, da planilha "BPP REAL")
+      D_REC_BPP    = rec_bpp (recuperado BPP da planilha Recuperado)
+      D_REC_NB     = rec_nb (recuperado Não-BPP)
+      D_TGMV       = tgmv_site (BigQuery)
+      D_TGMV_CAR   = tgmv_car (BigQuery, por carrier)
+    """
     log("🔧 Atualizando bpp_kpi_v1...")
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
     ytd = ytd_count(bpp_real_site)
 
-    replacements = {
-        r"const YTD=\d+;":
-            f"const YTD={ytd}; // Atualizado {now}",
-        r"const D_PLAN=\{[^;]+\};":
-            f"const D_PLAN={js_dict_12(plan)};",
-        r"const D_BPP_REAL=\{[^;]+\};":
-            f"const D_BPP_REAL={js_dict_12(bpp_real_site)};",
-        r"const D_REC_BPP=\{[^;]+\};":
-            f"const D_REC_BPP={js_dict_12(rec_bpp)};",
-        r"const D_REC_NB=\{[^;]+\};":
-            f"const D_REC_NB={js_dict_12(rec_nb)};",
-    }
-
-    patched = html
-    for pattern, replacement in replacements.items():
-        new_html = re.sub(pattern, replacement, patched, count=1)
-        if new_html == patched:
+    def safe_sub(pattern, replacement, text):
+        """Regex sub com fallback para padrão com conteúdo multiline (chaves aninhadas)."""
+        new = re.sub(pattern, replacement, text, count=1)
+        if new == text:
             log(f"   ⚠️  Padrão não encontrado: {pattern[:40]}")
         else:
             log(f"   ✅ Substituído: {pattern[:40]}")
-        patched = new_html
+        return new
 
-    # Se temos TGMV do BigQuery, embed como estático
+    patched = html
+    patched = safe_sub(r"const YTD=\d+;[^\n]*",
+                       f"const YTD={ytd}; // Atualizado {now}", patched)
+    patched = safe_sub(r"const D_PLAN=\{[^;]+\};",
+                       f"const D_PLAN={js_dict_12(plan)};", patched)
+    # D_BPP_REAL = cashout CC da planilha "BPP REAL" (não do BigQuery geral)
+    patched = safe_sub(r"const D_BPP_REAL=\{[^;]+\};",
+                       f"const D_BPP_REAL={js_dict_12(bpp_real_site)};", patched)
+    patched = safe_sub(r"const D_REC_BPP=\{[^;]+\};",
+                       f"const D_REC_BPP={js_dict_12(rec_bpp)};", patched)
+    patched = safe_sub(r"const D_REC_NB=\{[^;]+\};",
+                       f"const D_REC_NB={js_dict_12(rec_nb)};", patched)
+
+    # TGMV do BigQuery — substitui bloco const D_TGMV + D_TGMV_CAR existente
     if tgmv_site and any(sum(v) > 0 for v in tgmv_site.values()):
-        tgmv_block = (
+        new_tgmv = (
             f"// TGMV BigQuery (Carrier only) — {now}\n"
             f"const D_TGMV={js_dict_12(tgmv_site)};\n"
             f"const D_TGMV_CAR={js_car_dict(tgmv_car)};"
         )
+        # Substitui bloco "// TGMV BigQuery..." existente
         patched = re.sub(
-            r"// ── Dynamic data.*?let CARRIERS_LOADED=\[\];",
-            tgmv_block + "\nlet CARRIERS_LOADED=[];",
+            r"// TGMV BigQuery[^\n]*\nconst D_TGMV=\{[^;]+\};\nconst D_TGMV_CAR=\{[^;]+\};",
+            new_tgmv,
             patched,
-            flags=re.DOTALL,
             count=1
         )
-        # Atualiza hasTGMV para sempre retornar true
+        # fallback: substitui as consts individuais
+        if new_tgmv not in patched:
+            patched = safe_sub(r"const D_TGMV=\{[^\}]+(?:\{[^\}]*\}[^\}]*)?\};",
+                               f"const D_TGMV={js_dict_12(tgmv_site)};", patched)
+            patched = safe_sub(r"const D_TGMV_CAR=\{[^;]+\};",
+                               f"const D_TGMV_CAR={js_car_dict(tgmv_car)};", patched)
         patched = patched.replace(
             "function hasTGMV(){return Object.keys(D_TGMV).length>0;}",
             "function hasTGMV(){return true;}"
         )
-        log("   ✅ TGMV BigQuery embutido como estático")
-
-    if bpp_car and any(sum(v["monthly"]) > 0 for v in bpp_car.values()):
-        bpp_car_block = f"const D_BPP_CAR={js_bpp_car_dict(bpp_car)};"
-        patched = re.sub(
-            r"let D_BPP_CAR=\{\};\s*//[^\n]*",
-            bpp_car_block,
-            patched,
-            count=1
-        )
-        patched = patched.replace(
-            "function hasBppCar(){return Object.keys(D_BPP_CAR).length>0;}",
-            "function hasBppCar(){return true;}"
-        )
-        log("   ✅ BPP por carrier embutido como estático")
+        log("   ✅ TGMV BigQuery atualizado")
 
     return patched
 
@@ -630,33 +631,53 @@ def main():
         log("❌ Abortando: falha na leitura do Recuperado Real")
         sys.exit(1)
 
-    plan = fetch_plan_data()
-    if plan is None:
-        log("⚠️  Plano não disponível — usando zeros")
-        plan = empty_site_array()
+    # fetch_plan_data() lê a aba "BPP REAL" da planilha de plano → cashout CC real
+    bpp_real_from_sheet = fetch_plan_data()
+
+    # Plano de metas (fixo para 2026 — atualizar manualmente quando novo plano for publicado)
+    PLAN_2026 = {
+        "MLB": [550355,507110,577394,533073,637304,597146,626097,615996,593158,637045,740489,737993],
+        "MLA": [332555,306424,348893,322112,385094,360828,378322,372219,358419,384938,447444,445936],
+        "MLM": [181500,167238,190417,175801,210175,196931,206479,203148,195616,210089,244204,243381],
+        "MLU": [32787,30211,34398,31758,37967,35575,37299,36698,35337,37952,44114,43966],
+        "MCO": [4684,79,88,79,87,84,99,92,94,99,110,125],
+        "MLC": [59719,55027,62653,57844,69154,64797,67938,66842,64364,69126,80351,80080],
+        "MEC": [1171,1079,1228,1134,1356,1271,1332,1311,1262,1355,1576,1570],
+        "MPE": [8197,7553,8599,7939,9492,8894,9325,9174,8834,9488,11029,10991],
+    }
+    plan = PLAN_2026
+    log("   ✅ Plano 2026 carregado (hardcoded)")
 
     # 2. BigQuery (opcional mas recomendado)
-    tgmv_site, tgmv_car, bpp_real_site, bpp_car = {}, {}, empty_site_array(), {}
+    tgmv_site, tgmv_car, bpp_car = {}, {}, {}
+
+    # bpp_real_site = cashout BPP CC-específico (da planilha "BPP REAL")
+    # Fallback estático com os valores Jan-Abr 2026 conhecidos
+    BPP_REAL_FALLBACK = {
+        "MLB": [1395481,900318,1258797,850785,0,0,0,0,0,0,0,0],
+        "MLA": [750345,509811,656055,384720,0,0,0,0,0,0,0,0],
+        "MLM": [532818,392540,293061,183512,0,0,0,0,0,0,0,0],
+        "MLU": [35294,22158,26043,20993,0,0,0,0,0,0,0,0],
+        "MCO": [60444,41670,36811,20928,0,0,0,0,0,0,0,0],
+        "MLC": [82935,69902,59126,39395,0,0,0,0,0,0,0,0],
+        "MEC": [3559,833,2934,828,0,0,0,0,0,0,0,0],
+        "MPE": [21920,19115,19543,11716,0,0,0,0,0,0,0,0],
+    }
+    # Usar planilha se disponível, senão fallback
+    bpp_real_site = bpp_real_from_sheet if bpp_real_from_sheet else BPP_REAL_FALLBACK
+    if not bpp_real_from_sheet:
+        log("⚠️  Usando BPP Real estático (planilha indisponível)")
+
     bq_rows_tgmv = run_bigquery(QUERY_TGMV, "TGMV NMV por carrier/site")
     if bq_rows_tgmv is not None:
         tgmv_site, tgmv_car = process_tgmv(bq_rows_tgmv)
 
-    bq_rows_bpp = run_bigquery(QUERY_BPP_REAL, "BPP Real cashout por carrier/site")
+    # QUERY_BPP_REAL retorna BPP de TODOS carriers (não só CC)
+    # Usar apenas para D_BPP_CAR (breakdown por carrier) — não para D_BPP_REAL
+    bq_rows_bpp = run_bigquery(QUERY_BPP_REAL, "BPP Real por carrier (detalhe)")
     if bq_rows_bpp is not None:
-        bpp_real_site, bpp_car = process_bpp_real_bq(bq_rows_bpp)
-    else:
-        # Fallback: BPP real dos dados manuais da planilha (último snapshot)
-        log("⚠️  Usando BPP Real estático (BigQuery indisponível)")
-        bpp_real_site = {
-            "MLB": [1395481,900318,1258797,850785,0,0,0,0,0,0,0,0],
-            "MLA": [750345,509811,656055,384720,0,0,0,0,0,0,0,0],
-            "MLM": [532818,392540,293061,183512,0,0,0,0,0,0,0,0],
-            "MLU": [35294,22158,26043,20993,0,0,0,0,0,0,0,0],
-            "MCO": [60444,41670,36811,20928,0,0,0,0,0,0,0,0],
-            "MLC": [82935,69902,59126,39395,0,0,0,0,0,0,0,0],
-            "MEC": [3559,833,2934,828,0,0,0,0,0,0,0,0],
-            "MPE": [21920,19115,19543,11716,0,0,0,0,0,0,0,0],
-        }
+        _, bpp_car = process_bpp_real_bq(bq_rows_bpp)
+        log("   ✅ BPP por carrier carregado do BigQuery")
 
     # 3. Resumo dos dados
     ytd = ytd_count(rec_bpp)
