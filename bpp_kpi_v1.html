@@ -762,6 +762,38 @@ function renderTgmvFull(){
 }
 
 // ══════════════ RENDER: POR TRANSPORTADORA ══════════════
+// CBS = dados recuperados Jan–Abr 2026 (fonte: Planilha Recuperado Real, atualizado 2026-04-29)
+// Índices 0=Jan, 1=Fev, 2=Mar, 3=Abr
+const CBS={
+  "Andreani":      {"MLA":{"bpp":[54781,0,292803,0],       "nonbpp":[0,0,0,0]}},
+  "Blue Express":  {"MLC":{"bpp":[19865,46449,1451,16477],  "nonbpp":[0,0,0,0]}},
+  "Cainiao Domestic":{"MLM":{"bpp":[668,411,0,7026],        "nonbpp":[0,0,4429,0]}},
+  "Carvalima":     {"MLB":{"bpp":[15526,9382,15653,30694],  "nonbpp":[2592,0,0,0]}},
+  "Chilexpress":   {"MLC":{"bpp":[8787,32589,0,24765],      "nonbpp":[8185,6156,4696,4012]}},
+  "Coordinadora":  {"MCO":{"bpp":[0,1949,2678,0],           "nonbpp":[0,0,0,0]}},
+  "Correo Argentino":{"MLA":{"bpp":[0,71891,62951,89103],   "nonbpp":[0,0,0,0]}},
+  "Correos Chile": {"MLC":{"bpp":[465,1304,0,5108],         "nonbpp":[0,0,0,0]}},
+  "Correios":      {"MLB":{"bpp":[46679,41305,21111,0],      "nonbpp":[562,11762,13800,0]}},
+  "DAC":           {"MLU":{"bpp":[503,7576,0,345],           "nonbpp":[0,0,0,0]}},
+  "DHL":           {"MLM":{"bpp":[574,4420,6715,1506],       "nonbpp":[0,125301,47398,0]}},
+  "Estafeta":      {"MLM":{"bpp":[5625,0,1502,4322],         "nonbpp":[0,13000,0,0]}},
+  "FedEx":         {"MLM":{"bpp":[99417,47872,70058,98503],  "nonbpp":[23032,54000,0,29074]}},
+  "J&T Express":   {"MLM":{"bpp":[0,24991,35989,87208],      "nonbpp":[0,72868,0,0]}},
+  "J&T Express Brazil":{"MLB":{"bpp":[0,191663,518186,0],    "nonbpp":[0,0,0,0]}},
+  "Jad Logistica Ltda":{"MLB":{"bpp":[132228,128583,114901,172439],"nonbpp":[193797,272447,29664,146773]}},
+  "Loggi":         {"MLB":{"bpp":[0,178169,675264,99575],    "nonbpp":[0,11734,0,0]}},
+  "OCA":           {"MLA":{"bpp":[35510,35803,35803,17723],  "nonbpp":[595,0,0,14720]}},
+  "OCASA":         {"MLA":{"bpp":[86529,87609,52968,69137],  "nonbpp":[0,0,0,0]}},
+  "Paquetexpress": {"MLM":{"bpp":[0,0,15942,21845],          "nonbpp":[119,0,0,0]}},
+  "Pickit":        {"MLA":{"bpp":[14339,44723,56953,45910],  "nonbpp":[0,0,0,0]}},
+  "Servientrega":  {"MCO":{"bpp":[1150,3778,0,0],            "nonbpp":[0,0,0,0]}},
+  "TNT":           {"MLB":{"bpp":[0,8083,4443,0],             "nonbpp":[4124,6012,6105,0]}},
+  "UES":           {"MLU":{"bpp":[6138,0,6499,17467],         "nonbpp":[13410,0,0,0]}},
+  "Urbano":        {"MLA":{"bpp":[11272,6987,0,12961],        "nonbpp":[0,0,0,0]}},
+  "Webpack":       {"MLA":{"bpp":[5150,0,2613,4371],          "nonbpp":[0,0,0,0]}},
+  "Argo Seguros":  {"MLB":{"bpp":[212266,0,0,0],              "nonbpp":[0,0,0,0]}}
+};
+
 function renderCarriers(){
   const sites=getSites(); filterLabel('fl-car');
   const el=document.getElementById('carriers-body');
@@ -769,36 +801,6 @@ function renderCarriers(){
 
   // Build carrier rows from existing carrierBySite structure
   const carData={};
-  // CBS = dados recuperados Jan–Abr 2026 (fonte: Planilha Recuperado Real, atualizado 2026-04-29)
-  const CBS={
-    "Andreani":      {"MLA":{"bpp":[54781,0,292803,0],       "nonbpp":[0,0,0,0]}},
-    "Blue Express":  {"MLC":{"bpp":[19865,46449,1451,16477],  "nonbpp":[0,0,0,0]}},
-    "Cainiao Domestic":{"MLM":{"bpp":[668,411,0,7026],        "nonbpp":[0,0,4429,0]}},
-    "Carvalima":     {"MLB":{"bpp":[15526,9382,15653,30694],  "nonbpp":[2592,0,0,0]}},
-    "Chilexpress":   {"MLC":{"bpp":[8787,32589,0,24765],      "nonbpp":[8185,6156,4696,4012]}},
-    "Coordinadora":  {"MCO":{"bpp":[0,1949,2678,0],           "nonbpp":[0,0,0,0]}},
-    "Correo Argentino":{"MLA":{"bpp":[0,71891,62951,89103],   "nonbpp":[0,0,0,0]}},
-    "Correos Chile": {"MLC":{"bpp":[465,1304,0,5108],         "nonbpp":[0,0,0,0]}},
-    "Correios":      {"MLB":{"bpp":[46679,41305,21111,0],      "nonbpp":[562,11762,13800,0]}},
-    "DAC":           {"MLU":{"bpp":[503,7576,0,345],           "nonbpp":[0,0,0,0]}},
-    "DHL":           {"MLM":{"bpp":[574,4420,6715,1506],       "nonbpp":[0,125301,47398,0]}},
-    "Estafeta":      {"MLM":{"bpp":[5625,0,1502,4322],         "nonbpp":[0,13000,0,0]}},
-    "FedEx":         {"MLM":{"bpp":[99417,47872,70058,98503],  "nonbpp":[23032,54000,0,29074]}},
-    "J&T Express":   {"MLM":{"bpp":[0,24991,35989,87208],      "nonbpp":[0,72868,0,0]}},
-    "J&T Express Brazil":{"MLB":{"bpp":[0,191663,518186,0],    "nonbpp":[0,0,0,0]}},
-    "Jad Logistica Ltda":{"MLB":{"bpp":[132228,128583,114901,172439],"nonbpp":[193797,272447,29664,146773]}},
-    "Loggi":         {"MLB":{"bpp":[0,178169,675264,99575],    "nonbpp":[0,11734,0,0]}},
-    "OCA":           {"MLA":{"bpp":[35510,35803,35803,17723],  "nonbpp":[595,0,0,14720]}},
-    "OCASA":         {"MLA":{"bpp":[86529,87609,52968,69137],  "nonbpp":[0,0,0,0]}},
-    "Paquetexpress": {"MLM":{"bpp":[0,0,15942,21845],          "nonbpp":[119,0,0,0]}},
-    "Pickit":        {"MLA":{"bpp":[14339,44723,56953,45910],  "nonbpp":[0,0,0,0]}},
-    "Servientrega":  {"MCO":{"bpp":[1150,3778,0,0],            "nonbpp":[0,0,0,0]}},
-    "TNT":           {"MLB":{"bpp":[0,8083,4443,0],             "nonbpp":[4124,6012,6105,0]}},
-    "UES":           {"MLU":{"bpp":[6138,0,6499,17467],         "nonbpp":[13410,0,0,0]}},
-    "Urbano":        {"MLA":{"bpp":[11272,6987,0,12961],        "nonbpp":[0,0,0,0]}},
-    "Webpack":       {"MLA":{"bpp":[5150,0,2613,4371],          "nonbpp":[0,0,0,0]}},
-    "Argo Seguros":  {"MLB":{"bpp":[212266,0,0,0],              "nonbpp":[0,0,0,0]}}
-  };
 
   // Populate fCarrier dropdown filtered by selected country
   const fcarEl=document.getElementById('fCarrier');
@@ -1141,6 +1143,18 @@ function renderCausisticas(){
       </tr></thead>
       <tbody id="tCauses"></tbody>
     </table></div>
+  </div>
+
+  <div class="card gf" style="margin-top:14px">
+    <div class="ch">
+      <div class="ct">Detalhe por Carrier × País — ${cp.label}</div>
+      <span class="badge bc">CBS · BPP + Não-BPP Recovery${cp.s<3?'  ·  ⚠️ Q4/2025 sem dados CBS':''}</span>
+    </div>
+    <div class="tw"><table><thead><tr>
+      <th>Carrier</th><th>País</th>
+      <th class="tr">BPP Rec.</th><th class="tr">Não-BPP</th><th class="tr">Total Rec.</th>
+      <th class="tr">% BPP</th><th class="tr">TGMV</th><th class="tr tp">Rec/TGMV</th>
+    </tr></thead><tbody id="tCausCar"></tbody></table></div>
   </div>`;
 
   // ── Chart: Stacked bar + dual axis lines ──
@@ -1211,7 +1225,7 @@ function renderCausisticas(){
       }}
   });
 
-  // ── Table ──
+  // ── Table: País × Causística ──
   document.getElementById('tCauses').innerHTML=activeSites.map(s=>{
     const sf=SITES.find(x=>x.c===s);
     const tots=CAUS_TYPES.map(t=>sumC(s,t,cp.s,cp.e));
@@ -1238,6 +1252,60 @@ function renderCausisticas(){
     <td class="tr tc2">${totTgmv>0?fk(totTgmv):'—'}</td>
     <td class="tr tp">${has2026&&totTgmv>0?(totRec/totTgmv*100).toFixed(2)+'%':'—'}</td>
   </tr>`;
+
+  // ── Table: Carrier × País (CBS, period-aware) ──
+  // Map CAUS period slice → CBS indices (Jan=0,Feb=1,Mar=2,Apr=3)
+  // CAUS index 3=Jan-26→CBS[0], 4=Feb-26→CBS[1], 5=Mar-26→CBS[2]
+  // Q4 2025 (CAUS 0-2) has no CBS data
+  const cbsS=Math.max(0,cp.s-3), cbsE=Math.min(4,cp.e-3);
+  const hasCbs=cbsE>cbsS;
+  const fc=document.getElementById('fC').value;
+  const cbsRows=[];
+  if(hasCbs){
+    Object.entries(CBS).forEach(([car,sitesMap])=>{
+      Object.entries(sitesMap).forEach(([site,vals])=>{
+        if(fc!=='all'&&site!==fc) return;
+        if(!activeSites.includes(site)) return;
+        const b=sm(vals.bpp.slice(cbsS,cbsE));
+        const n=sm(vals.nonbpp.slice(cbsS,cbsE));
+        if(b+n===0) return;
+        const _tgKey=car.toUpperCase()+'|'+site;
+        const _tgResolved=_TGMV_ALIAS[_tgKey]||_tgKey;
+        const tg=hasTGMV()?sm((D_TGMV_CAR[_tgResolved]||D_TGMV_CAR[_tgKey]||[]).slice(cbsS,cbsE)):0;
+        cbsRows.push({car,site,b,n,tg});
+      });
+    });
+    cbsRows.sort((a,b2)=>(b2.b+b2.n)-(a.b+a.n));
+  }
+  const sfMap=Object.fromEntries(SITES.map(x=>[x.c,x]));
+  document.getElementById('tCausCar').innerHTML=hasCbs&&cbsRows.length>0
+    ? cbsRows.map(r=>{
+        const sf=sfMap[r.site]||{};
+        const tot=r.b+r.n;
+        const pctBpp=tot>0?Math.round(r.b/tot*100)+'%':'—';
+        const rtgmv=r.tg>0?(tot/r.tg*100).toFixed(3)+'%':'—';
+        return `<tr>
+          <td style="font-size:12px;padding:6px 10px">${r.car}</td>
+          <td class="tcc">${sf.f||''} ${sf.n||r.site}</td>
+          <td class="tr tg">${f$(r.b)}</td>
+          <td class="tr ta">${r.n>0?f$(r.n):'—'}</td>
+          <td class="tr" style="font-weight:500">${f$(tot)}</td>
+          <td class="tr">${pctBpp}</td>
+          <td class="tr tc2">${r.tg>0?fk(r.tg):'—'}</td>
+          <td class="tr tp">${rtgmv}</td>
+        </tr>`;
+      }).join('')+`<tr style="border-top:1px solid var(--b2);font-weight:600">
+        <td colspan="2" style="padding:6px 10px;font-size:12px">TOTAL (${cbsRows.length} carriers)</td>
+        <td class="tr tg">${f$(cbsRows.reduce((a,r)=>a+r.b,0))}</td>
+        <td class="tr ta">${f$(cbsRows.reduce((a,r)=>a+r.n,0))}</td>
+        <td class="tr">${f$(cbsRows.reduce((a,r)=>a+r.b+r.n,0))}</td>
+        <td class="tr">—</td>
+        <td class="tr tc2">${hasTGMV()?fk(cbsRows.reduce((a,r)=>a+r.tg,0)):'—'}</td>
+        <td class="tr tp">—</td>
+      </tr>`
+    : `<tr><td colspan="8" style="text-align:center;color:var(--m2);padding:20px;font-size:12px">
+        ${hasCbs?'Nenhum dado CBS para este filtro':'⚠️ Período Q4/2025 não tem dados CBS — selecione Q1 2026 ou 6M'}
+      </td></tr>`;
 }
 
 // ══════════════ TAB SWITCHING ══════════════
