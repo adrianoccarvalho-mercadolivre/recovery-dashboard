@@ -1295,7 +1295,7 @@ function loadData(){closeModal();}
 // ══════════════ INIT ══════════════
 document.addEventListener('DOMContentLoaded',function(){
   document.querySelectorAll('.tab').forEach((t,i)=>{
-    const names=['consolidado','bpp-rec','tgmv-rec','tgmv-full','carriers','paises'];
+    const names=['consolidado','bpp-rec','tgmv-rec','tgmv-full','carriers','paises','causisticas'];
     t.onclick=()=>switchTab(names[i]);
   });
   // Update data status pill based on actual data state
