@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- v2 2026-04-30 CC+Seguros filter -->
+<!-- v3 2026-04-30 dados planilha real: Argo Fev+Mar atualizado -->
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -179,15 +179,17 @@ function checkPw(){
 //  Mês sem fechamento = 0
 //  UPDATED = 'dd/Mês/aaaa' (exibido no header)
 // ════════════════════════════════════════════════════════════
-const UPDATED = '28/Abr/2026';
+const UPDATED = '30/Abr/2026'; // Atualizado com dados diretos da planilha
 const MONTHS  = ['Jan','Fev','Mar','Abr']; // ← acrescentar mês conforme avança
 
 const CARRIERS = [
   // ── COMMERCIAL CARRIERS ─────────────────────────────────
+  // Fonte: planilha 1PRMxIpUwFnB9fOrTAmRAZxRRgkRfDHKlgnb_mwx_QNw, aba gid=904251858
+  // Site=MLB, Tipo Carrier=Commercial Carrier ou Seguros, Jan–Abr 2026
   {
     name: 'Jad Logistica Ltda', tipo: 'cc',
-    bpp: [132228, 128583, 114901, 172439], // ← Jan Fev Mar Abr
-    nb:  [193797, 272447,  29664, 146773]
+    bpp: [132228, 128583, 114901, 172439], // Jan Fev Mar Abr
+    nb:  [193798, 272447,  29664, 146773]
   },
   {
     name: 'Loggi', tipo: 'cc',
@@ -195,8 +197,8 @@ const CARRIERS = [
     nb:  [      0,  11734,      0,      0]
   },
   {
-    name: 'J&T Express Brazil', tipo: 'cc',
-    bpp: [      0, 191663, 518186,      0],
+    name: 'J&T Express', tipo: 'cc',
+    bpp: [      0, 191662, 518185,      0],
     nb:  [      0,      0,      0,      0]
   },
   {
@@ -206,18 +208,19 @@ const CARRIERS = [
   },
   {
     name: 'Carvalima', tipo: 'cc',
-    bpp: [ 15526,   9382,  15653,  30694],
+    bpp: [ 15525,   9382,  15653,  30694],
     nb:  [  2592,      0,      0,      0]
   },
   {
     name: 'TNT', tipo: 'cc',
     bpp: [     0,   8083,   4443,      0],
-    nb:  [  4124,   6012,   6105,      0]
+    nb:  [  4124,   6013,   6105,      0]
   },
   // ── SEGUROS ─────────────────────────────────────────────
   {
     name: 'Argo Seguros', tipo: 'seg',
-    bpp: [212266,      0,      0,      0], // ← adicionar Fev/Mar/Abr quando disponível
+    // Jan: classificado como Commercial Carrier na planilha; Fev/Mar: Seguros — dados unificados
+    bpp: [212266, 366055, 330347,      0],
     nb:  [     0,      0,      0,      0]
   },
   // ── ACRESCENTAR NOVOS CARRIERS AQUI ─────────────────────
