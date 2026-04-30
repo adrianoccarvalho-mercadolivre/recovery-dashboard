@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recuperado Real Brasil — Commercial Carriers 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0b0d11;--s1:#111419;--s2:#181c24;--b:rgba(255,255,255,.08);--b2:rgba(255,255,255,.13);
+  --txt:#dde1ea;--m:#7c8696;--m2:#5a6170;
+  --grn:#2ecc8a;--red:#ef4444;--amb:#f5a623;--blu:#4d9fff;--pur:#a374ff;--pnk:#ff6eb4;
+  --mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13px;min-height:100vh}
+/* ── PASSWORD GATE ── */
+#pw-gate{position:fixed;inset:0;background:#0b0d11;display:flex;align-items:center;justify-content:center;z-index:9999}
+#pw-card{background:#111419;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:40px 44px;display:flex;flex-direction:column;align-items:center;gap:18px;width:340px;max-width:90vw}
+.pw-logo{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,#2ecc8a,#4d9fff);display:flex;align-items:center;justify-content:center;font-size:24px}
+.pw-title{font-size:17px;font-weight:600;color:#dde1ea}
+.pw-sub{font-size:11px;color:#5a6170;font-family:monospace;margin-top:-10px}
+#pw-field{width:100%;background:#0b0d11;border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#dde1ea;font-size:15px;padding:12px 16px;outline:none;text-align:center;letter-spacing:.15em}
+#pw-field:focus{border-color:var(--grn)}
+#pw-err{color:var(--red);font-size:12px;display:none}
+.pw-btn{width:100%;background:linear-gradient(135deg,#2ecc8a,#4d9fff);border:none;border-radius:8px;color:#0b0d11;font-size:14px;font-weight:600;padding:12px;cursor:pointer}
+/* ── LAYOUT ── */
+#app{display:none;padding:20px;max-width:1400px;margin:0 auto}
+header{background:var(--s1);border:1px solid var(--b);border-radius:12px;padding:16px 20px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.hd-left h1{font-size:16px;font-weight:600;color:var(--txt)}
+.hd-left p{font-size:11px;color:var(--m);font-family:var(--mono);margin-top:3px}
+.hd-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+select{background:var(--s2);color:var(--txt);border:1px solid var(--b2);border-radius:6px;padding:5px 10px;font-size:11px;font-family:var(--mono);cursor:pointer}
+select:focus{outline:none;border-color:var(--grn)}
+.btn-tog{background:var(--s2);color:var(--m);border:1px solid var(--b2);border-radius:6px;padding:5px 12px;font-size:11px;cursor:pointer;transition:.2s}
+.btn-tog.active{background:rgba(46,204,138,.15);color:var(--grn);border-color:rgba(46,204,138,.4)}
+/* ── KPI ── */
+.krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:16px}
+.kpi{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.kpi.g::before{background:var(--grn)}.kpi.r::before{background:var(--red)}.kpi.a::before{background:var(--amb)}.kpi.b::before{background:var(--blu)}.kpi.p::before{background:var(--pur)}
+.kl{font-size:9px;color:var(--m);font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.kv{font-size:22px;font-weight:500;font-family:var(--mono);margin-bottom:4px}
+.ks{font-size:10px;color:var(--m2);font-family:var(--mono)}
+/* ── CHARTS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+@media(max-width:900px){.g2{grid-template-columns:1fr}}
+.card{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:16px}
+.ct{font-size:12px;font-weight:600;color:var(--txt);margin-bottom:4px}
+.csub{font-size:10px;color:var(--m2);margin-bottom:12px}
+.cw{position:relative}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px}
+.li{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--m)}
+.ld{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+/* ── TABLE ── */
+.tcard{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:16px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:11px;font-family:var(--mono)}
+thead tr{border-bottom:1px solid var(--b2)}
+th{padding:8px 10px;color:var(--m2);font-weight:500;text-align:right;white-space:nowrap}
+th:first-child{text-align:left}
+td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.04);text-align:right;white-space:nowrap}
+td:first-child{text-align:left;color:var(--txt);font-weight:500}
+tr:last-child td{border-bottom:none;border-top:1px solid var(--b2);font-weight:700;color:var(--txt)}
+.tg{color:var(--grn)}.ta{color:var(--amb)}.tc{color:var(--blu)}.tp{color:var(--pur)}
+.mhd{background:var(--s2);color:var(--m);font-size:10px;font-weight:600;letter-spacing:.05em}
+.badge{font-size:10px;font-family:var(--mono);padding:3px 8px;border-radius:4px;border:1px solid}
+.bg{border-color:rgba(46,204,138,.3);color:var(--grn);background:rgba(46,204,138,.06)}
+.ba{border-color:rgba(245,166,35,.3);color:var(--amb);background:rgba(245,166,35,.06)}
+.bb{border-color:rgba(77,159,255,.3);color:var(--blu);background:rgba(77,159,255,.06)}
+</style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div id="pw-gate">
+  <div id="pw-card">
+    <div class="pw-logo">🇧🇷</div>
+    <div class="pw-title">Recuperado Real Brasil</div>
+    <div class="pw-sub">Commercial Carriers · 2026</div>
+    <input id="pw-field" type="password" placeholder="senha" autocomplete="off" onkeydown="if(event.key==='Enter')checkPw()">
+    <div id="pw-err">Senha incorreta</div>
+    <button class="pw-btn" onclick="checkPw()">Entrar</button>
+  </div>
+</div>
+
+<div id="app">
+<header>
+  <div class="hd-left">
+    <h1>🇧🇷 Recuperado Real Brasil — Commercial Carriers 2026</h1>
+    <p>BPP + Não-BPP · por Transportador e Mês · Fonte: Planilha Recuperado Real (CBS)</p>
+  </div>
+  <div class="hd-right">
+    <span style="font-size:11px;color:var(--m)">Período:</span>
+    <select id="fPer" onchange="render()">
+      <option value="ytd" selected>YTD Jan–Abr</option>
+      <option value="0">Janeiro</option>
+      <option value="1">Fevereiro</option>
+      <option value="2">Março</option>
+      <option value="3">Abril</option>
+    </select>
+    <span style="font-size:11px;color:var(--m)">Tipo:</span>
+    <button id="tg-bpp" class="btn-tog active" onclick="toggleType('bpp')">BPP</button>
+    <button id="tg-nb"  class="btn-tog active" onclick="toggleType('nb')">Não-BPP</button>
+  </div>
+</header>
+
+<!-- KPIs -->
+<div class="krow" id="krow"></div>
+
+<!-- Charts -->
+<div class="g2">
+  <div class="card">
+    <div class="ct">Recuperado por Transportador</div>
+    <div class="csub" id="ch1-sub"></div>
+    <div class="cw" style="height:300px"><canvas id="cBar"></canvas></div>
+    <div class="leg">
+      <div class="li"><div class="ld" style="background:var(--grn)"></div>BPP Rec.</div>
+      <div class="li"><div class="ld" style="background:var(--amb)"></div>Não-BPP</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">Evolução Mensal por Tipo</div>
+    <div class="csub">Jan · Fev · Mar · Abr 2026</div>
+    <div class="cw" style="height:300px"><canvas id="cTrend"></canvas></div>
+    <div class="leg" id="trend-leg"></div>
+  </div>
+</div>
+
+<!-- Table -->
+<div class="tcard">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div class="ct">Detalhe por Transportador × Mês</div>
+    <div style="display:flex;gap:6px">
+      <span class="badge bg">BPP</span>
+      <span class="badge ba">Não-BPP</span>
+    </div>
+  </div>
+  <div id="tbl"></div>
+</div>
+</div>
+
+<script>
+// ── PASSWORD ──
+function checkPw(){
+  if(document.getElementById('pw-field').value==='Businesscontrol2026'){
+    document.getElementById('pw-gate').style.display='none';
+    document.getElementById('app').style.display='block';
+    render();
+  } else {
+    document.getElementById('pw-err').style.display='block';
+    document.getElementById('pw-field').value='';
+  }
+}
+
+// ── DATA ──
+const MONTHS=['Jan','Fev','Mar','Abr'];
+const CARRIERS=[
+  {name:'Jad Logistica Ltda', bpp:[132228,128583,114901,172439], nb:[193797,272447,29664,146773]},
+  {name:'Loggi',              bpp:[0,178169,675264,99575],       nb:[0,11734,0,0]},
+  {name:'J&T Express Brazil', bpp:[0,191663,518186,0],           nb:[0,0,0,0]},
+  {name:'Argo Seguros',       bpp:[212266,0,0,0],                nb:[0,0,0,0]},
+  {name:'Correios',           bpp:[46679,41305,21111,0],         nb:[562,11762,13800,0]},
+  {name:'Carvalima',          bpp:[15526,9382,15653,30694],      nb:[2592,0,0,0]},
+  {name:'TNT',                bpp:[0,8083,4443,0],               nb:[4124,6012,6105,0]},
+];
+
+// ── STATE ──
+let showBpp=true, showNb=true;
+const CH={};
+
+// ── UTILS ──
+const sm=a=>a.reduce((s,x)=>s+(+x||0),0);
+const f$=v=>v>0?'$'+v.toLocaleString('pt-BR'):'—';
+const fk=v=>{if(!v||v===0)return'—';if(v>=1e6)return'$'+(v/1e6).toFixed(2)+'M';if(v>=1e3)return'$'+Math.round(v/1e3)+'k';return'$'+v;}
+
+function getPeriod(){
+  const v=document.getElementById('fPer').value;
+  if(v==='ytd') return {s:0,e:4,label:'YTD Jan–Abr'};
+  const i=parseInt(v); return {s:i,e:i+1,label:MONTHS[i]};
+}
+
+function toggleType(t){
+  if(t==='bpp') showBpp=!showBpp;
+  else showNb=!showNb;
+  document.getElementById('tg-bpp').className='btn-tog'+(showBpp?' active':'');
+  document.getElementById('tg-nb').className='btn-tog'+(showNb?' active':'');
+  render();
+}
+
+function dc(id){if(CH[id]){CH[id].destroy();delete CH[id];}}
+
+// ── RENDER ──
+function render(){
+  const p=getPeriod();
+  // aggregate
+  const rows=CARRIERS.map(c=>({
+    name:c.name,
+    bpp:sm(c.bpp.slice(p.s,p.e)),
+    nb:sm(c.nb.slice(p.s,p.e)),
+    bppM:c.bpp,nbM:c.nb
+  })).sort((a,b)=>(b.bpp+b.nb)-(a.bpp+a.nb));
+
+  const totBpp=sm(rows.map(r=>r.bpp));
+  const totNb=sm(rows.map(r=>r.nb));
+  const totRec=totBpp+totNb;
+
+  // KPIs
+  document.getElementById('krow').innerHTML=`
+    <div class="kpi g"><div class="kl">BPP Recuperado</div><div class="kv">${fk(totBpp)}</div><div class="ks">${p.label} · Brasil</div></div>
+    <div class="kpi a"><div class="kl">Não-BPP Recuperado</div><div class="kv">${fk(totNb)}</div><div class="ks">${p.label} · Brasil</div></div>
+    <div class="kpi b"><div class="kl">Total Recuperado</div><div class="kv">${fk(totRec)}</div><div class="ks">${totRec>0?Math.round(totBpp/totRec*100)+'% é BPP':'—'}</div></div>
+    <div class="kpi p"><div class="kl">Carriers ativos</div><div class="kv">${rows.filter(r=>r.bpp+r.nb>0).length}</div><div class="ks">com recupero no período</div></div>
+  `;
+
+  document.getElementById('ch1-sub').textContent=p.label+' · BPP + Não-BPP';
+
+  // ── BAR CHART: by carrier ──
+  const activeRows=rows.filter(r=>r.bpp+r.nb>0);
+  dc('cBar');
+  const datasets=[];
+  if(showBpp) datasets.push({label:'BPP',data:activeRows.map(r=>r.bpp),backgroundColor:'rgba(46,204,138,.8)',borderRadius:3,stack:'s'});
+  if(showNb)  datasets.push({label:'Não-BPP',data:activeRows.map(r=>r.nb),backgroundColor:'rgba(245,166,35,.75)',borderRadius:3,stack:'s'});
+  CH['cBar']=new Chart(document.getElementById('cBar'),{
+    type:'bar',
+    data:{labels:activeRows.map(r=>r.name),datasets},
+    options:{
+      indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#181c24',borderColor:'rgba(255,255,255,.12)',borderWidth:1,titleColor:'#dde1ea',bodyColor:'#7c8696',callbacks:{label:c=>` ${c.dataset.label}: ${f$(c.raw||0)}`}}},
+      scales:{
+        x:{stacked:true,grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'#5a6170',font:{size:9},callback:v=>'$'+Math.round(v/1000)+'k'}},
+        y:{stacked:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#dde1ea',font:{size:11}}}
+      }
+    }
+  });
+
+  // ── TREND CHART: monthly BPP + NonBPP stacked ──
+  const trendColors=['#2ecc8a','#4d9fff','#f5a623','#a374ff','#ff6eb4','#ef4444','#8ab4c0'];
+  dc('cTrend');
+  const trendDs=[];
+  if(showBpp){
+    rows.filter(r=>sm(r.bppM)>0).forEach((r,i)=>trendDs.push({
+      label:r.name+' BPP',
+      data:r.bppM,
+      backgroundColor:trendColors[i%trendColors.length]+'cc',
+      borderRadius:2,stack:'bpp'
+    }));
+  }
+  if(showNb){
+    rows.filter(r=>sm(r.nbM)>0).forEach((r,i)=>trendDs.push({
+      label:r.name+' NB',
+      data:r.nbM,
+      backgroundColor:trendColors[i%trendColors.length]+'55',
+      borderRadius:2,stack:'nb',
+      borderColor:trendColors[i%trendColors.length]+'99',
+      borderWidth:1
+    }));
+  }
+  CH['cTrend']=new Chart(document.getElementById('cTrend'),{
+    type:'bar',
+    data:{labels:MONTHS,datasets:trendDs},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#181c24',borderColor:'rgba(255,255,255,.12)',borderWidth:1,titleColor:'#dde1ea',bodyColor:'#7c8696',callbacks:{label:c=>` ${c.dataset.label}: ${f$(c.raw||0)}`}}},
+      scales:{
+        x:{stacked:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6170',font:{size:9}}},
+        y:{stacked:true,grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'#5a6170',font:{size:9},callback:v=>'$'+Math.round(v/1000)+'k'}}
+      }
+    }
+  });
+  // Legend
+  document.getElementById('trend-leg').innerHTML=rows.filter(r=>sm(r.bppM)+sm(r.nbM)>0).map((r,i)=>`
+    <div class="li"><div class="ld" style="background:${trendColors[i%trendColors.length]}"></div>${r.name}</div>
+  `).join('');
+
+  // ── TABLE ──
+  const makeTd=(bpp,nb)=>{
+    const parts=[];
+    if(showBpp) parts.push(`<td class="tg">${bpp>0?f$(bpp):'<span style="color:var(--m2)">—</span>'}</td>`);
+    if(showNb)  parts.push(`<td class="ta">${nb>0?f$(nb):'<span style="color:var(--m2)">—</span>'}</td>`);
+    return parts.join('');
+  };
+  const makeSubhd=()=>{
+    const parts=[];
+    if(showBpp) parts.push('<th class="tg mhd">BPP</th>');
+    if(showNb)  parts.push('<th class="ta mhd">NÃO-BPP</th>');
+    return parts.join('');
+  };
+  const colCount=1+(4*(+showBpp+ +showNb))+(+showBpp+ +showNb)+1;
+
+  let tbl='<table><thead>';
+  tbl+=`<tr><th rowspan="2">Transportador</th>`;
+  MONTHS.forEach(m=>tbl+=`<th colspan="${+showBpp+ +showNb}" style="text-align:center;border-left:1px solid rgba(255,255,255,.08)">${m}</th>`);
+  tbl+=`<th colspan="${+showBpp+ +showNb}" style="text-align:center;border-left:1px solid rgba(255,255,255,.15)">TOTAL</th></tr>`;
+  tbl+=`<tr>`;
+  MONTHS.forEach(()=>tbl+=`<td style="border-left:1px solid rgba(255,255,255,.08);padding:4px 0">${makeSubhd()}</td>`);
+  tbl+=`<td style="border-left:1px solid rgba(255,255,255,.15);padding:4px 0">${makeSubhd()}</td>`;
+  tbl+='</tr></thead><tbody>';
+
+  // data rows sorted by total desc
+  const tblRows=[...rows].sort((a,b)=>(b.bpp+b.nb)-(a.bpp+a.nb));
+  tblRows.forEach(r=>{
+    if(r.bpp+r.nb===0) return;
+    tbl+=`<tr><td>${r.name}</td>`;
+    for(let i=0;i<4;i++){
+      tbl+=`<td style="border-left:1px solid rgba(255,255,255,.05);padding:0">${makeTd(r.bppM[i],r.nbM[i])}</td>`;
+    }
+    tbl+=`<td style="border-left:1px solid rgba(255,255,255,.15);padding:0">${makeTd(r.bpp,r.nb)}</td>`;
+    tbl+='</tr>';
+  });
+  // total row
+  tbl+=`<tr><td>TOTAL</td>`;
+  for(let i=0;i<4;i++){
+    const bppM=sm(CARRIERS.map(c=>c.bpp[i]));
+    const nbM=sm(CARRIERS.map(c=>c.nb[i]));
+    tbl+=`<td style="border-left:1px solid rgba(255,255,255,.05);padding:0">${makeTd(bppM,nbM)}</td>`;
+  }
+  tbl+=`<td style="border-left:1px solid rgba(255,255,255,.15);padding:0">${makeTd(totBpp,totNb)}</td>`;
+  tbl+='</tr></tbody></table>';
+  document.getElementById('tbl').innerHTML=tbl;
+}
+</script>
+</body>
+</html>
