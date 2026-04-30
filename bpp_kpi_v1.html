@@ -144,6 +144,11 @@ td{padding:7px 9px;font-family:var(--mono);font-size:10px}
     <select id="fCarrier" onchange="applyFilters()">
       <option value="all">Todos os carriers</option>
     </select>
+    <select id="fTipo" onchange="applyFilters()">
+      <option value="all">CC + Seguros</option>
+      <option value="cc">Só CC</option>
+      <option value="seg">Só Seguros</option>
+    </select>
     <select id="fMonth" onchange="applyFilters()">
       <option value="ytd">Jan–Abr (YTD)</option>
       <option value="0">Janeiro</option>
@@ -496,12 +501,33 @@ function hasBppCar(){return true;}
 // ── Helpers ──
 function getSites(){const f=document.getElementById('fC').value;return f==='all'?SITES:SITES.filter(s=>s.c===f);}
 function getCarrierFilter(){return document.getElementById('fCarrier').value;}
+function getTipo(){return document.getElementById('fTipo')?.value||'all';}
 function filterLabel(id){
-  const p=document.getElementById('fC').value,c=getCarrierFilter();
+  const p=document.getElementById('fC').value,c=getCarrierFilter(),t=getTipo();
   const pl=p==='all'?'Todos os países':SITES.find(s=>s.c===p)?.n||p;
   const cl=c==='all'?'Todos os carriers':c;
-  if(id) document.getElementById(id).textContent=pl+' · '+cl;
+  const tl=t==='all'?'CC+Seguros':t==='cc'?'Só CC':'Só Seguros';
+  if(id) document.getElementById(id).textContent=pl+' · '+cl+' · '+tl;
 }
+
+// ── Tipo de carrier: 'seg' apenas para Argo Seguros; demais = 'cc' ──
+const CARRIER_TIPO={'Argo Seguros':'seg'};
+
+// Calcula bpp/nonbpp mensais do CBS filtrado por tipo (para abas que usam dados BQ mas precisam do filtro)
+function cbsMonthly(site,tipo){
+  const bpp=[0,0,0,0],nb=[0,0,0,0];
+  Object.entries(CBS).forEach(([name,sMap])=>{
+    const ct=CARRIER_TIPO[name]||'cc';
+    if(tipo!=='all'&&ct!==tipo) return;
+    const d=sMap[site]; if(!d) return;
+    d.bpp.forEach((v,i)=>{if(i<4)bpp[i]+=v||0;});
+    d.nonbpp.forEach((v,i)=>{if(i<4)nb[i]+=v||0;});
+  });
+  return{bpp,nb};
+}
+// Wrappers de recuperação: quando tipo ativo usa CBS; senão usa dados carregados BQ
+function getRecBpp(site){const t=getTipo();return t==='all'?(D_REC_BPP[site]||[]):cbsMonthly(site,t).bpp;}
+function getRecNb(site) {const t=getTipo();return t==='all'?(D_REC_NB[site]||[]) :cbsMonthly(site,t).nb;}
 function baseOpts(type){
   return{responsive:true,maintainAspectRatio:false,
     plugins:{legend:{display:false},tooltip:{backgroundColor:'#181c24',borderColor:'rgba(255,255,255,.12)',borderWidth:1,titleColor:'#dde1ea',bodyColor:'#7c8696',callbacks:{label:c=>' '+f$(c.raw)}}},
@@ -522,8 +548,8 @@ function renderConsolidado(){
   const sites=getSites(); filterLabel('fl-con');
   const bppR=sites.reduce((a,s)=>a+sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e)),0);
   const plan=sites.reduce((a,s)=>a+sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e)),0);
-  const recB=sites.reduce((a,s)=>a+sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e)),0);
-  const recN=sites.reduce((a,s)=>a+sm((D_REC_NB[s.c]||[]).slice(getMF().s,getMF().e)),0);
+  const recB=sites.reduce((a,s)=>a+sm(getRecBpp(s.c).slice(getMF().s,getMF().e)),0);
+  const recN=sites.reduce((a,s)=>a+sm(getRecNb(s.c).slice(getMF().s,getMF().e)),0);
   const tot=recB+recN;
   const tgmv=hasTGMV()?sites.reduce((a,s)=>a+sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e)),0):0;
 
@@ -541,22 +567,22 @@ function renderConsolidado(){
   dc('cConM');
   CH['cConM']=new Chart(document.getElementById('cConM'),{type:'bar',data:{labels:MONTHS,datasets:[
     {label:'BPP Real',  data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_BPP_REAL[s.c]?.[i]||0),0)),backgroundColor:'rgba(255,79,79,.3)',borderRadius:3},
-    {label:'BPP Rec.',  data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_REC_BPP[s.c]?.[i]||0),0)),backgroundColor:'rgba(46,204,138,.75)',borderRadius:3,stack:'r'},
-    {label:'Não-BPP',   data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_REC_NB[s.c]?.[i]||0),0)),backgroundColor:'rgba(245,166,35,.75)',borderRadius:3,stack:'r'},
+    {label:'BPP Rec.',  data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(getRecBpp(s.c)[i]||0),0)),backgroundColor:'rgba(46,204,138,.75)',borderRadius:3,stack:'r'},
+    {label:'Não-BPP',   data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(getRecNb(s.c)[i]||0),0)),backgroundColor:'rgba(245,166,35,.75)',borderRadius:3,stack:'r'},
     {label:'Plano',     data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_PLAN[s.c]?.[i]||0),0)),type:'line',borderColor:'rgba(77,159,255,.6)',backgroundColor:'transparent',borderWidth:2,borderDash:[4,4],pointRadius:2,tension:.3},
   ]},options:baseOpts('bar')});
 
   dc('cConPie');
   CH['cConPie']=new Chart(document.getElementById('cConPie'),{type:'doughnut',data:{
     labels:sites.map(s=>s.n),
-    datasets:[{data:sites.map(s=>sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e))+sm((D_REC_NB[s.c]||[]).slice(getMF().s,getMF().e))),backgroundColor:CC.slice(0,sites.length),borderWidth:2,borderColor:'#111419'}]
+    datasets:[{data:sites.map(s=>sm(getRecBpp(s.c).slice(getMF().s,getMF().e))+sm(getRecNb(s.c).slice(getMF().s,getMF().e))),backgroundColor:CC.slice(0,sites.length),borderWidth:2,borderColor:'#111419'}]
   },options:{...baseOpts('doughnut'),cutout:'60%'}});
 
   document.getElementById('tCon').innerHTML=sites.map(s=>{
     const bpp=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));
     const pl=sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e));
-    const rb=sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e));
-    const rn=sm((D_REC_NB[s.c]||[]).slice(getMF().s,getMF().e));
+    const rb=sm(getRecBpp(s.c).slice(getMF().s,getMF().e));
+    const rn=sm(getRecNb(s.c).slice(getMF().s,getMF().e));
     const tot2=rb+rn;
     const tg=hasTGMV()?sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e)):0;
     const pp=pl>0?Math.round(rb/pl*100):0, pr=bpp>0?Math.round(rb/bpp*100):0;
@@ -579,7 +605,7 @@ function renderBppRec(){
   const sites=getSites(); filterLabel('fl-bpp');
   const bppR=sites.reduce((a,s)=>a+sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e)),0);
   const plan=sites.reduce((a,s)=>a+sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e)),0);
-  const rec =sites.reduce((a,s)=>a+sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e)),0);
+  const rec =sites.reduce((a,s)=>a+sm(getRecBpp(s.c).slice(getMF().s,getMF().e)),0);
   const pp=plan>0?rec/plan*100:0, pr=bppR>0?rec/bppR*100:0;
   document.getElementById('k2-bpp').textContent=fk(bppR);
   document.getElementById('k2-plan').textContent=fk(plan);
@@ -593,7 +619,7 @@ function renderBppRec(){
 
   document.getElementById('gauges2').innerHTML=sites.map(s=>{
     const pl=sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e));
-    const rc=sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e));
+    const rc=sm(getRecBpp(s.c).slice(getMF().s,getMF().e));
     const p=pl>0?Math.min(200,rc/pl*100):0;
     const col=p>=100?'var(--grn)':p>=70?'var(--amb)':'var(--red)';
     return `<div class="gau"><div class="gau-l">${s.f} ${s.n}</div>
@@ -604,7 +630,7 @@ function renderBppRec(){
   dc('cBRM');
   CH['cBRM']=new Chart(document.getElementById('cBRM'),{type:'bar',data:{labels:MONTHS,datasets:[
     {label:'BPP Real',  data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_BPP_REAL[s.c]?.[i]||0),0)),backgroundColor:'rgba(255,79,79,.4)',borderRadius:3},
-    {label:'Recuperado',data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_REC_BPP[s.c]?.[i]||0),0)),backgroundColor:'rgba(46,204,138,.8)',borderRadius:3},
+    {label:'Recuperado',data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(getRecBpp(s.c)[i]||0),0)),backgroundColor:'rgba(46,204,138,.8)',borderRadius:3},
     {label:'Plano',     data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_PLAN[s.c]?.[i]||0),0)),type:'line',borderColor:'rgba(77,159,255,.6)',backgroundColor:'transparent',borderWidth:2,borderDash:[4,4],pointRadius:2,tension:.3},
   ]},options:baseOpts('bar')});
 
@@ -612,21 +638,21 @@ function renderBppRec(){
   CH['cBRD']=new Chart(document.getElementById('cBRD'),{type:'bar',data:{
     labels:sites.map(s=>s.n),
     datasets:[
-      {label:'Rec/Real %',data:sites.map(s=>{const b=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));const r=sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e));return b>0?Math.round(r/b*100):0;}),
-       backgroundColor:sites.map(s=>{const b=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));const r=sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e));const p=b>0?r/b*100:0;return p>=80?'rgba(46,204,138,.75)':p>=50?'rgba(245,166,35,.75)':'rgba(255,79,79,.75)';}),borderRadius:4}
+      {label:'Rec/Real %',data:sites.map(s=>{const b=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));const r=sm(getRecBpp(s.c).slice(getMF().s,getMF().e));return b>0?Math.round(r/b*100):0;}),
+       backgroundColor:sites.map(s=>{const b=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));const r=sm(getRecBpp(s.c).slice(getMF().s,getMF().e));const p=b>0?r/b*100:0;return p>=80?'rgba(46,204,138,.75)':p>=50?'rgba(245,166,35,.75)':'rgba(255,79,79,.75)';}),borderRadius:4}
     ]},
     options:{...baseOpts('bar'),plugins:{...baseOpts('bar').plugins},scales:{...baseOpts('bar').scales,y:{...baseOpts('bar').scales.y,ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>v+'%'}}}}});
 
   document.getElementById('tBR').innerHTML=sites.map(s=>{
     const rl=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));
     const pl=sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e));
-    const m=D_REC_BPP[s.c]||new Array(12).fill(0);
+    const m=getRecBpp(s.c);
     const rc=sm(m.slice(getMF().s,getMF().e));
     const pp=pl>0?rc/pl*100:0, pr=rl>0?rc/rl*100:0;
     const cp=pp>=100?'var(--grn)':pp>=70?'var(--amb)':'var(--red)';
     const cr=pr>=80?'var(--grn)':pr>=50?'var(--amb)':'var(--red)';
     return `<tr><td class="tcc">${s.f} ${s.n}</td><td class="tr tr2">${f$(rl)}</td><td class="tr tb">${f$(pl)}</td>
-      <td class="tr">${f$(m[0])}</td><td class="tr">${f$(m[1])}</td><td class="tr">${f$(m[2])}</td><td class="tr">${f$(m[3])}</td>
+      <td class="tr">${f$(m[0]||0)}</td><td class="tr">${f$(m[1]||0)}</td><td class="tr">${f$(m[2]||0)}</td><td class="tr">${f$(m[3]||0)}</td>
       <td class="tr tg" style="font-weight:500">${f$(rc)}</td>
       <td class="tr" style="color:${cr}">${rl>0?Math.round(pr)+'%':'—'}</td>
       <td class="tr" style="color:${cp}">${Math.round(pp)}%</td>
@@ -641,7 +667,7 @@ function renderTgmvRec(){
   if(!hasTGMV()){el.innerHTML=noDataBlock('Dados TGMV não carregados','Cole o resultado da query BT_CONTA_CAUSA_BPP (TIPO=NMV) no importador. Colunas: FECHA_CONTA_M, SIT_SITE_ID, CARRIER_ID, NMV');return;}
 
   const tgmvM=MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_TGMV_CBS[s.c]?.[i]||0),0));
-  const recM =MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_REC_BPP[s.c]?.[i]||0),0)); // só BPP (Não-BPP é outra conta contábil)
+  const recM =MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(getRecBpp(s.c)[i]||0),0)); // só BPP (Não-BPP é outra conta contábil)
   const ratioM=tgmvM.map((t,i)=>t>0?(recM[i]/t*100):null);
 
   const totTGMV=sm(tgmvM.slice(getMF().s,getMF().e)),totRec=sm(recM.slice(getMF().s,getMF().e));
@@ -685,8 +711,8 @@ function renderTgmvRec(){
   document.getElementById('tTR').innerHTML=sites.map(s=>{
     const tg=sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e));
     const br=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));
-    const rb=sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e));
-    const rn=sm((D_REC_NB[s.c]||[]).slice(getMF().s,getMF().e));
+    const rb=sm(getRecBpp(s.c).slice(getMF().s,getMF().e));
+    const rn=sm(getRecNb(s.c).slice(getMF().s,getMF().e));
     const tot2=rb+rn;
     return `<tr><td class="tcc">${s.f} ${s.n}</td>
       <td class="tr tc2">${fk(tg)}</td><td class="tr tr2">${f$(br)}</td>
@@ -705,8 +731,8 @@ function renderTgmvFull(){
 
   const tgmvM=MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_TGMV_CBS[s.c]?.[i]||0),0));
   const bppM =MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_BPP_REAL[s.c]?.[i]||0),0));
-  const recBM=MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_REC_BPP[s.c]?.[i]||0),0));
-  const recNM=MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_REC_NB[s.c]?.[i]||0),0));
+  const recBM=MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(getRecBpp(s.c)[i]||0),0));
+  const recNM=MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(getRecNb(s.c)[i]||0),0));
   const totTG=sm(tgmvM.slice(getMF().s,getMF().e)),totBPP=sm(bppM.slice(getMF().s,getMF().e)),totRB=sm(recBM.slice(getMF().s,getMF().e)),totRN=sm(recNM.slice(getMF().s,getMF().e));
 
   el.innerHTML=`
@@ -757,7 +783,7 @@ function renderTgmvFull(){
   document.getElementById('tTF').innerHTML=sites.map(s=>{
     const tg=sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e));
     const br=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));
-    const rb=sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e));
+    const rb=sm(getRecBpp(s.c).slice(getMF().s,getMF().e));
     const bpt=tg>0?(br/tg*100).toFixed(3)+'%':'—';
     const rrt=br>0?(rb/br*100).toFixed(1)+'%':'—';
     const rtt=tg>0?(rb/tg*100).toFixed(3)+'%':'—';
@@ -809,14 +835,16 @@ function renderCarriers(){
   // Build carrier rows from existing carrierBySite structure
   const carData={};
 
-  // Populate fCarrier dropdown filtered by selected country
+  // Populate fCarrier dropdown filtered by selected country + tipo
   const fcarEl=document.getElementById('fCarrier');
   const fc=document.getElementById('fC').value;
+  const ft=getTipo();
   {
     const prevVal=fcarEl.value;
-    // Build carrier list for selected country
+    // Build carrier list for selected country and tipo
     const availCars=[...new Set(
-      Object.entries(CBS).filter(([,sitesMap])=>fc==='all'||sitesMap[fc])
+      Object.entries(CBS)
+        .filter(([name,sitesMap])=>(fc==='all'||sitesMap[fc])&&(ft==='all'||(CARRIER_TIPO[name]||'cc')===ft))
         .map(([car])=>car)
     )].sort((a,b)=>a.localeCompare(b));
     // Only rebuild if the set changed
@@ -837,9 +865,11 @@ function renderCarriers(){
   const cf=getCarrierFilter();
   const rows=[];
   Object.entries(CBS).forEach(([car,sitesMap])=>{
+    const ct=CARRIER_TIPO[car]||'cc';
     Object.entries(sitesMap).forEach(([site,vals])=>{
       if(fc!=='all'&&site!==fc) return;
       if(cf!=='all'&&car!==cf) return;
+      if(ft!=='all'&&ct!==ft) return;
       const b=sm(vals.bpp.slice(getMF().s,getMF().e)),n=sm(vals.nonbpp.slice(getMF().s,getMF().e));
       // só oculta zero quando nenhum carrier específico está selecionado
       if(b+n===0&&cf==='all') return;
@@ -924,8 +954,8 @@ function renderPaises(){
   sites.forEach(s=>{
     const bppR = sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));
     const plan  = sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e));
-    const recB  = sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e));
-    const recN  = sm((D_REC_NB[s.c]||[]).slice(getMF().s,getMF().e));
+    const recB  = sm(getRecBpp(s.c).slice(getMF().s,getMF().e));
+    const recN  = sm(getRecNb(s.c).slice(getMF().s,getMF().e));
     const tgmv  = hasTGMV()?sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e)):0;
     const tot   = recB+recN;
     const pp    = plan>0?recB/plan*100:0;
@@ -936,7 +966,7 @@ function renderPaises(){
 
     // Monthly bars for sparkline
     const months=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-    const recArr=(D_REC_BPP[s.c]||new Array(12).fill(0));
+    const recArr=getRecBpp(s.c);
     const maxR=Math.max(...recArr,1);
     const bars=recArr.slice(getMF().s,getMF().e).map((v,i)=>{
       const h=Math.round(v/maxR*32);
@@ -992,8 +1022,8 @@ function renderPaises(){
   const allRows=sites.map(s=>{
     const bppR=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));
     const plan=sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e));
-    const recB=sm((D_REC_BPP[s.c]||[]).slice(getMF().s,getMF().e));
-    const recN=sm((D_REC_NB[s.c]||[]).slice(getMF().s,getMF().e));
+    const recB=sm(getRecBpp(s.c).slice(getMF().s,getMF().e));
+    const recN=sm(getRecNb(s.c).slice(getMF().s,getMF().e));
     const tgmv=hasTGMV()?sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e)):0;
     return {s,bppR,plan,recB,recN,tgmv};
   }).filter(r=>r.bppR+r.plan+r.recB>0);
@@ -1272,11 +1302,14 @@ function renderCausisticas(){
   const hasCbs=cbsE>cbsS;
   const fc=document.getElementById('fC').value;
   const cbsRows=[];
+  const ftCaus=getTipo();
   if(hasCbs){
     Object.entries(CBS).forEach(([car,sitesMap])=>{
+      const ct=CARRIER_TIPO[car]||'cc';
       Object.entries(sitesMap).forEach(([site,vals])=>{
         if(fc!=='all'&&site!==fc) return;
         if(!activeSites.includes(site)) return;
+        if(ftCaus!=='all'&&ct!==ftCaus) return;
         const b=sm(vals.bpp.slice(cbsS,cbsE));
         const n=sm(vals.nonbpp.slice(cbsS,cbsE));
         if(b+n===0) return;
@@ -1383,6 +1416,8 @@ document.addEventListener('DOMContentLoaded',function(){
   // Forçar valor padrão dos filtros (ignora restauração de form pelo browser)
   const causPeriodEl=document.getElementById('fCausPeriod');
   if(causPeriodEl) causPeriodEl.value='ytd';
+  const tipoEl=document.getElementById('fTipo');
+  if(tipoEl) tipoEl.value='all';
   switchMtab('tgmv');
   switchTab('consolidado');
 });
