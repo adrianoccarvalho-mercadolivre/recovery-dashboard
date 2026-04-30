@@ -432,16 +432,15 @@ function render(){
       const rBpp=cBpp(r); const rNb=cNb(r);
       h+=`<tr><td class="tl">${r.name}${tag}</td>`;
       rBpp.slice(0,MONTHS.length).forEach((v,i)=>{
-        h+=`<td style="border-left:1px solid rgba(255,255,255,.05);padding:0">`;
-        if(showBpp) h+=`<td class="tg">${v>0?fVal(v):'<span style="color:var(--m2)">—</span>'}</td>`;
-        if(showNb)  h+=`<td class="ta">${(rNb[i]||0)>0?fVal(rNb[i]):'<span style="color:var(--m2)">—</span>'}</td>`;
-        h+=`</td>`;
+        const blM='border-left:1px solid rgba(255,255,255,.05)';
+        if(showBpp) h+=`<td class="tg" style="${blM}">${v>0?fVal(v):'<span style="color:var(--m2)">—</span>'}</td>`;
+        if(showNb)  h+=`<td class="ta" style="${!showBpp?blM:''}">${(rNb[i]||0)>0?fVal(rNb[i]):'<span style="color:var(--m2)">—</span>'}</td>`;
       });
       // total col
-      h+=`<td style="border-left:1px solid rgba(255,255,255,.12);padding:0">`;
-      if(showBpp) h+=`<td class="tg" style="font-weight:600">${r.bppP>0?fVal(r.bppP):'<span style="color:var(--m2)">—</span>'}</td>`;
-      if(showNb)  h+=`<td class="ta">${r.nbP>0?fVal(r.nbP):'<span style="color:var(--m2)">—</span>'}</td>`;
-      h+=`</td></tr>`;
+      const blT='border-left:1px solid rgba(255,255,255,.12)';
+      if(showBpp) h+=`<td class="tg" style="${blT};font-weight:600">${r.bppP>0?fVal(r.bppP):'<span style="color:var(--m2)">—</span>'}</td>`;
+      if(showNb)  h+=`<td class="ta" style="${!showBpp?blT:''}">${r.nbP>0?fVal(r.nbP):'<span style="color:var(--m2)">—</span>'}</td>`;
+      h+=`</tr>`;
     });
   });
 
@@ -450,15 +449,14 @@ function render(){
   MONTHS.forEach((_,mi)=>{
     const bM=sm(rows.map(r=>cBpp(r)[mi]||0));
     const nM=sm(rows.map(r=>cNb(r)[mi]||0));
-    h+=`<td style="border-left:1px solid rgba(255,255,255,.05);padding:0">`;
-    if(showBpp) h+=`<td class="tg">${bM>0?fVal(bM):'—'}</td>`;
-    if(showNb)  h+=`<td class="ta">${nM>0?fVal(nM):'—'}</td>`;
-    h+=`</td>`;
+    const blM='border-left:1px solid rgba(255,255,255,.05)';
+    if(showBpp) h+=`<td class="tg" style="${blM}">${bM>0?fVal(bM):'—'}</td>`;
+    if(showNb)  h+=`<td class="ta" style="${!showBpp?blM:''}">${nM>0?fVal(nM):'—'}</td>`;
   });
-  h+=`<td style="border-left:1px solid rgba(255,255,255,.12);padding:0">`;
-  if(showBpp) h+=`<td class="tg">${totBpp>0?fVal(totBpp):'—'}</td>`;
-  if(showNb)  h+=`<td class="ta">${totNb>0?fVal(totNb):'—'}</td>`;
-  h+=`</td></tr></tbody></table>`;
+  const blT='border-left:1px solid rgba(255,255,255,.12)';
+  if(showBpp) h+=`<td class="tg" style="${blT}">${totBpp>0?fVal(totBpp):'—'}</td>`;
+  if(showNb)  h+=`<td class="ta" style="${!showBpp?blT:''}">${totNb>0?fVal(totNb):'—'}</td>`;
+  h+=`</tr></tbody></table>`;
 
   document.getElementById('tbl').innerHTML=h;
 }
