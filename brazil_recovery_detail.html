@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- v3 2026-04-30 dados planilha real: Argo Fev+Mar atualizado -->
+<!-- v4 2026-04-30 toggle USD/BRL; dados planilha real -->
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -122,6 +122,8 @@ td.tl{text-align:left;color:var(--txt);font-weight:500}
     </select>
     <button id="tg-bpp" class="btn-tog on" onclick="toggleType('bpp')">BPP</button>
     <button id="tg-nb"  class="btn-tog on" onclick="toggleType('nb')">Não-BPP</button>
+    <div style="width:1px;height:22px;background:rgba(255,255,255,.12);margin:0 2px"></div>
+    <button id="tg-cur" class="btn-tog" onclick="toggleCur()" style="font-weight:600;min-width:42px">USD</button>
   </div>
 </header>
 
@@ -149,7 +151,7 @@ td.tl{text-align:left;color:var(--txt);font-weight:500}
   <div class="tcard-hd">
     <div>
       <div class="ct">Detalhe por Transportador × Mês</div>
-      <div style="font-size:10px;color:var(--m2);margin-top:3px">Valores em USD · <span class="cc-tag" style="margin-left:0">CC</span> = Commercial Carrier · <span class="seg-tag" style="margin-left:0">SEG</span> = Seguros</div>
+      <div style="font-size:10px;color:var(--m2);margin-top:3px" id="tbl-cur-note">Valores em USD · <span class="cc-tag" style="margin-left:0">CC</span> = Commercial Carrier · <span class="seg-tag" style="margin-left:0">SEG</span> = Seguros</div>
     </div>
     <div style="display:flex;gap:6px">
       <span class="badge bg">BPP Rec.</span>
@@ -186,42 +188,57 @@ const CARRIERS = [
   // ── COMMERCIAL CARRIERS ─────────────────────────────────
   // Fonte: planilha 1PRMxIpUwFnB9fOrTAmRAZxRRgkRfDHKlgnb_mwx_QNw, aba gid=904251858
   // Site=MLB, Tipo Carrier=Commercial Carrier ou Seguros, Jan–Abr 2026
+  // bpp/nb = USD (col N) · brl_bpp/brl_nb = BRL sem impostos (col J)
   {
     name: 'Jad Logistica Ltda', tipo: 'cc',
-    bpp: [132228, 128583, 114901, 172439], // Jan Fev Mar Abr
-    nb:  [193798, 272447,  29664, 146773]
+    bpp:     [132228, 128583, 114901, 172439],
+    nb:      [193798, 272447,  29664, 146773],
+    brl_bpp: [705832, 668710, 597552, 902134],
+    brl_nb:  [1034488,1416887, 154269, 767857]
   },
   {
     name: 'Loggi', tipo: 'cc',
-    bpp: [      0, 178169, 675264,  99575],
-    nb:  [      0,  11734,      0,      0]
+    bpp:     [      0, 178169, 675264,  99575],
+    nb:      [      0,  11734,      0,      0],
+    brl_bpp: [      0, 926584,3511777, 520939],
+    brl_nb:  [      0,  61023,      0,      0]
   },
   {
     name: 'J&T Express', tipo: 'cc',
-    bpp: [      0, 191662, 518185,      0],
-    nb:  [      0,      0,      0,      0]
+    bpp:     [      0, 191662, 518185,      0],
+    nb:      [      0,      0,      0,      0],
+    brl_bpp: [      0, 996761,2694878,      0],
+    brl_nb:  [      0,      0,      0,      0]
   },
   {
     name: 'Correios', tipo: 'cc',
-    bpp: [ 46679,  41305,  21111,      0],
-    nb:  [   562,  11762,  13800,      0]
+    bpp:     [ 46679,  41305,  21111,      0],
+    nb:      [   562,  11762,  13800,      0],
+    brl_bpp: [249173, 214812, 109788, 112824],
+    brl_nb:  [  3000,  61169,  71767,  11951]
   },
   {
     name: 'Carvalima', tipo: 'cc',
-    bpp: [ 15525,   9382,  15653,  30694],
-    nb:  [  2592,      0,      0,      0]
+    bpp:     [ 15525,   9382,  15653,  30694],
+    nb:      [  2592,      0,      0,      0],
+    brl_bpp: [ 82876,  48793,  81402, 160578],
+    brl_nb:  [ 13837,      0,      0,      0]
   },
   {
     name: 'TNT', tipo: 'cc',
-    bpp: [     0,   8083,   4443,      0],
-    nb:  [  4124,   6013,   6105,      0]
+    bpp:     [     0,   8083,   4443,      0],
+    nb:      [  4124,   6013,   6105,      0],
+    brl_bpp: [     0,  42038,  23107,      0],
+    brl_nb:  [ 22011,  31268,  31751,      0]
   },
   // ── SEGUROS ─────────────────────────────────────────────
   {
     name: 'Argo Seguros', tipo: 'seg',
     // Jan: classificado como Commercial Carrier na planilha; Fev/Mar: Seguros — dados unificados
-    bpp: [212266, 366055, 330347,      0],
-    nb:  [     0,      0,      0,      0]
+    bpp:     [212266, 366055, 330347,      0],
+    nb:      [     0,      0,      0,      0],
+    brl_bpp: [1133075,1903708,1718005,     0],
+    brl_nb:  [      0,      0,      0,      0]
   },
   // ── ACRESCENTAR NOVOS CARRIERS AQUI ─────────────────────
 ];
@@ -230,14 +247,21 @@ const CARRIERS = [
 // ── UTILS ──
 const sm = a => (a||[]).reduce((s,x)=>s+(+x||0),0);
 const f$ = v => v>0 ? '$'+v.toLocaleString('pt-BR') : '—';
+const fR = v => v>0 ? 'R$\u00A0'+v.toLocaleString('pt-BR') : '—';
 const fk = v => {
   if(!v||v===0) return '—';
   if(v>=1e6) return '$'+(v/1e6).toFixed(2)+'M';
   if(v>=1e3) return '$'+Math.round(v/1e3)+'k';
   return '$'+v;
 };
+const fkR = v => {
+  if(!v||v===0) return '—';
+  if(v>=1e6) return 'R$'+(v/1e6).toFixed(2)+'M';
+  if(v>=1e3) return 'R$'+Math.round(v/1e3)+'k';
+  return 'R$'+v;
+};
 
-let showBpp = true, showNb = true;
+let showBpp = true, showNb = true, curBRL = false;
 const CH = {};
 const COLORS = ['#2ecc8a','#4d9fff','#f5a623','#a374ff','#ff6eb4','#ef4444','#8ab4c0','#f0db4f'];
 
@@ -255,21 +279,40 @@ function toggleType(t){
   document.getElementById('tg-nb').className='btn-tog'+(showNb?' on':'');
   render();
 }
+function toggleCur(){
+  curBRL=!curBRL;
+  const btn=document.getElementById('tg-cur');
+  btn.textContent=curBRL?'R$':'USD';
+  btn.className='btn-tog'+(curBRL?' on':'');
+  render();
+}
 
 function getFiltered(){
   const tipo = getTipo();
   return CARRIERS.filter(c => tipo==='all' || c.tipo===tipo);
 }
 
+// Currency helpers: return the right array depending on toggle
+function cBpp(c){ return curBRL?(c.brl_bpp||c.bpp):c.bpp; }
+function cNb(c){  return curBRL?(c.brl_nb||c.nb):c.nb; }
+function fVal(v){ return curBRL?fR(v):f$(v); }
+function fKV(v){  return curBRL?fkR(v):fk(v); }
+function fTick(v){return curBRL?'R$'+Math.round(v/1000)+'k':'$'+Math.round(v/1000)+'k';}
+
 function render(){
   document.getElementById('upd-badge').textContent='⟳ Atualizado: '+UPDATED;
+  // Update table currency note
+  const curLabel=curBRL?'R$ (sem impostos)':'USD';
+  document.getElementById('tbl-cur-note').innerHTML=
+    `Valores em <strong style="color:${curBRL?'var(--amb)':'var(--blu)'}">${curLabel}</strong> · <span class="cc-tag" style="margin-left:0">CC</span> = Commercial Carrier · <span class="seg-tag" style="margin-left:0">SEG</span> = Seguros`;
+
   const p = getPeriod();
   const carriers = getFiltered();
 
   const rows = carriers.map(c=>({
     ...c,
-    bppP: sm(c.bpp.slice(p.s,p.e)),
-    nbP:  sm(c.nb.slice(p.s,p.e)),
+    bppP: sm(cBpp(c).slice(p.s,p.e)),
+    nbP:  sm(cNb(c).slice(p.s,p.e)),
   })).sort((a,b)=>(b.bppP+b.nbP)-(a.bppP+a.nbP));
 
   const totBpp  = sm(rows.map(r=>r.bppP));
@@ -282,27 +325,27 @@ function render(){
   document.getElementById('krow').innerHTML=`
     <div class="kpi g">
       <div class="kl">BPP Recuperado</div>
-      <div class="kv">${fk(totBpp)}</div>
+      <div class="kv">${fKV(totBpp)}</div>
       <div class="ks">${p.label} · ${carriers.length} carriers</div>
     </div>
     <div class="kpi b">
       <div class="kl">BPP CC</div>
-      <div class="kv">${fk(totBppCC)}</div>
+      <div class="kv">${fKV(totBppCC)}</div>
       <div class="ks">${totBpp>0?Math.round(totBppCC/totBpp*100)+'% do BPP total':'—'}</div>
     </div>
     <div class="kpi p">
       <div class="kl">BPP Seguros</div>
-      <div class="kv">${fk(totBppSG)}</div>
+      <div class="kv">${fKV(totBppSG)}</div>
       <div class="ks">${totBpp>0?Math.round(totBppSG/totBpp*100)+'% do BPP total':'—'}</div>
     </div>
     <div class="kpi a">
       <div class="kl">Não-BPP Recuperado</div>
-      <div class="kv">${fk(totNb)}</div>
+      <div class="kv">${fKV(totNb)}</div>
       <div class="ks">${totRec>0?Math.round(totNb/totRec*100)+'% do total':'—'}</div>
     </div>
     <div class="kpi pk">
       <div class="kl">Total Recuperado</div>
-      <div class="kv">${fk(totRec)}</div>
+      <div class="kv">${fKV(totRec)}</div>
       <div class="ks">${totRec>0?Math.round(totBpp/totRec*100)+'% é BPP':'—'}</div>
     </div>
   `;
@@ -319,9 +362,9 @@ function render(){
     data:{labels:active.map(r=>r.name+(r.tipo==='seg'?' ✦':'')), datasets:barDs},
     options:{
       indexAxis:'y',responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{backgroundColor:'#181c24',borderColor:'rgba(255,255,255,.12)',borderWidth:1,titleColor:'#dde1ea',bodyColor:'#7c8696',callbacks:{label:c=>` ${c.dataset.label}: ${f$(c.raw||0)}`}}},
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#181c24',borderColor:'rgba(255,255,255,.12)',borderWidth:1,titleColor:'#dde1ea',bodyColor:'#7c8696',callbacks:{label:c=>` ${c.dataset.label}: ${fVal(c.raw||0)}`}}},
       scales:{
-        x:{stacked:true,grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>'$'+Math.round(v/1000)+'k'}},
+        x:{stacked:true,grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>fTick(v)}},
         y:{stacked:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#dde1ea',font:{size:11}}}
       }
     }
@@ -329,22 +372,24 @@ function render(){
 
   // ── TREND: monthly per carrier ──
   dc('cTrend');
-  const trendCarriers=getFiltered().filter(c=>sm(c.bpp)+sm(c.nb)>0);
+  const trendCarriers=getFiltered().filter(c=>sm(cBpp(c))+sm(cNb(c))>0);
   const trendDs=[];
   trendCarriers.forEach((c,i)=>{
     const col=c.tipo==='seg'?'#a374ff':COLORS[i%COLORS.length];
-    if(showBpp&&sm(c.bpp)>0) trendDs.push({label:c.name+' BPP',data:c.bpp.slice(0,MONTHS.length),backgroundColor:col+'bb',borderRadius:2,stack:'bpp'});
-    if(showNb&&sm(c.nb)>0)   trendDs.push({label:c.name+' NB',data:c.nb.slice(0,MONTHS.length),backgroundColor:col+'44',borderRadius:2,stack:'nb',borderColor:col+'88',borderWidth:1});
+    const bppArr=cBpp(c).slice(0,MONTHS.length);
+    const nbArr=cNb(c).slice(0,MONTHS.length);
+    if(showBpp&&sm(bppArr)>0) trendDs.push({label:c.name+' BPP',data:bppArr,backgroundColor:col+'bb',borderRadius:2,stack:'bpp'});
+    if(showNb&&sm(nbArr)>0)   trendDs.push({label:c.name+' NB',data:nbArr,backgroundColor:col+'44',borderRadius:2,stack:'nb',borderColor:col+'88',borderWidth:1});
   });
   CH['cTrend']=new Chart(document.getElementById('cTrend'),{
     type:'bar',
     data:{labels:MONTHS, datasets:trendDs},
     options:{
       responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{backgroundColor:'#181c24',borderColor:'rgba(255,255,255,.12)',borderWidth:1,titleColor:'#dde1ea',bodyColor:'#7c8696',callbacks:{label:c=>` ${c.dataset.label}: ${f$(c.raw||0)}`}}},
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#181c24',borderColor:'rgba(255,255,255,.12)',borderWidth:1,titleColor:'#dde1ea',bodyColor:'#7c8696',callbacks:{label:c=>` ${c.dataset.label}: ${fVal(c.raw||0)}`}}},
       scales:{
         x:{stacked:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6170',font:{size:9}}},
-        y:{stacked:true,grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'#5a6170',font:{size:9},callback:v=>'$'+Math.round(v/1000)+'k'}}
+        y:{stacked:true,grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'#5a6170',font:{size:9},callback:v=>fTick(v)}}
       }
     }
   });
@@ -355,7 +400,7 @@ function render(){
   }).join('');
 
   // ── TABLE ──
-  const mkV = (v,cls) => `<td class="${cls}">${v>0?f$(v):'<span style="color:var(--m2)">—</span>'}</td>`;
+  const mkV = (v,cls) => `<td class="${cls}">${v>0?fVal(v):'<span style="color:var(--m2)">—</span>'}</td>`;
   const mkHdr = (cls,txt) => `<th class="${cls}">${txt}</th>`;
 
   // build header
@@ -384,17 +429,18 @@ function render(){
     h+=`<tr class="grp-row"><td colspan="${colSpan}">${g.label}</td></tr>`;
     gRows.forEach(r=>{
       const tag=r.tipo==='seg'?`<span class="seg-tag">SEG</span>`:`<span class="cc-tag">CC</span>`;
+      const rBpp=cBpp(r); const rNb=cNb(r);
       h+=`<tr><td class="tl">${r.name}${tag}</td>`;
-      r.bpp.slice(0,MONTHS.length).forEach((v,i)=>{
+      rBpp.slice(0,MONTHS.length).forEach((v,i)=>{
         h+=`<td style="border-left:1px solid rgba(255,255,255,.05);padding:0">`;
-        if(showBpp) h+=`<td class="tg">${v>0?f$(v):'<span style="color:var(--m2)">—</span>'}</td>`;
-        if(showNb)  h+=`<td class="ta">${(r.nb[i]||0)>0?f$(r.nb[i]):'<span style="color:var(--m2)">—</span>'}</td>`;
+        if(showBpp) h+=`<td class="tg">${v>0?fVal(v):'<span style="color:var(--m2)">—</span>'}</td>`;
+        if(showNb)  h+=`<td class="ta">${(rNb[i]||0)>0?fVal(rNb[i]):'<span style="color:var(--m2)">—</span>'}</td>`;
         h+=`</td>`;
       });
       // total col
       h+=`<td style="border-left:1px solid rgba(255,255,255,.12);padding:0">`;
-      if(showBpp) h+=`<td class="tg" style="font-weight:600">${r.bppP>0?f$(r.bppP):'<span style="color:var(--m2)">—</span>'}</td>`;
-      if(showNb)  h+=`<td class="ta">${r.nbP>0?f$(r.nbP):'<span style="color:var(--m2)">—</span>'}</td>`;
+      if(showBpp) h+=`<td class="tg" style="font-weight:600">${r.bppP>0?fVal(r.bppP):'<span style="color:var(--m2)">—</span>'}</td>`;
+      if(showNb)  h+=`<td class="ta">${r.nbP>0?fVal(r.nbP):'<span style="color:var(--m2)">—</span>'}</td>`;
       h+=`</td></tr>`;
     });
   });
@@ -402,16 +448,16 @@ function render(){
   // total row
   h+=`<tr class="tot-row"><td class="tl">TOTAL</td>`;
   MONTHS.forEach((_,mi)=>{
-    const bM=sm(rows.map(r=>r.bpp[mi]||0));
-    const nM=sm(rows.map(r=>r.nb[mi]||0));
+    const bM=sm(rows.map(r=>cBpp(r)[mi]||0));
+    const nM=sm(rows.map(r=>cNb(r)[mi]||0));
     h+=`<td style="border-left:1px solid rgba(255,255,255,.05);padding:0">`;
-    if(showBpp) h+=`<td class="tg">${bM>0?f$(bM):'—'}</td>`;
-    if(showNb)  h+=`<td class="ta">${nM>0?f$(nM):'—'}</td>`;
+    if(showBpp) h+=`<td class="tg">${bM>0?fVal(bM):'—'}</td>`;
+    if(showNb)  h+=`<td class="ta">${nM>0?fVal(nM):'—'}</td>`;
     h+=`</td>`;
   });
   h+=`<td style="border-left:1px solid rgba(255,255,255,.12);padding:0">`;
-  if(showBpp) h+=`<td class="tg">${totBpp>0?f$(totBpp):'—'}</td>`;
-  if(showNb)  h+=`<td class="ta">${totNb>0?f$(totNb):'—'}</td>`;
+  if(showBpp) h+=`<td class="tg">${totBpp>0?fVal(totBpp):'—'}</td>`;
+  if(showNb)  h+=`<td class="ta">${totNb>0?fVal(totNb):'—'}</td>`;
   h+=`</td></tr></tbody></table>`;
 
   document.getElementById('tbl').innerHTML=h;
