@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Recuperado Real Brasil — Commercial Carriers 2026</title>
+<title>Recuperado Real Brasil — Commercial Carriers + Seguros 2026</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root{
@@ -15,7 +15,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13px;min-height:100vh}
-/* ── PASSWORD GATE ── */
+/* PASSWORD */
 #pw-gate{position:fixed;inset:0;background:#0b0d11;display:flex;align-items:center;justify-content:center;z-index:9999}
 #pw-card{background:#111419;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:40px 44px;display:flex;flex-direction:column;align-items:center;gap:18px;width:340px;max-width:90vw}
 .pw-logo{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,#2ecc8a,#4d9fff);display:flex;align-items:center;justify-content:center;font-size:24px}
@@ -25,59 +25,65 @@ body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSys
 #pw-field:focus{border-color:var(--grn)}
 #pw-err{color:var(--red);font-size:12px;display:none}
 .pw-btn{width:100%;background:linear-gradient(135deg,#2ecc8a,#4d9fff);border:none;border-radius:8px;color:#0b0d11;font-size:14px;font-weight:600;padding:12px;cursor:pointer}
-/* ── LAYOUT ── */
-#app{display:none;padding:20px;max-width:1400px;margin:0 auto}
+/* LAYOUT */
+#app{display:none;padding:20px;max-width:1440px;margin:0 auto}
 header{background:var(--s1);border:1px solid var(--b);border-radius:12px;padding:16px 20px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
-.hd-left h1{font-size:16px;font-weight:600;color:var(--txt)}
-.hd-left p{font-size:11px;color:var(--m);font-family:var(--mono);margin-top:3px}
-.hd-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-select{background:var(--s2);color:var(--txt);border:1px solid var(--b2);border-radius:6px;padding:5px 10px;font-size:11px;font-family:var(--mono);cursor:pointer}
-select:focus{outline:none;border-color:var(--grn)}
-.btn-tog{background:var(--s2);color:var(--m);border:1px solid var(--b2);border-radius:6px;padding:5px 12px;font-size:11px;cursor:pointer;transition:.2s}
-.btn-tog.active{background:rgba(46,204,138,.15);color:var(--grn);border-color:rgba(46,204,138,.4)}
-/* ── KPI ── */
-.krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:16px}
+.hd-left h1{font-size:15px;font-weight:600;color:var(--txt)}
+.hd-left .meta{font-size:10px;color:var(--m);font-family:var(--mono);margin-top:4px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.hd-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+select{background:var(--s2);color:var(--txt);border:1px solid var(--b2);border-radius:6px;padding:5px 10px;font-size:11px;font-family:var(--mono);cursor:pointer;outline:none}
+select:focus{border-color:var(--grn)}
+.btn-tog{background:var(--s2);color:var(--m);border:1px solid var(--b2);border-radius:6px;padding:5px 12px;font-size:11px;cursor:pointer;transition:.15s;font-family:var(--mono)}
+.btn-tog.on{color:var(--grn);border-color:rgba(46,204,138,.4);background:rgba(46,204,138,.1)}
+/* KPI */
+.krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px;margin-bottom:14px}
 .kpi{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden}
 .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
-.kpi.g::before{background:var(--grn)}.kpi.r::before{background:var(--red)}.kpi.a::before{background:var(--amb)}.kpi.b::before{background:var(--blu)}.kpi.p::before{background:var(--pur)}
-.kl{font-size:9px;color:var(--m);font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
-.kv{font-size:22px;font-weight:500;font-family:var(--mono);margin-bottom:4px}
+.kpi.g::before{background:var(--grn)}.kpi.a::before{background:var(--amb)}.kpi.b::before{background:var(--blu)}.kpi.p::before{background:var(--pur)}.kpi.pk::before{background:var(--pnk)}
+.kl{font-size:9px;color:var(--m);font-family:var(--mono);letter-spacing:.05em;text-transform:uppercase;margin-bottom:5px}
+.kv{font-size:21px;font-weight:500;font-family:var(--mono);margin-bottom:3px}
 .ks{font-size:10px;color:var(--m2);font-family:var(--mono)}
-/* ── CHARTS ── */
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+/* CHARTS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
 @media(max-width:900px){.g2{grid-template-columns:1fr}}
 .card{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:16px}
-.ct{font-size:12px;font-weight:600;color:var(--txt);margin-bottom:4px}
-.csub{font-size:10px;color:var(--m2);margin-bottom:12px}
+.ct{font-size:12px;font-weight:600;color:var(--txt);margin-bottom:3px}
+.csub{font-size:10px;color:var(--m2);margin-bottom:10px}
 .cw{position:relative}
-.leg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px}
-.li{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--m)}
+.leg{display:flex;flex-wrap:wrap;gap:5px 12px;margin-top:10px}
+.li{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--m);font-family:var(--mono)}
 .ld{width:10px;height:10px;border-radius:2px;flex-shrink:0}
-/* ── TABLE ── */
-.tcard{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:16px;overflow-x:auto}
+/* TABLE */
+.tcard{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:16px;overflow-x:auto;margin-bottom:14px}
+.tcard-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
 table{width:100%;border-collapse:collapse;font-size:11px;font-family:var(--mono)}
 thead tr{border-bottom:1px solid var(--b2)}
-th{padding:8px 10px;color:var(--m2);font-weight:500;text-align:right;white-space:nowrap}
-th:first-child{text-align:left}
-td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.04);text-align:right;white-space:nowrap}
-td:first-child{text-align:left;color:var(--txt);font-weight:500}
-tr:last-child td{border-bottom:none;border-top:1px solid var(--b2);font-weight:700;color:var(--txt)}
-.tg{color:var(--grn)}.ta{color:var(--amb)}.tc{color:var(--blu)}.tp{color:var(--pur)}
-.mhd{background:var(--s2);color:var(--m);font-size:10px;font-weight:600;letter-spacing:.05em}
+th{padding:7px 10px;color:var(--m2);font-weight:500;text-align:right;white-space:nowrap;font-size:10px;letter-spacing:.04em}
+th.tl{text-align:left}th.tc{text-align:center}
+td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,.035);text-align:right;white-space:nowrap}
+td.tl{text-align:left;color:var(--txt);font-weight:500}
+.tot-row td{border-top:1px solid var(--b2);border-bottom:none;font-weight:700;color:var(--txt)}
+.grp-row td{background:rgba(255,255,255,.025);color:var(--m);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px}
+.tg{color:var(--grn)}.ta{color:var(--amb)}.tb{color:var(--blu)}.tp{color:var(--pur)}
+.seg-tag{display:inline-block;font-size:9px;font-family:var(--mono);padding:1px 5px;border-radius:3px;background:rgba(163,116,255,.12);border:1px solid rgba(163,116,255,.3);color:var(--pur);margin-left:6px;vertical-align:middle}
+.cc-tag{display:inline-block;font-size:9px;font-family:var(--mono);padding:1px 5px;border-radius:3px;background:rgba(77,159,255,.1);border:1px solid rgba(77,159,255,.3);color:var(--blu);margin-left:6px;vertical-align:middle}
+/* BADGES */
 .badge{font-size:10px;font-family:var(--mono);padding:3px 8px;border-radius:4px;border:1px solid}
 .bg{border-color:rgba(46,204,138,.3);color:var(--grn);background:rgba(46,204,138,.06)}
 .ba{border-color:rgba(245,166,35,.3);color:var(--amb);background:rgba(245,166,35,.06)}
-.bb{border-color:rgba(77,159,255,.3);color:var(--blu);background:rgba(77,159,255,.06)}
+.bp{border-color:rgba(163,116,255,.3);color:var(--pur);background:rgba(163,116,255,.06)}
+.bm{border-color:rgba(90,97,112,.4);color:var(--m);background:rgba(90,97,112,.08)}
+.upd{font-size:10px;font-family:var(--mono);padding:3px 10px;border-radius:4px;background:rgba(46,204,138,.1);border:1px solid rgba(46,204,138,.25);color:var(--grn)}
 </style>
 </head>
 <body>
 
-<!-- PASSWORD GATE -->
+<!-- PASSWORD -->
 <div id="pw-gate">
   <div id="pw-card">
     <div class="pw-logo">🇧🇷</div>
     <div class="pw-title">Recuperado Real Brasil</div>
-    <div class="pw-sub">Commercial Carriers · 2026</div>
+    <div class="pw-sub">CC + Seguros · Business Control 2026</div>
     <input id="pw-field" type="password" placeholder="senha" autocomplete="off" onkeydown="if(event.key==='Enter')checkPw()">
     <div id="pw-err">Senha incorreta</div>
     <button class="pw-btn" onclick="checkPw()">Entrar</button>
@@ -87,11 +93,17 @@ tr:last-child td{border-bottom:none;border-top:1px solid var(--b2);font-weight:7
 <div id="app">
 <header>
   <div class="hd-left">
-    <h1>🇧🇷 Recuperado Real Brasil — Commercial Carriers 2026</h1>
-    <p>BPP + Não-BPP · por Transportador e Mês · Fonte: Planilha Recuperado Real (CBS)</p>
+    <h1>🇧🇷 Recuperado Real Brasil — Commercial Carriers + Seguros 2026</h1>
+    <div class="meta">
+      <span>BPP + Não-BPP · por Transportador e Mês</span>
+      <span>·</span>
+      <span id="upd-badge" class="upd">⟳ Atualizado: 28/Abr/2026</span>
+      <span>·</span>
+      <span style="color:var(--m2)">Fonte: Planilha Recuperado Real (CBS)</span>
+    </div>
   </div>
   <div class="hd-right">
-    <span style="font-size:11px;color:var(--m)">Período:</span>
+    <span style="font-size:10px;color:var(--m)">Período</span>
     <select id="fPer" onchange="render()">
       <option value="ytd" selected>YTD Jan–Abr</option>
       <option value="0">Janeiro</option>
@@ -99,40 +111,45 @@ tr:last-child td{border-bottom:none;border-top:1px solid var(--b2);font-weight:7
       <option value="2">Março</option>
       <option value="3">Abril</option>
     </select>
-    <span style="font-size:11px;color:var(--m)">Tipo:</span>
-    <button id="tg-bpp" class="btn-tog active" onclick="toggleType('bpp')">BPP</button>
-    <button id="tg-nb"  class="btn-tog active" onclick="toggleType('nb')">Não-BPP</button>
+    <span style="font-size:10px;color:var(--m)">Tipo</span>
+    <select id="fTipo" onchange="render()">
+      <option value="all">CC + Seguros</option>
+      <option value="cc">Só CC</option>
+      <option value="seg">Só Seguros</option>
+    </select>
+    <button id="tg-bpp" class="btn-tog on" onclick="toggleType('bpp')">BPP</button>
+    <button id="tg-nb"  class="btn-tog on" onclick="toggleType('nb')">Não-BPP</button>
   </div>
 </header>
 
-<!-- KPIs -->
 <div class="krow" id="krow"></div>
 
-<!-- Charts -->
 <div class="g2">
   <div class="card">
     <div class="ct">Recuperado por Transportador</div>
-    <div class="csub" id="ch1-sub"></div>
-    <div class="cw" style="height:300px"><canvas id="cBar"></canvas></div>
+    <div class="csub" id="sub-bar"></div>
+    <div class="cw" style="height:320px"><canvas id="cBar"></canvas></div>
     <div class="leg">
-      <div class="li"><div class="ld" style="background:var(--grn)"></div>BPP Rec.</div>
+      <div class="li"><div class="ld" style="background:var(--grn)"></div>BPP</div>
       <div class="li"><div class="ld" style="background:var(--amb)"></div>Não-BPP</div>
     </div>
   </div>
   <div class="card">
-    <div class="ct">Evolução Mensal por Tipo</div>
-    <div class="csub">Jan · Fev · Mar · Abr 2026</div>
-    <div class="cw" style="height:300px"><canvas id="cTrend"></canvas></div>
-    <div class="leg" id="trend-leg"></div>
+    <div class="ct">Evolução Mensal — Jan→Abr 2026</div>
+    <div class="csub">BPP (sólido) · Não-BPP (tracejado)</div>
+    <div class="cw" style="height:320px"><canvas id="cTrend"></canvas></div>
+    <div class="leg" id="leg-trend"></div>
   </div>
 </div>
 
-<!-- Table -->
 <div class="tcard">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-    <div class="ct">Detalhe por Transportador × Mês</div>
+  <div class="tcard-hd">
+    <div>
+      <div class="ct">Detalhe por Transportador × Mês</div>
+      <div style="font-size:10px;color:var(--m2);margin-top:3px">Valores em USD · <span class="cc-tag" style="margin-left:0">CC</span> = Commercial Carrier · <span class="seg-tag" style="margin-left:0">SEG</span> = Seguros</div>
+    </div>
     <div style="display:flex;gap:6px">
-      <span class="badge bg">BPP</span>
+      <span class="badge bg">BPP Rec.</span>
       <span class="badge ba">Não-BPP</span>
     </div>
   </div>
@@ -153,112 +170,169 @@ function checkPw(){
   }
 }
 
-// ── DATA ──
-const MONTHS=['Jan','Fev','Mar','Abr'];
-const CARRIERS=[
-  {name:'Jad Logistica Ltda', bpp:[132228,128583,114901,172439], nb:[193797,272447,29664,146773]},
-  {name:'Loggi',              bpp:[0,178169,675264,99575],       nb:[0,11734,0,0]},
-  {name:'J&T Express Brazil', bpp:[0,191663,518186,0],           nb:[0,0,0,0]},
-  {name:'Argo Seguros',       bpp:[212266,0,0,0],                nb:[0,0,0,0]},
-  {name:'Correios',           bpp:[46679,41305,21111,0],         nb:[562,11762,13800,0]},
-  {name:'Carvalima',          bpp:[15526,9382,15653,30694],      nb:[2592,0,0,0]},
-  {name:'TNT',                bpp:[0,8083,4443,0],               nb:[4124,6012,6105,0]},
-];
+// ════════════════════════════════════════════════════════════
+//  ⬇  DADOS — atualizar todo dia 28 de cada mês
+//  Formato: bpp/nb = [Jan, Fev, Mar, Abr, Mai, ...] (acrescentar mês a mês)
+//  Mês sem fechamento = 0
+//  UPDATED = 'dd/Mês/aaaa' (exibido no header)
+// ════════════════════════════════════════════════════════════
+const UPDATED = '28/Abr/2026';
+const MONTHS  = ['Jan','Fev','Mar','Abr']; // ← acrescentar mês conforme avança
 
-// ── STATE ──
-let showBpp=true, showNb=true;
-const CH={};
+const CARRIERS = [
+  // ── COMMERCIAL CARRIERS ─────────────────────────────────
+  {
+    name: 'Jad Logistica Ltda', tipo: 'cc',
+    bpp: [132228, 128583, 114901, 172439], // ← Jan Fev Mar Abr
+    nb:  [193797, 272447,  29664, 146773]
+  },
+  {
+    name: 'Loggi', tipo: 'cc',
+    bpp: [      0, 178169, 675264,  99575],
+    nb:  [      0,  11734,      0,      0]
+  },
+  {
+    name: 'J&T Express Brazil', tipo: 'cc',
+    bpp: [      0, 191663, 518186,      0],
+    nb:  [      0,      0,      0,      0]
+  },
+  {
+    name: 'Correios', tipo: 'cc',
+    bpp: [ 46679,  41305,  21111,      0],
+    nb:  [   562,  11762,  13800,      0]
+  },
+  {
+    name: 'Carvalima', tipo: 'cc',
+    bpp: [ 15526,   9382,  15653,  30694],
+    nb:  [  2592,      0,      0,      0]
+  },
+  {
+    name: 'TNT', tipo: 'cc',
+    bpp: [     0,   8083,   4443,      0],
+    nb:  [  4124,   6012,   6105,      0]
+  },
+  // ── SEGUROS ─────────────────────────────────────────────
+  {
+    name: 'Argo Seguros', tipo: 'seg',
+    bpp: [212266,      0,      0,      0], // ← adicionar Fev/Mar/Abr quando disponível
+    nb:  [     0,      0,      0,      0]
+  },
+  // ── ACRESCENTAR NOVOS CARRIERS AQUI ─────────────────────
+];
+// ════════════════════════════════════════════════════════════
 
 // ── UTILS ──
-const sm=a=>a.reduce((s,x)=>s+(+x||0),0);
-const f$=v=>v>0?'$'+v.toLocaleString('pt-BR'):'—';
-const fk=v=>{if(!v||v===0)return'—';if(v>=1e6)return'$'+(v/1e6).toFixed(2)+'M';if(v>=1e3)return'$'+Math.round(v/1e3)+'k';return'$'+v;}
+const sm = a => (a||[]).reduce((s,x)=>s+(+x||0),0);
+const f$ = v => v>0 ? '$'+v.toLocaleString('pt-BR') : '—';
+const fk = v => {
+  if(!v||v===0) return '—';
+  if(v>=1e6) return '$'+(v/1e6).toFixed(2)+'M';
+  if(v>=1e3) return '$'+Math.round(v/1e3)+'k';
+  return '$'+v;
+};
+
+let showBpp = true, showNb = true;
+const CH = {};
+const COLORS = ['#2ecc8a','#4d9fff','#f5a623','#a374ff','#ff6eb4','#ef4444','#8ab4c0','#f0db4f'];
 
 function getPeriod(){
-  const v=document.getElementById('fPer').value;
-  if(v==='ytd') return {s:0,e:4,label:'YTD Jan–Abr'};
-  const i=parseInt(v); return {s:i,e:i+1,label:MONTHS[i]};
+  const v = document.getElementById('fPer').value;
+  if(v==='ytd') return {s:0, e:MONTHS.length, label:'YTD Jan–Abr'};
+  const i = parseInt(v); return {s:i, e:i+1, label:MONTHS[i]};
 }
-
+function getTipo(){ return document.getElementById('fTipo').value; }
+function dc(id){ if(CH[id]){CH[id].destroy();delete CH[id];} }
 function toggleType(t){
   if(t==='bpp') showBpp=!showBpp;
   else showNb=!showNb;
-  document.getElementById('tg-bpp').className='btn-tog'+(showBpp?' active':'');
-  document.getElementById('tg-nb').className='btn-tog'+(showNb?' active':'');
+  document.getElementById('tg-bpp').className='btn-tog'+(showBpp?' on':'');
+  document.getElementById('tg-nb').className='btn-tog'+(showNb?' on':'');
   render();
 }
 
-function dc(id){if(CH[id]){CH[id].destroy();delete CH[id];}}
+function getFiltered(){
+  const tipo = getTipo();
+  return CARRIERS.filter(c => tipo==='all' || c.tipo===tipo);
+}
 
-// ── RENDER ──
 function render(){
-  const p=getPeriod();
-  // aggregate
-  const rows=CARRIERS.map(c=>({
-    name:c.name,
-    bpp:sm(c.bpp.slice(p.s,p.e)),
-    nb:sm(c.nb.slice(p.s,p.e)),
-    bppM:c.bpp,nbM:c.nb
-  })).sort((a,b)=>(b.bpp+b.nb)-(a.bpp+a.nb));
+  document.getElementById('upd-badge').textContent='⟳ Atualizado: '+UPDATED;
+  const p = getPeriod();
+  const carriers = getFiltered();
 
-  const totBpp=sm(rows.map(r=>r.bpp));
-  const totNb=sm(rows.map(r=>r.nb));
-  const totRec=totBpp+totNb;
+  const rows = carriers.map(c=>({
+    ...c,
+    bppP: sm(c.bpp.slice(p.s,p.e)),
+    nbP:  sm(c.nb.slice(p.s,p.e)),
+  })).sort((a,b)=>(b.bppP+b.nbP)-(a.bppP+a.nbP));
 
-  // KPIs
+  const totBpp  = sm(rows.map(r=>r.bppP));
+  const totNb   = sm(rows.map(r=>r.nbP));
+  const totBppCC= sm(rows.filter(r=>r.tipo==='cc').map(r=>r.bppP));
+  const totBppSG= sm(rows.filter(r=>r.tipo==='seg').map(r=>r.bppP));
+  const totRec  = totBpp+totNb;
+
+  // ── KPIs ──
   document.getElementById('krow').innerHTML=`
-    <div class="kpi g"><div class="kl">BPP Recuperado</div><div class="kv">${fk(totBpp)}</div><div class="ks">${p.label} · Brasil</div></div>
-    <div class="kpi a"><div class="kl">Não-BPP Recuperado</div><div class="kv">${fk(totNb)}</div><div class="ks">${p.label} · Brasil</div></div>
-    <div class="kpi b"><div class="kl">Total Recuperado</div><div class="kv">${fk(totRec)}</div><div class="ks">${totRec>0?Math.round(totBpp/totRec*100)+'% é BPP':'—'}</div></div>
-    <div class="kpi p"><div class="kl">Carriers ativos</div><div class="kv">${rows.filter(r=>r.bpp+r.nb>0).length}</div><div class="ks">com recupero no período</div></div>
+    <div class="kpi g">
+      <div class="kl">BPP Recuperado</div>
+      <div class="kv">${fk(totBpp)}</div>
+      <div class="ks">${p.label} · ${carriers.length} carriers</div>
+    </div>
+    <div class="kpi b">
+      <div class="kl">BPP CC</div>
+      <div class="kv">${fk(totBppCC)}</div>
+      <div class="ks">${totBpp>0?Math.round(totBppCC/totBpp*100)+'% do BPP total':'—'}</div>
+    </div>
+    <div class="kpi p">
+      <div class="kl">BPP Seguros</div>
+      <div class="kv">${fk(totBppSG)}</div>
+      <div class="ks">${totBpp>0?Math.round(totBppSG/totBpp*100)+'% do BPP total':'—'}</div>
+    </div>
+    <div class="kpi a">
+      <div class="kl">Não-BPP Recuperado</div>
+      <div class="kv">${fk(totNb)}</div>
+      <div class="ks">${totRec>0?Math.round(totNb/totRec*100)+'% do total':'—'}</div>
+    </div>
+    <div class="kpi pk">
+      <div class="kl">Total Recuperado</div>
+      <div class="kv">${fk(totRec)}</div>
+      <div class="ks">${totRec>0?Math.round(totBpp/totRec*100)+'% é BPP':'—'}</div>
+    </div>
   `;
 
-  document.getElementById('ch1-sub').textContent=p.label+' · BPP + Não-BPP';
-
-  // ── BAR CHART: by carrier ──
-  const activeRows=rows.filter(r=>r.bpp+r.nb>0);
+  // ── BAR: por carrier ──
+  const active = rows.filter(r=>r.bppP+r.nbP>0);
+  document.getElementById('sub-bar').textContent=p.label+' · ordenado por total';
   dc('cBar');
-  const datasets=[];
-  if(showBpp) datasets.push({label:'BPP',data:activeRows.map(r=>r.bpp),backgroundColor:'rgba(46,204,138,.8)',borderRadius:3,stack:'s'});
-  if(showNb)  datasets.push({label:'Não-BPP',data:activeRows.map(r=>r.nb),backgroundColor:'rgba(245,166,35,.75)',borderRadius:3,stack:'s'});
+  const barDs=[];
+  if(showBpp) barDs.push({label:'BPP',data:active.map(r=>r.bppP),backgroundColor:active.map(r=>r.tipo==='seg'?'rgba(163,116,255,.85)':'rgba(46,204,138,.85)'),borderRadius:3,stack:'s'});
+  if(showNb)  barDs.push({label:'Não-BPP',data:active.map(r=>r.nbP),backgroundColor:'rgba(245,166,35,.75)',borderRadius:3,stack:'s'});
   CH['cBar']=new Chart(document.getElementById('cBar'),{
     type:'bar',
-    data:{labels:activeRows.map(r=>r.name),datasets},
+    data:{labels:active.map(r=>r.name+(r.tipo==='seg'?' ✦':'')), datasets:barDs},
     options:{
       indexAxis:'y',responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{backgroundColor:'#181c24',borderColor:'rgba(255,255,255,.12)',borderWidth:1,titleColor:'#dde1ea',bodyColor:'#7c8696',callbacks:{label:c=>` ${c.dataset.label}: ${f$(c.raw||0)}`}}},
       scales:{
-        x:{stacked:true,grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'#5a6170',font:{size:9},callback:v=>'$'+Math.round(v/1000)+'k'}},
+        x:{stacked:true,grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>'$'+Math.round(v/1000)+'k'}},
         y:{stacked:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#dde1ea',font:{size:11}}}
       }
     }
   });
 
-  // ── TREND CHART: monthly BPP + NonBPP stacked ──
-  const trendColors=['#2ecc8a','#4d9fff','#f5a623','#a374ff','#ff6eb4','#ef4444','#8ab4c0'];
+  // ── TREND: monthly per carrier ──
   dc('cTrend');
+  const trendCarriers=getFiltered().filter(c=>sm(c.bpp)+sm(c.nb)>0);
   const trendDs=[];
-  if(showBpp){
-    rows.filter(r=>sm(r.bppM)>0).forEach((r,i)=>trendDs.push({
-      label:r.name+' BPP',
-      data:r.bppM,
-      backgroundColor:trendColors[i%trendColors.length]+'cc',
-      borderRadius:2,stack:'bpp'
-    }));
-  }
-  if(showNb){
-    rows.filter(r=>sm(r.nbM)>0).forEach((r,i)=>trendDs.push({
-      label:r.name+' NB',
-      data:r.nbM,
-      backgroundColor:trendColors[i%trendColors.length]+'55',
-      borderRadius:2,stack:'nb',
-      borderColor:trendColors[i%trendColors.length]+'99',
-      borderWidth:1
-    }));
-  }
+  trendCarriers.forEach((c,i)=>{
+    const col=c.tipo==='seg'?'#a374ff':COLORS[i%COLORS.length];
+    if(showBpp&&sm(c.bpp)>0) trendDs.push({label:c.name+' BPP',data:c.bpp.slice(0,MONTHS.length),backgroundColor:col+'bb',borderRadius:2,stack:'bpp'});
+    if(showNb&&sm(c.nb)>0)   trendDs.push({label:c.name+' NB',data:c.nb.slice(0,MONTHS.length),backgroundColor:col+'44',borderRadius:2,stack:'nb',borderColor:col+'88',borderWidth:1});
+  });
   CH['cTrend']=new Chart(document.getElementById('cTrend'),{
     type:'bar',
-    data:{labels:MONTHS,datasets:trendDs},
+    data:{labels:MONTHS, datasets:trendDs},
     options:{
       responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{backgroundColor:'#181c24',borderColor:'rgba(255,255,255,.12)',borderWidth:1,titleColor:'#dde1ea',bodyColor:'#7c8696',callbacks:{label:c=>` ${c.dataset.label}: ${f$(c.raw||0)}`}}},
@@ -268,56 +342,73 @@ function render(){
       }
     }
   });
-  // Legend
-  document.getElementById('trend-leg').innerHTML=rows.filter(r=>sm(r.bppM)+sm(r.nbM)>0).map((r,i)=>`
-    <div class="li"><div class="ld" style="background:${trendColors[i%trendColors.length]}"></div>${r.name}</div>
-  `).join('');
+  // legend
+  document.getElementById('leg-trend').innerHTML=trendCarriers.map((c,i)=>{
+    const col=c.tipo==='seg'?'#a374ff':COLORS[i%COLORS.length];
+    return `<div class="li"><div class="ld" style="background:${col}"></div>${c.name}${c.tipo==='seg'?' ✦':''}</div>`;
+  }).join('');
 
   // ── TABLE ──
-  const makeTd=(bpp,nb)=>{
-    const parts=[];
-    if(showBpp) parts.push(`<td class="tg">${bpp>0?f$(bpp):'<span style="color:var(--m2)">—</span>'}</td>`);
-    if(showNb)  parts.push(`<td class="ta">${nb>0?f$(nb):'<span style="color:var(--m2)">—</span>'}</td>`);
-    return parts.join('');
-  };
-  const makeSubhd=()=>{
-    const parts=[];
-    if(showBpp) parts.push('<th class="tg mhd">BPP</th>');
-    if(showNb)  parts.push('<th class="ta mhd">NÃO-BPP</th>');
-    return parts.join('');
-  };
-  const colCount=1+(4*(+showBpp+ +showNb))+(+showBpp+ +showNb)+1;
+  const mkV = (v,cls) => `<td class="${cls}">${v>0?f$(v):'<span style="color:var(--m2)">—</span>'}</td>`;
+  const mkHdr = (cls,txt) => `<th class="${cls}">${txt}</th>`;
 
-  let tbl='<table><thead>';
-  tbl+=`<tr><th rowspan="2">Transportador</th>`;
-  MONTHS.forEach(m=>tbl+=`<th colspan="${+showBpp+ +showNb}" style="text-align:center;border-left:1px solid rgba(255,255,255,.08)">${m}</th>`);
-  tbl+=`<th colspan="${+showBpp+ +showNb}" style="text-align:center;border-left:1px solid rgba(255,255,255,.15)">TOTAL</th></tr>`;
-  tbl+=`<tr>`;
-  MONTHS.forEach(()=>tbl+=`<td style="border-left:1px solid rgba(255,255,255,.08);padding:4px 0">${makeSubhd()}</td>`);
-  tbl+=`<td style="border-left:1px solid rgba(255,255,255,.15);padding:4px 0">${makeSubhd()}</td>`;
-  tbl+='</tr></thead><tbody>';
-
-  // data rows sorted by total desc
-  const tblRows=[...rows].sort((a,b)=>(b.bpp+b.nb)-(a.bpp+a.nb));
-  tblRows.forEach(r=>{
-    if(r.bpp+r.nb===0) return;
-    tbl+=`<tr><td>${r.name}</td>`;
-    for(let i=0;i<4;i++){
-      tbl+=`<td style="border-left:1px solid rgba(255,255,255,.05);padding:0">${makeTd(r.bppM[i],r.nbM[i])}</td>`;
-    }
-    tbl+=`<td style="border-left:1px solid rgba(255,255,255,.15);padding:0">${makeTd(r.bpp,r.nb)}</td>`;
-    tbl+='</tr>';
+  // build header
+  let h=`<table><thead><tr>`;
+  h+=`<th class="tl">Transportador</th>`;
+  MONTHS.forEach(m=>{
+    if(showBpp&&showNb) h+=`<th class="tc" colspan="2" style="border-left:1px solid rgba(255,255,255,.07)">${m}</th>`;
+    else h+=`<th class="tc" style="border-left:1px solid rgba(255,255,255,.07)">${m}</th>`;
   });
-  // total row
-  tbl+=`<tr><td>TOTAL</td>`;
-  for(let i=0;i<4;i++){
-    const bppM=sm(CARRIERS.map(c=>c.bpp[i]));
-    const nbM=sm(CARRIERS.map(c=>c.nb[i]));
-    tbl+=`<td style="border-left:1px solid rgba(255,255,255,.05);padding:0">${makeTd(bppM,nbM)}</td>`;
+  if(showBpp&&showNb) h+=`<th class="tc" colspan="2" style="border-left:1px solid rgba(255,255,255,.15)">TOTAL</th>`;
+  else h+=`<th class="tc" style="border-left:1px solid rgba(255,255,255,.15)">TOTAL</th>`;
+  h+=`</tr><tr><th></th>`;
+  for(let i=0;i<MONTHS.length+1;i++){
+    const bl=i<MONTHS.length?'border-left:1px solid rgba(255,255,255,.07);':'border-left:1px solid rgba(255,255,255,.15);';
+    if(showBpp) h+=`<th class="tg" style="${bl}font-size:9px">BPP</th>`;
+    if(showNb)  h+=`<th class="ta" style="${i===0&&!showBpp?bl:''}font-size:9px">NB</th>`;
   }
-  tbl+=`<td style="border-left:1px solid rgba(255,255,255,.15);padding:0">${makeTd(totBpp,totNb)}</td>`;
-  tbl+='</tr></tbody></table>';
-  document.getElementById('tbl').innerHTML=tbl;
+  h+=`</tr></thead><tbody>`;
+
+  // rows by tipo group
+  const groups = [{key:'cc',label:'Commercial Carriers'},{key:'seg',label:'Seguros'}];
+  groups.forEach(g=>{
+    const gRows=rows.filter(r=>r.tipo===g.key&&r.bppP+r.nbP>0);
+    if(!gRows.length) return;
+    const colSpan=1+MONTHS.length*(+showBpp+ +showNb)+(+showBpp+ +showNb);
+    h+=`<tr class="grp-row"><td colspan="${colSpan}">${g.label}</td></tr>`;
+    gRows.forEach(r=>{
+      const tag=r.tipo==='seg'?`<span class="seg-tag">SEG</span>`:`<span class="cc-tag">CC</span>`;
+      h+=`<tr><td class="tl">${r.name}${tag}</td>`;
+      r.bpp.slice(0,MONTHS.length).forEach((v,i)=>{
+        h+=`<td style="border-left:1px solid rgba(255,255,255,.05);padding:0">`;
+        if(showBpp) h+=`<td class="tg">${v>0?f$(v):'<span style="color:var(--m2)">—</span>'}</td>`;
+        if(showNb)  h+=`<td class="ta">${(r.nb[i]||0)>0?f$(r.nb[i]):'<span style="color:var(--m2)">—</span>'}</td>`;
+        h+=`</td>`;
+      });
+      // total col
+      h+=`<td style="border-left:1px solid rgba(255,255,255,.12);padding:0">`;
+      if(showBpp) h+=`<td class="tg" style="font-weight:600">${r.bppP>0?f$(r.bppP):'<span style="color:var(--m2)">—</span>'}</td>`;
+      if(showNb)  h+=`<td class="ta">${r.nbP>0?f$(r.nbP):'<span style="color:var(--m2)">—</span>'}</td>`;
+      h+=`</td></tr>`;
+    });
+  });
+
+  // total row
+  h+=`<tr class="tot-row"><td class="tl">TOTAL</td>`;
+  MONTHS.forEach((_,mi)=>{
+    const bM=sm(rows.map(r=>r.bpp[mi]||0));
+    const nM=sm(rows.map(r=>r.nb[mi]||0));
+    h+=`<td style="border-left:1px solid rgba(255,255,255,.05);padding:0">`;
+    if(showBpp) h+=`<td class="tg">${bM>0?f$(bM):'—'}</td>`;
+    if(showNb)  h+=`<td class="ta">${nM>0?f$(nM):'—'}</td>`;
+    h+=`</td>`;
+  });
+  h+=`<td style="border-left:1px solid rgba(255,255,255,.12);padding:0">`;
+  if(showBpp) h+=`<td class="tg">${totBpp>0?f$(totBpp):'—'}</td>`;
+  if(showNb)  h+=`<td class="ta">${totNb>0?f$(totNb):'—'}</td>`;
+  h+=`</td></tr></tbody></table>`;
+
+  document.getElementById('tbl').innerHTML=h;
 }
 </script>
 </body>
