@@ -5,7 +5,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<!-- v2026-05-08-r16 -->
+<!-- v2026-05-08-r17 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BPP KPI Dashboard — Commercial Carriers 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -644,7 +644,7 @@ function renderBppRec(){
       {label:'Rec/Real %',data:sites.map(s=>{const b=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));const r=sm(getRecBpp(s.c).slice(getMF().s,getMF().e));return b>0?Math.round(r/b*100):0;}),
        backgroundColor:sites.map(s=>{const b=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));const r=sm(getRecBpp(s.c).slice(getMF().s,getMF().e));const p=b>0?r/b*100:0;return p>=80?'rgba(46,204,138,.75)':p>=50?'rgba(245,166,35,.75)':'rgba(255,79,79,.75)';}),borderRadius:4}
     ]},
-    options:{...baseOpts('bar'),plugins:{...baseOpts('bar').plugins},scales:{...baseOpts('bar').scales,y:{...baseOpts('bar').scales.y,ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>v+'%'}}}}});
+    options:{...baseOpts('bar'),plugins:{...baseOpts('bar').plugins,tooltip:{...baseOpts('bar').plugins.tooltip,callbacks:{label:c=>` ${c.dataset.label}: ${c.raw}%`}}},scales:{...baseOpts('bar').scales,y:{...baseOpts('bar').scales.y,ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>v+'%'}}}}});
 
   document.getElementById('tBR').innerHTML=sites.map(s=>{
     const rl=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));
@@ -703,13 +703,13 @@ function renderTgmvRec(){
   dc('cTRM');
   CH['cTRM']=new Chart(document.getElementById('cTRM'),{type:'bar',data:{labels:MONTHS.slice(getMF().s,getMF().e),datasets:[
     {label:'TGMV',     data:tgmvM.slice(getMF().s,getMF().e),backgroundColor:'rgba(0,212,200,.25)',borderRadius:3,order:2},
-    {label:'Recuperado',data:recM.slice(getMF().s,getMF().e), type:'line',borderColor:'var(--grn)',backgroundColor:'rgba(46,204,138,.1)',borderWidth:2,pointRadius:3,tension:.3,fill:true,order:1},
+    {label:'Recuperado',data:recM.slice(getMF().s,getMF().e), type:'line',borderColor:'#2ecc8a',backgroundColor:'rgba(46,204,138,.1)',borderWidth:2,pointRadius:3,tension:.3,fill:true,order:1},
   ]},options:{...baseOpts('bar'),scales:{x:baseOpts('bar').scales.x,y:{...baseOpts('bar').scales.y,ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>'$'+Math.round(v/1e6)+'M'}}}}});
 
   dc('cTRR');
   CH['cTRR']=new Chart(document.getElementById('cTRR'),{type:'line',data:{labels:MONTHS.slice(getMF().s,getMF().e),datasets:[
-    {label:'Rec/TGMV %',data:ratioM.slice(getMF().s,getMF().e),borderColor:'var(--pur)',backgroundColor:'rgba(163,116,255,.12)',borderWidth:2,pointRadius:3,tension:.4,fill:true},
-  ]},options:{...baseOpts('line'),scales:{x:baseOpts('line').scales.x,y:{...baseOpts('line').scales.y,ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>v!=null?v.toFixed(3)+'%':null}}}}});
+    {label:'Rec/TGMV %',data:ratioM.slice(getMF().s,getMF().e),borderColor:'#a374ff',backgroundColor:'rgba(163,116,255,.12)',borderWidth:2,pointRadius:3,tension:.4,fill:true},
+  ]},options:{...baseOpts('line'),plugins:{...baseOpts('line').plugins,tooltip:{...baseOpts('line').plugins.tooltip,callbacks:{label:c=>` ${c.dataset.label}: ${c.raw!=null?c.raw.toFixed(3)+'%':'—'}`}}},scales:{x:baseOpts('line').scales.x,y:{...baseOpts('line').scales.y,ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>v!=null?v.toFixed(3)+'%':null}}}}});
 
   document.getElementById('tTR').innerHTML=sites.map(s=>{
     const tg=sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e));
@@ -780,8 +780,8 @@ function renderTgmvFull(){
   {const mf=getMF(),tg=tgmvM.slice(mf.s,mf.e),bp=bppM.slice(mf.s,mf.e),rb=recBM.slice(mf.s,mf.e),rn=recNM.slice(mf.s,mf.e);
   CH['cTFR']=new Chart(document.getElementById('cTFR'),{type:'line',data:{labels:MONTHS.slice(mf.s,mf.e),datasets:[
     {label:'BPP/TGMV %',data:tg.map((t,i)=>t>0?(bp[i]/t*100):null),borderColor:'rgba(255,79,79,.8)',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.4},
-    {label:'BPP Rec/TGMV %',data:tg.map((t,i)=>t>0?(rb[i]/t*100):null),borderColor:'var(--pur)',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.4},
-  ]},options:{...baseOpts('line'),plugins:{...baseOpts('line').plugins,legend:{display:true,labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},boxWidth:6,boxHeight:6}}},scales:{x:baseOpts('line').scales.x,y:{...baseOpts('line').scales.y,ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>v!=null?v.toFixed(3)+'%':null}}}}});}
+    {label:'BPP Rec/TGMV %',data:tg.map((t,i)=>t>0?(rb[i]/t*100):null),borderColor:'#00d4c8',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.4},
+  ]},options:{...baseOpts('line'),plugins:{...baseOpts('line').plugins,legend:{display:true,labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},boxWidth:6,boxHeight:6}},tooltip:{...baseOpts('line').plugins.tooltip,callbacks:{label:c=>` ${c.dataset.label}: ${c.raw!=null?c.raw.toFixed(3)+'%':'—'}`}}},scales:{x:baseOpts('line').scales.x,y:{...baseOpts('line').scales.y,ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>v!=null?v.toFixed(3)+'%':null}}}}});}
 
   document.getElementById('tTF').innerHTML=sites.map(s=>{
     const tg=sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e));
