@@ -2,107 +2,134 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<!-- v2026-05-08-r13 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Recovery Dashboard — Commercial Carriers 2026</title>
+<title>BPP KPI Dashboard — Commercial Carriers 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-:root{
-  --bg:#0b0d11;--s1:#111419;--s2:#181c24;
-  --b:rgba(255,255,255,.06);--b2:rgba(255,255,255,.12);
-  --txt:#dde1ea;--m:#5a6170;--m2:#7c8696;
-  --grn:#2ecc8a;--blu:#4d9fff;--red:#ff4f4f;
-  --amb:#f5a623;--pur:#a374ff;--cyn:#00d4c8;--pnk:#ff6eb4;
-  --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
-}
+:root{--bg:#0b0d11;--s1:#111419;--s2:#181c24;--s3:#1e2330;
+--b:rgba(255,255,255,.06);--b2:rgba(255,255,255,.12);
+--txt:#dde1ea;--m:#5a6170;--m2:#7c8696;
+--grn:#2ecc8a;--blu:#4d9fff;--red:#ff4f4f;--amb:#f5a623;--pur:#a374ff;--cyn:#00d4c8;--pnk:#ff6eb4;
+--mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--txt);font-family:var(--sans);font-size:14px;line-height:1.5}
-.hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 26px;border-bottom:1px solid var(--b);background:var(--s1);position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:10px}
-.hdr-l{display:flex;align-items:center;gap:12px}
-.logo{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#2ecc8a,#4d9fff);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
-.hdr-title{font-size:14px;font-weight:500}
-.hdr-sub{font-size:11px;color:var(--m);font-family:var(--mono);margin-top:1px}
-.hdr-r{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.pill{font-size:10px;font-family:var(--mono);padding:3px 9px;border-radius:20px;border:1px solid rgba(46,204,138,.3);background:rgba(46,204,138,.07);color:var(--grn)}
-.pill-info{border-color:rgba(77,159,255,.3);background:rgba(77,159,255,.07);color:var(--blu)}
-select{background:var(--s2);border:1px solid var(--b2);color:var(--txt);border-radius:6px;padding:6px 10px;font-family:var(--sans);font-size:12px;cursor:pointer;outline:none}
+/* HEADER */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--b);background:var(--s1);position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:8px}
+.logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#4d9fff,#a374ff);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.hdr-title{font-size:13px;font-weight:500}.hdr-sub{font-size:10px;color:var(--m);font-family:var(--mono);margin-top:1px}
+.hdr-r{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.pill{font-size:9px;font-family:var(--mono);padding:2px 8px;border-radius:20px;border:1px solid;white-space:nowrap}
+.pill-g{border-color:rgba(46,204,138,.3);background:rgba(46,204,138,.07);color:var(--grn)}
+.pill-b{border-color:rgba(77,159,255,.3);background:rgba(77,159,255,.07);color:var(--blu)}
+.pill-o{border-color:rgba(245,166,35,.3);background:rgba(245,166,35,.07);color:var(--amb)}
+select{background:var(--s2);border:1px solid var(--b2);color:var(--txt);border-radius:6px;padding:5px 9px;font-family:var(--sans);font-size:11px;cursor:pointer;outline:none}
 select:hover{border-color:var(--blu)}
-.tabs{display:flex;padding:0 26px;border-bottom:1px solid var(--b);background:var(--s1);overflow-x:auto}
-.tab{padding:12px 16px;cursor:pointer;font-size:12px;font-weight:500;color:var(--m);border-bottom:2px solid transparent;transition:all .18s;white-space:nowrap;user-select:none}
+.btn-import{font-size:11px;font-family:var(--mono);padding:5px 12px;border-radius:6px;border:1px solid rgba(163,116,255,.4);background:rgba(163,116,255,.1);color:var(--pur);cursor:pointer;transition:all .15s}
+.btn-import:hover{background:rgba(163,116,255,.2)}
+/* TABS */
+.tabs{display:flex;padding:0 24px;border-bottom:1px solid var(--b);background:var(--s1);overflow-x:auto;gap:2px}
+.tab{padding:11px 15px;cursor:pointer;font-size:11px;font-weight:500;color:var(--m);border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;user-select:none}
 .tab:hover{color:var(--txt)}.tab.active{color:var(--blu);border-bottom-color:var(--blu)}
-.main{padding:20px 26px;max-width:1500px;margin:0 auto}
+/* MAIN */
+.main{padding:18px 24px;max-width:1600px;margin:0 auto}
 .tc{display:none}.tc.active{display:block}
-.krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:18px}
-.kpi{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:13px 16px;position:relative;overflow:hidden}
+/* KPI CARDS */
+.krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:16px}
+.kpi{background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:12px 15px;position:relative;overflow:hidden}
 .kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:2px}
-.kpi.g::after{background:var(--grn)}.kpi.b::after{background:var(--blu)}
-.kpi.r::after{background:var(--red)}.kpi.a::after{background:var(--amb)}.kpi.p::after{background:var(--pur)}
-.kpi.c::after{background:var(--cyn)}.kpi.pk::after{background:var(--pnk)}
-.kl{font-size:10px;font-family:var(--mono);color:var(--m);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
-.kv{font-size:20px;font-weight:500;font-family:var(--mono);letter-spacing:-.02em}
-.ks{font-size:11px;margin-top:3px;color:var(--m2)}
+.kpi.g::after{background:var(--grn)}.kpi.b::after{background:var(--blu)}.kpi.r::after{background:var(--red)}
+.kpi.a::after{background:var(--amb)}.kpi.p::after{background:var(--pur)}.kpi.c::after{background:var(--cyn)}
+.kl{font-size:9px;font-family:var(--mono);color:var(--m);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
+.kv{font-size:19px;font-weight:500;font-family:var(--mono);letter-spacing:-.02em}
+.ks{font-size:10px;margin-top:2px;color:var(--m2)}
 .up{color:var(--grn)}.dn{color:var(--red)}.wn{color:var(--amb)}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
-.gf{margin-bottom:12px}
-.card{background:var(--s1);border:1px solid var(--b);border-radius:12px;padding:16px 20px}
-.ch{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
-.ct{font-size:12px;font-weight:500}.cs{font-size:10px;color:var(--m);font-family:var(--mono);margin-top:2px}
-.badge{font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:4px;border:1px solid;white-space:nowrap}
+/* CARDS/GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
+.gf{margin-bottom:10px}
+.card{background:var(--s1);border:1px solid var(--b);border-radius:12px;padding:15px 18px}
+.ch{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.ct{font-size:11px;font-weight:500}.cs{font-size:10px;color:var(--m);font-family:var(--mono);margin-top:2px}
+.badge{font-size:9px;font-family:var(--mono);padding:2px 7px;border-radius:4px;border:1px solid}
 .bg{color:var(--grn);border-color:rgba(46,204,138,.3);background:rgba(46,204,138,.07)}
 .bb{color:var(--blu);border-color:rgba(77,159,255,.3);background:rgba(77,159,255,.07)}
 .ba{color:var(--amb);border-color:rgba(245,166,35,.3);background:rgba(245,166,35,.07)}
+.bp{color:var(--pur);border-color:rgba(163,116,255,.3);background:rgba(163,116,255,.07)}
 .bc{color:var(--cyn);border-color:rgba(0,212,200,.3);background:rgba(0,212,200,.07)}
-.bpk{color:var(--pnk);border-color:rgba(255,110,180,.3);background:rgba(255,110,180,.07)}
 .cw{position:relative;width:100%}
+/* TABLES */
 .tw{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:12px}
-thead th{text-align:left;padding:7px 10px;color:var(--m);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid var(--b);white-space:nowrap}
-tbody tr{border-bottom:1px solid rgba(255,255,255,.025);transition:background .12s}
-tbody tr:hover{background:rgba(255,255,255,.02)}
-td{padding:8px 10px;font-family:var(--mono);font-size:11px}
-.tcc{font-family:var(--sans);font-weight:500;font-size:12px}
-.tr{text-align:right}
-.tg{color:var(--grn)}.tb{color:var(--blu)}.t-r{color:var(--red)}.ta{color:var(--amb)}.tc2{color:var(--cyn)}.tpk{color:var(--pnk)}
-.gau-row{display:flex;flex-wrap:wrap;gap:10px}
-.gau{flex:1;min-width:120px}
-.gau-l{font-size:11px;color:var(--m2);font-family:var(--mono);margin-bottom:4px}
+table{width:100%;border-collapse:collapse;font-size:11px}
+thead th{text-align:left;padding:6px 9px;color:var(--m);font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid var(--b);white-space:nowrap}
+tbody tr{border-bottom:1px solid rgba(255,255,255,.022);transition:background .1s}
+tbody tr:hover{background:rgba(255,255,255,.018)}
+td{padding:7px 9px;font-family:var(--mono);font-size:10px}
+.tcc{font-family:var(--sans);font-weight:500;font-size:11px}
+.tr{text-align:right}.tg{color:var(--grn)}.tb{color:var(--blu)}.tr2{color:var(--red)}.ta{color:var(--amb)}.tp{color:var(--pur)}.tc2{color:var(--cyn)}
+/* GAUGES */
+.gau-row{display:flex;flex-wrap:wrap;gap:8px}
+.gau{flex:1;min-width:110px}
+.gau-l{font-size:10px;color:var(--m2);font-family:var(--mono);margin-bottom:3px}
 .gau-t{height:4px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
-.gau-f{height:100%;border-radius:3px;transition:width .9s cubic-bezier(.4,0,.2,1)}
-.gau-v{display:flex;justify-content:space-between;margin-top:3px;font-size:10px;font-family:var(--mono)}
+.gau-f{height:100%;border-radius:3px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.gau-v{display:flex;justify-content:space-between;margin-top:2px;font-size:9px;font-family:var(--mono)}
 .pb{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;margin-top:2px}
-.pf{height:100%;border-radius:2px;transition:width .5s}
-.leg{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
-.li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--m2)}
-.ld{width:8px;height:8px;border-radius:2px;flex-shrink:0}
-.slbl{font-size:10px;color:var(--m);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
-.fbar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(77,159,255,.06);border:1px solid rgba(77,159,255,.15);border-radius:8px;margin-bottom:16px;font-size:11px;color:var(--blu);font-family:var(--mono)}
-/* Tooltip */
-.tip{position:relative;display:inline-flex;align-items:center;gap:4px;cursor:help}
-.tip-icon{width:14px;height:14px;border-radius:50%;border:1px solid var(--m);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:var(--m);font-style:normal;flex-shrink:0}
-.tip-body{display:none;position:absolute;left:0;top:calc(100% + 6px);background:#1c2030;border:1px solid var(--b2);border-radius:8px;padding:10px 13px;font-size:11px;color:var(--txt);font-family:var(--sans);line-height:1.5;min-width:240px;max-width:320px;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.4);white-space:normal;pointer-events:none}
-.tip:hover .tip-body{display:block}
-/* Concept banner */
-.concept-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.concept{flex:1;min-width:180px;background:var(--s2);border:1px solid var(--b);border-radius:8px;padding:10px 14px}
-.concept-title{font-size:10px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
-.concept-text{font-size:11px;color:var(--m2);line-height:1.5}
-.hisp-badge{font-size:9px;font-family:var(--mono);padding:1px 6px;border-radius:3px;background:rgba(163,116,255,.1);border:1px solid rgba(163,116,255,.25);color:var(--pur)}
-@media(max-width:760px){.main{padding:12px}.hdr{padding:10px 12px}.tabs{padding:0 12px}.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr}.krow{grid-template-columns:repeat(2,1fr)}}
+.pf{height:100%;border-radius:2px;transition:width .4s}
+.leg{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.li{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--m2)}
+.ld{width:7px;height:7px;border-radius:2px;flex-shrink:0}
+.slbl{font-size:9px;color:var(--m);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px}
+.fbar{display:flex;align-items:center;gap:8px;padding:7px 11px;background:rgba(77,159,255,.06);border:1px solid rgba(77,159,255,.15);border-radius:8px;margin-bottom:14px;font-size:10px;color:var(--blu);font-family:var(--mono);flex-wrap:wrap}
+/* DATA MISSING BANNER */
+.no-data{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;text-align:center;gap:12px}
+.no-data-icon{font-size:32px}
+.no-data-title{font-size:13px;font-weight:500;color:var(--m2)}
+.no-data-sub{font-size:11px;color:var(--m);font-family:var(--mono);max-width:420px;line-height:1.6}
+.btn-load{font-size:11px;font-family:var(--mono);padding:8px 18px;border-radius:8px;border:1px solid rgba(163,116,255,.4);background:rgba(163,116,255,.1);color:var(--pur);cursor:pointer;transition:all .15s;margin-top:4px}
+.btn-load:hover{background:rgba(163,116,255,.25)}
+/* MODAL */
+#modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;align-items:center;justify-content:center;padding:20px}
+#modal-overlay.open{display:flex}
+.modal{background:#111419;border:1px solid var(--b2);border-radius:16px;padding:28px 32px;width:600px;max-width:100%;max-height:90vh;overflow-y:auto}
+.modal h2{font-size:14px;font-weight:600;margin-bottom:6px}
+.modal-sub{font-size:11px;color:var(--m);font-family:var(--mono);margin-bottom:16px;line-height:1.5}
+.modal-tabs{display:flex;gap:4px;margin-bottom:14px}
+.mtab{padding:6px 14px;border-radius:6px;border:1px solid var(--b2);background:transparent;color:var(--m);font-size:11px;font-family:var(--mono);cursor:pointer}
+.mtab.active{background:rgba(163,116,255,.15);border-color:rgba(163,116,255,.4);color:var(--pur)}
+.modal textarea{width:100%;height:160px;background:#0b0d11;border:1px solid var(--b2);border-radius:8px;color:var(--txt);font-family:var(--mono);font-size:10px;padding:10px;resize:vertical;outline:none;margin-bottom:10px}
+.modal textarea:focus{border-color:var(--pur)}
+.modal-hint{font-size:10px;color:var(--m);font-family:var(--mono);margin-bottom:14px;padding:8px 12px;background:var(--s2);border-radius:6px;line-height:1.6}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end}
+.btn-cancel{font-size:11px;padding:7px 16px;border-radius:6px;border:1px solid var(--b2);background:transparent;color:var(--m);cursor:pointer}
+.btn-confirm{font-size:11px;padding:7px 16px;border-radius:6px;border:1px solid rgba(163,116,255,.4);background:rgba(163,116,255,.15);color:var(--pur);cursor:pointer}
+.btn-confirm:hover{background:rgba(163,116,255,.3)}
+/* RATIO BADGE */
+.ratio-badge{display:inline-block;font-size:9px;font-family:var(--mono);padding:1px 6px;border-radius:3px;margin-left:4px}
+.ratio-hi{background:rgba(46,204,138,.12);color:var(--grn)}
+.ratio-md{background:rgba(245,166,35,.12);color:var(--amb)}
+.ratio-lo{background:rgba(255,79,79,.12);color:var(--red)}
+@media(max-width:760px){.main{padding:10px}.g2,.g3{grid-template-columns:1fr}.krow{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
+
+<!-- HEADER -->
 <div class="hdr">
-  <div class="hdr-l">
-    <div class="logo">📦</div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="logo">📊</div>
     <div>
-      <div class="hdr-title">Recovery Dashboard — Commercial Carriers</div>
-      <div class="hdr-sub">BPP Real · Plano BPP · Recuperado BPP · Não-BPP · Bono Volumen · 2026</div>
+      <div class="hdr-title">BPP KPI Dashboard — Commercial Carriers</div>
+      <div class="hdr-sub">TGMV · BPP Real · Recuperado · Plano · 2026</div>
     </div>
   </div>
   <div class="hdr-r">
-    <span class="pill">● Jan–Abr 2026</span>
-    <span class="pill pill-info">v7 · Apr 2026</span>
+    <span class="pill pill-g" id="pill-months">Jan–Mai 2026</span>
+    <span class="pill pill-b" id="pill-data-status">⚠ TGMV pendente</span>
     <select id="fC" onchange="applyFilters()">
       <option value="all">Todos os países</option>
       <option value="MLB">🇧🇷 Brasil (MLB)</option>
@@ -114,52 +141,97 @@ td{padding:8px 10px;font-family:var(--mono);font-size:11px}
       <option value="MLU">🇺🇾 Uruguai (MLU)</option>
       <option value="MEC">🇪🇨 Equador (MEC)</option>
     </select>
-    <select id="fT" onchange="applyFilters()">
+    <select id="fCarrier" onchange="applyFilters()">
+      <option value="all">Todos os carriers</option>
+    </select>
+    <select id="fTipo" onchange="applyFilters()">
       <option value="all">CC + Seguros</option>
-      <option value="cc">Só Commercial Carrier</option>
+      <option value="cc">Só CC</option>
       <option value="seg">Só Seguros</option>
     </select>
+    <select id="fMonth" onchange="applyFilters()">
+      <option value="ytd">Jan–Mai (YTD)</option>
+      <option value="0">Janeiro</option>
+      <option value="1">Fevereiro</option>
+      <option value="2">Março</option>
+      <option value="3">Abril</option>
+      <option value="4">Maio</option>
+    </select>
+    <button class="btn-import" onclick="openModal()">⬆ Carregar dados BQ</button>
   </div>
 </div>
+
+<!-- TABS -->
 <div class="tabs">
-  <div class="tab active" onclick="switchTab('bpp')">BPP — Real × Plano × Recuperado</div>
-  <div class="tab"        onclick="switchTab('nonbpp')">Não-BPP por País</div>
-  <div class="tab"        onclick="switchTab('bonov')">Bono Volumen</div>
-  <div class="tab"        onclick="switchTab('carriers')">Por Transportadora</div>
-  <div class="tab"        onclick="switchTab('overview')">Consolidado</div>
+  <div class="tab active" onclick="switchTab('consolidado')">📋 Consolidado</div>
+  <div class="tab"        onclick="switchTab('bpp-rec')">🔴 BPP × Rec × Plano</div>
+  <div class="tab"        onclick="switchTab('tgmv-rec')">📈 TGMV × Recuperado</div>
+  <div class="tab"        onclick="switchTab('tgmv-full')">🔁 TGMV × BPP × Rec</div>
+  <div class="tab"        onclick="switchTab('carriers')">🚚 Por Transportadora</div>
+  <div class="tab"        onclick="switchTab('paises')">🌎 Por País</div>
+  <div class="tab"        onclick="switchTab('causisticas')">📊 Rec. Real · Causísticas</div>
 </div>
+
 <div class="main">
 
-<!-- TAB BPP -->
-<div id="tab-bpp" class="tc active">
-  <div class="fbar">🔍 Filtro ativo: <strong id="fl-bpp">CC + Seguros · Todos os países</strong></div>
-  <div class="concept-bar">
-    <div class="concept">
-      <div class="concept-title" style="color:var(--red)">🔴 BPP — Bom Para o Pago</div>
-      <div class="concept-text">Valor perdido pelo Mercado Livre quando um pacote <strong>não foi entregue</strong>: extravíos, roubos, avarias, PNR (Paguei Não Recebi), atrasos. O transportador é cobrado pelo prejuízo.</div>
-    </div>
-    <div class="concept">
-      <div class="concept-title" style="color:var(--grn)">✅ BPP Recuperado</div>
-      <div class="concept-text">Parte do BPP cobrada com sucesso do transportador via Nota de Débito / compensação. Meta = atingir o <strong>Plano BPP</strong> definido para o ano.</div>
-    </div>
-    <div class="concept">
-      <div class="concept-title" style="color:var(--blu)">📊 Plano BPP</div>
-      <div class="concept-text">Meta anual de recuperação BPP acordada com a área de Business Control, distribuída mensalmente por país.</div>
-    </div>
-  </div>
+<!-- ══════════════ TAB: CONSOLIDADO ══════════════ -->
+<div id="tab-consolidado" class="tc active">
+  <div class="fbar">🔍 Filtro: <strong id="fl-con">Todos os países · Todos os carriers</strong></div>
   <div class="krow">
-    <div class="kpi r"><div class="kl">BPP Real (cashout)</div><div class="kv" id="k-real">—</div><div class="ks">Custo ao Mercado Livre</div></div>
-    <div class="kpi b"><div class="kl">Plano BPP (YTD)</div><div class="kv" id="k-plan">—</div><div class="ks">Meta Jan–Abr</div></div>
-    <div class="kpi g"><div class="kl">BPP Recuperado (YTD)</div><div class="kv" id="k-rec">—</div><div class="ks" id="k-rec-s">—</div></div>
-    <div class="kpi a"><div class="kl">Rec ÷ Plano</div><div class="kv" id="k-pp">—</div><div class="ks" id="k-pp-s">—</div></div>
-    <div class="kpi p"><div class="kl">Rec ÷ BPP Real</div><div class="kv" id="k-pr">—</div><div class="ks">Taxa de recuperação real</div></div>
+    <div class="kpi r"><div class="kl">BPP Real (cashout)</div><div class="kv" id="k-bpp-real">—</div><div class="ks">YTD Jan–Mai · USD</div></div>
+    <div class="kpi g"><div class="kl">Recuperado BPP</div><div class="kv" id="k-rec-bpp">—</div><div class="ks" id="k-rec-bpp-s">—</div></div>
+    <div class="kpi b"><div class="kl">Plano BPP</div><div class="kv" id="k-plan-bpp">—</div><div class="ks" id="k-plan-s">—</div></div>
+    <div class="kpi a"><div class="kl">Não-BPP Rec.</div><div class="kv" id="k-nb-rec">—</div><div class="ks">Tarifas + SLA</div></div>
+    <div class="kpi p"><div class="kl">Total Recuperado</div><div class="kv" id="k-total-rec">—</div><div class="ks" id="k-total-rec-s">—</div></div>
+    <div class="kpi c"><div class="kl">TGMV (NMV)</div><div class="kv" id="k-tgmv">—</div><div class="ks" id="k-tgmv-s">—</div></div>
   </div>
-  <div class="slbl">Progresso por País — BPP Recuperado vs Plano</div>
-  <div class="card gf"><div id="gauges" class="gau-row"></div></div>
   <div class="g2">
     <div class="card">
-      <div class="ch"><div><div class="ct">BPP Real × Plano × Recuperado — Mensal</div><div class="cs">USD</div></div><span class="badge bb">BPP</span></div>
-      <div class="cw" style="height:240px"><canvas id="cBM"></canvas></div>
+      <div class="ch"><div><div class="ct">BPP Real × Recuperado × Plano — Mensal</div><div class="cs">USD · todos os países filtrados</div></div><span class="badge bb">Consolidado</span></div>
+      <div class="cw" style="height:250px"><canvas id="cConM"></canvas></div>
+      <div class="leg">
+        <div class="li"><div class="ld" style="background:rgba(255,79,79,.6)"></div>BPP Real</div>
+        <div class="li"><div class="ld" style="background:var(--grn)"></div>BPP Rec.</div>
+        <div class="li"><div class="ld" style="background:var(--amb)"></div>Não-BPP</div>
+        <div class="li"><div class="ld" style="background:var(--blu);opacity:.5"></div>Plano</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><div><div class="ct">Mix do Recuperado por País (YTD)</div></div><span class="badge bg">YTD</span></div>
+      <div class="cw" style="height:250px"><canvas id="cConPie"></canvas></div>
+    </div>
+  </div>
+  <div class="card gf">
+    <div class="ch"><div class="ct">Resumo por País</div><span class="badge bb">USD · YTD Jan–Mai 2026</span></div>
+    <div class="tw"><table>
+      <thead><tr>
+        <th>País</th>
+        <th class="tr">BPP Real</th><th class="tr">Plano BPP</th>
+        <th class="tr">BPP Rec.</th><th class="tr">Rec/Real</th><th class="tr">Rec/Plano</th>
+        <th class="tr">Não-BPP</th><th class="tr">Total Rec.</th>
+        <th class="tr">TGMV</th><th class="tr">BPP/TGMV</th><th class="tr">BPP Rec/TGMV</th>
+      </tr></thead>
+      <tbody id="tCon"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ══════════════ TAB: BPP × REC × PLANO ══════════════ -->
+<div id="tab-bpp-rec" class="tc">
+  <div class="fbar">🔍 Filtro: <strong id="fl-bpp">Todos os países · Todos os carriers</strong></div>
+  <div class="krow">
+    <div class="kpi r"><div class="kl">BPP Real YTD</div><div class="kv" id="k2-bpp">—</div><div class="ks">Cashout total</div></div>
+    <div class="kpi b"><div class="kl">Plano YTD</div><div class="kv" id="k2-plan">—</div><div class="ks">Meta acumulada</div></div>
+    <div class="kpi g"><div class="kl">Rec BPP YTD</div><div class="kv" id="k2-rec">—</div><div class="ks" id="k2-rec-s">—</div></div>
+    <div class="kpi a"><div class="kl">Rec/Plano</div><div class="kv" id="k2-pp">—</div><div class="ks" id="k2-pp-s">—</div></div>
+    <div class="kpi p"><div class="kl">Rec/BPP Real</div><div class="kv" id="k2-pr">—</div><div class="ks">Taxa efetiva</div></div>
+  </div>
+  <div class="slbl">Progresso por País — Rec BPP vs Plano</div>
+  <div class="card gf"><div id="gauges2" class="gau-row"></div></div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div><div class="ct">BPP Real × Recuperado × Plano — Mensal</div></div><span class="badge bb">USD</span></div>
+      <div class="cw" style="height:240px"><canvas id="cBRM"></canvas></div>
       <div class="leg">
         <div class="li"><div class="ld" style="background:rgba(255,79,79,.6)"></div>BPP Real</div>
         <div class="li"><div class="ld" style="background:var(--grn)"></div>Recuperado</div>
@@ -167,269 +239,390 @@ td{padding:8px 10px;font-family:var(--mono);font-size:11px}
       </div>
     </div>
     <div class="card">
-      <div class="ch"><div><div class="ct">BPP Recuperado por País (YTD)</div></div><span class="badge bg">YTD</span></div>
-      <div class="cw" style="height:240px"><canvas id="cBD"></canvas></div>
+      <div class="ch"><div><div class="ct">Taxa Rec/BPP Real por País (YTD)</div></div><span class="badge bg">%</span></div>
+      <div class="cw" style="height:240px"><canvas id="cBRD"></canvas></div>
     </div>
   </div>
   <div class="card gf">
-    <div class="ch"><div class="ct">Detalhe por País — BPP</div><span class="badge bb">USD · YTD Jan–Abr</span></div>
+    <div class="ch"><div class="ct">Detalhe por País</div><span class="badge bb">Jan · Fev · Mar · Abr · Mai</span></div>
     <div class="tw"><table>
       <thead><tr>
-        <th>País</th><th class="tr">BPP Real</th><th class="tr">Plano BPP</th>
-        <th class="tr">Jan</th><th class="tr">Fev</th><th class="tr">Mar</th><th class="tr">Abr</th>
-        <th class="tr">Total Rec.</th><th class="tr">Rec/Real</th><th class="tr">Rec/Plano</th><th>Progresso</th>
+        <th>País</th><th class="tr">BPP Real</th><th class="tr">Plano</th>
+        <th class="tr">Jan</th><th class="tr">Fev</th><th class="tr">Mar</th><th class="tr">Abr</th><th class="tr">Mai</th>
+        <th class="tr">Total Rec</th><th class="tr">Rec/Real</th><th class="tr">Rec/Plano</th><th>Prog.</th>
       </tr></thead>
-      <tbody id="tB"></tbody>
+      <tbody id="tBR"></tbody>
     </table></div>
   </div>
 </div>
 
-<!-- TAB NÃO-BPP -->
-<div id="tab-nonbpp" class="tc">
-  <div class="fbar">🔍 Filtro ativo: <strong id="fl-nb">CC + Seguros · Todos os países</strong></div>
-  <div class="concept-bar">
-    <div class="concept">
-      <div class="concept-title" style="color:var(--amb)">🟡 Não-BPP</div>
-      <div class="concept-text">Recuperos por <strong>erros de faturamento</strong> do transportador, casos não conciliados (inexistentes, duplicados) e violações de <strong>SLA</strong> (contrato e prazos). Não houve perda de BPP — é recupero de cobranças indevidas.</div>
-    </div>
-    <div class="concept">
-      <div class="concept-title" style="color:var(--pur)">🟣 Bono Volumen <span class="hisp-badge">Hispânicos</span></div>
-      <div class="concept-text">Subcategoria de Não-BPP exclusiva para países de língua espanhola (MLA, MLM, MLC, MPE, MCO, MLU). Inclui descontos comerciais negociados por volume — separados para análise específica.</div>
-    </div>
-  </div>
-  <div class="krow">
-    <div class="kpi a"><div class="kl">Não-BPP Total (YTD)</div><div class="kv" id="k-nb-t">—</div><div class="ks">Tarifas · SLA · não conciliados</div></div>
-    <div class="kpi pk"><div class="kl">Bono Volumen (YTD)</div><div class="kv" id="k-bv-t">—</div><div class="ks">Países hispânicos</div></div>
-    <div class="kpi"><div class="kl">Maior País</div><div class="kv" id="k-nb-top">—</div><div class="ks" id="k-nb-top-v">—</div></div>
-    <div class="kpi"><div class="kl">Melhor Mês</div><div class="kv" id="k-nb-mon">—</div><div class="ks" id="k-nb-mon-v">—</div></div>
-    <div class="kpi"><div class="kl">Média Mensal</div><div class="kv" id="k-nb-avg">—</div><div class="ks">Não-BPP std</div></div>
-  </div>
-  <div class="card gf">
-    <div class="slbl">Heatmap — Não-BPP (Standard) por País × Mês</div>
-    <div class="tw"><table style="min-width:650px"><thead><tr id="hH"></tr></thead><tbody id="hB"></tbody></table></div>
-  </div>
-  <div class="g2">
-    <div class="card">
-      <div class="ch"><div><div class="ct">Não-BPP Mensal por País</div></div><span class="badge ba">2026</span></div>
-      <div class="cw" style="height:240px"><canvas id="cNM"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="ch"><div><div class="ct">Mix por País (YTD)</div></div><span class="badge ba">%</span></div>
-      <div class="cw" style="height:240px"><canvas id="cND"></canvas></div>
-    </div>
-  </div>
-  <div class="card gf">
-    <div class="ch"><div class="ct">Detalhe por País — Não-BPP Standard + Bono Volumen</div><span class="badge ba">USD</span></div>
-    <div class="tw"><table>
-      <thead><tr>
-        <th>País</th><th class="tr">Jan</th><th class="tr">Fev</th><th class="tr">Mar</th><th class="tr">Abr</th>
-        <th class="tr">Std NB</th><th class="tr">Bono Vol</th><th class="tr">Total NB</th><th class="tr">%</th>
-      </tr></thead>
-      <tbody id="tN"></tbody>
-    </table></div>
-  </div>
+<!-- ══════════════ TAB: TGMV × RECUPERADO ══════════════ -->
+<div id="tab-tgmv-rec" class="tc">
+  <div class="fbar">🔍 Filtro: <strong id="fl-tr">Todos os países · Todos os carriers</strong></div>
+  <div id="tgmv-rec-body"></div>
 </div>
 
-<!-- TAB BONO VOLUMEN -->
-<div id="tab-bonov" class="tc">
-  <div class="fbar">🔍 Filtro ativo: <strong id="fl-bv">CC + Seguros · Todos os países</strong></div>
-  <div class="concept-bar">
-    <div class="concept" style="border-color:rgba(163,116,255,.2)">
-      <div class="concept-title" style="color:var(--pur)">📋 O que é Bono Volumen?</div>
-      <div class="concept-text">Desconto comercial negociado contratualmente com transportadores, baseado em <strong>volume de pacotes</strong>. Quando o Meli atinge determinadas faixas de volume, o transportador concede um bônus/desconto retroativo. Recuperado via crédito ou compensação. Aplicável a: <strong>MLA, MLM, MLC, MPE, MCO, MLU</strong>.</div>
-    </div>
-    <div class="concept" style="border-color:rgba(163,116,255,.2)">
-      <div class="concept-title" style="color:var(--pur)">🔍 Diferença NB Standard × Bono</div>
-      <div class="concept-text"><strong>NB Standard:</strong> Erro de tarifação, cobranças duplicadas, casos não conciliados, SLA/prazo contratual.<br><strong>Bono Volumen:</strong> Desconto comercial por atingir faixas de volume. É um benefício contratual, não um erro do transportador.</div>
-    </div>
-  </div>
-  <div class="krow">
-    <div class="kpi pk"><div class="kl">Bono Volumen YTD</div><div class="kv" id="k-bv-total">—</div><div class="ks">Jan–Abr 2026</div></div>
-    <div class="kpi"><div class="kl">% do Total NB</div><div class="kv" id="k-bv-pct">—</div><div class="ks">Bono ÷ (NB + Bono)</div></div>
-    <div class="kpi"><div class="kl">Maior País</div><div class="kv" id="k-bv-top">—</div><div class="ks" id="k-bv-top-v">—</div></div>
-    <div class="kpi"><div class="kl">Melhor Mês</div><div class="kv" id="k-bv-mon">—</div><div class="ks" id="k-bv-mon-v">—</div></div>
-  </div>
-  <div class="card gf">
-    <div class="ch"><div class="ct">Bono Volumen por País e Mês</div><span class="badge bpk">USD · Países Hispânicos</span></div>
-    <div class="tw"><table>
-      <thead><tr><th>País</th><th class="tr">Jan</th><th class="tr">Fev</th><th class="tr">Mar</th><th class="tr">Abr</th><th class="tr">Total</th><th class="tr">% do NB</th></tr></thead>
-      <tbody id="tBV"></tbody>
-    </table></div>
-    <div id="bv-note" style="margin-top:12px;padding:10px 14px;background:rgba(163,116,255,.06);border:1px solid rgba(163,116,255,.15);border-radius:8px;font-size:11px;color:var(--m2);font-family:var(--mono)"></div>
-  </div>
-  <div class="g2">
-    <div class="card">
-      <div class="ch"><div><div class="ct">Bono Volumen — Evolução Mensal</div></div><span class="badge bpk">2026</span></div>
-      <div class="cw" style="height:240px"><canvas id="cBV"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="ch"><div><div class="ct">NB Standard vs Bono — Mix por País</div></div><span class="badge bpk">YTD</span></div>
-      <div class="cw" style="height:240px"><canvas id="cBVD"></canvas></div>
-    </div>
-  </div>
+<!-- ══════════════ TAB: TGMV × BPP × REC ══════════════ -->
+<div id="tab-tgmv-full" class="tc">
+  <div class="fbar">🔍 Filtro: <strong id="fl-tf">Todos os países · Todos os carriers</strong></div>
+  <div id="tgmv-full-body"></div>
 </div>
 
-<!-- TAB CARRIERS -->
+<!-- ══════════════ TAB: POR TRANSPORTADORA ══════════════ -->
 <div id="tab-carriers" class="tc">
-  <div class="fbar">🔍 Filtro ativo: <strong id="fl-car">CC + Seguros · Todos os países</strong></div>
-  <div class="krow">
-    <div class="kpi b"><div class="kl">Transportadoras</div><div class="kv" id="k-cn">—</div><div class="ks">Ativas em 2026</div></div>
-    <div class="kpi g"><div class="kl">Top BPP</div><div class="kv" id="k-cb">—</div><div class="ks" id="k-cb-v">—</div></div>
-    <div class="kpi a"><div class="kl">Top Não-BPP</div><div class="kv" id="k-cn2">—</div><div class="ks" id="k-cn2-v">—</div></div>
-    <div class="kpi p"><div class="kl">% BPP do total</div><div class="kv" id="k-cp">—</div><div class="ks">BPP ÷ total</div></div>
+  <div class="fbar">🔍 Filtro: <strong id="fl-car">Todos os países · Todos os carriers</strong></div>
+  <div id="carriers-body"></div>
+</div>
+
+<!-- ══════════════ TAB: POR PAÍS ══════════════ -->
+<div id="tab-paises" class="tc">
+  <div class="fbar">🔍 Filtro: <strong id="fl-pai">Todos os países · Todos os carriers</strong></div>
+  <div id="paises-body"></div>
+</div>
+
+<!-- ══════════════ TAB: REC. REAL POR CAUSÍSTICA ══════════════ -->
+<div id="tab-causisticas" class="tc">
+  <div class="fbar">
+    🔍 Filtro: <strong id="fl-caus">Todos os países</strong>
+    &nbsp;·&nbsp; Período:
+    <select id="fCausPeriod" onchange="renderCausisticas()" style="background:var(--s2);color:var(--txt);border:1px solid var(--b2);border-radius:5px;padding:3px 6px;font-size:11px;font-family:var(--mono)">
+      <option value="ytd" selected>YTD Jan–Mai 2026</option>
+      <option value="6m">Out-25–Mai-26 (8M)</option>
+      <option value="q4">Q4 2025 (Out+Nov+Dez)</option>
+      <option value="q1">Q1 2026 (Jan+Fev+Mar)</option>
+      <option value="7">Maio 2026</option>
+      <option value="6">Abril 2026</option>
+      <option value="3">Janeiro 2026</option>
+      <option value="4">Fevereiro 2026</option>
+      <option value="5">Março 2026</option>
+      <option value="0">Outubro 2025</option>
+      <option value="1">Novembro 2025</option>
+      <option value="2">Dezembro 2025</option>
+    </select>
   </div>
-  <div class="g2">
-    <div class="card">
-      <div class="ch"><div><div class="ct">Carriers — BPP vs Não-BPP por País</div><div class="cs">Separado por site · Top 20</div></div><span class="badge bb">USD</span></div>
-      <div class="cw" style="height:380px"><canvas id="cCar"></canvas></div>
-      <div class="leg">
-        <div class="li"><div class="ld" style="background:var(--grn)"></div>BPP</div>
-        <div class="li"><div class="ld" style="background:var(--amb)"></div>Não-BPP</div>
+  <div id="causisticas-body"></div>
+</div>
+
+</div><!-- /main -->
+
+<!-- ══════════════ MODAL: CARREGAR DADOS ══════════════ -->
+<div id="modal-overlay">
+  <div class="modal">
+    <h2>⬆ Carregar Dados do BigQuery</h2>
+    <div class="modal-sub">Cole o resultado CSV das queries abaixo. Formato esperado: copie diretamente do BigQuery Console (Export → CSV) ou use "Download results".</div>
+    <div class="modal-tabs">
+      <button class="mtab active" id="mtab-tgmv" onclick="switchMtab('tgmv')">TGMV / NMV</button>
+      <button class="mtab" id="mtab-bpp" onclick="switchMtab('bpp')">BPP Real</button>
+    </div>
+    <div id="mtab-tgmv-panel">
+      <div class="modal-hint">
+        Colunas esperadas: <strong>FECHA_CONTA_M, SIT_SITE_ID, CARRIER_ID, NMV</strong><br>
+        Query: BT_CONTA_CAUSA_BPP · filtro TIPO='NMV', FECHA >= 202601 AND FECHA &lt;= 202605, só Carrier<br>
+        Formato: YYYYMM para o mês (ex: 202601) · Última atualização: Jan–Mai 2026
       </div>
+      <textarea id="csv-tgmv" placeholder="FECHA_CONTA_M,SIT_SITE_ID,CARRIER_ID,NMV&#10;202601,MLB,Jad Logistica Ltda,125000000&#10;202601,MLA,OCASA,45000000&#10;..."></textarea>
     </div>
-    <div class="card">
-      <div class="ch"><div><div class="ct">Top 5 Carriers — Evolução Mensal</div></div><span class="badge bg">2026</span></div>
-      <div class="cw" style="height:380px"><canvas id="cCT"></canvas></div>
+    <div id="mtab-bpp-panel" style="display:none">
+      <div class="modal-hint">
+        Colunas esperadas: <strong>FECHA_M, L1_CAUSA_BPP, SIT_SITE_ID, CARRIER_ID, CASHOUT</strong><br>
+        Query: BT_CX_BPP_CAUSE · filtro FECHA_BPP >= 2026-01-01 AND FECHA_BPP &lt;= 2026-05-31, só Carrier<br>
+        FECHA_M: formato YYYYMM (ex: 202601) · Última atualização: Jan–Mai 2026
+      </div>
+      <textarea id="csv-bpp" placeholder="FECHA_M,L1_CAUSA_BPP,SIT_SITE_ID,CARRIER_ID,CASHOUT&#10;202601,Extravios,MLB,Jad Logistica Ltda,132228&#10;202601,Damaged,MLA,OCASA,35510&#10;..."></textarea>
     </div>
-  </div>
-  <div class="card gf">
-    <div class="ch"><div class="ct">Detalhe por Transportadora × País</div><span class="badge bb">USD · separado por site</span></div>
-    <div class="tw"><table>
-      <thead><tr><th>Transportadora</th><th>País</th><th class="tr">BPP</th><th class="tr">Não-BPP</th><th class="tr">Total</th><th class="tr">% BPP</th></tr></thead>
-      <tbody id="tCar"></tbody>
-    </table></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-confirm" onclick="loadCsvData()">Importar e Atualizar</button>
+    </div>
   </div>
 </div>
 
-<!-- TAB OVERVIEW -->
-<div id="tab-overview" class="tc">
-  <div class="fbar">🔍 Filtro ativo: <strong id="fl-ov">CC + Seguros · Todos os países</strong></div>
-  <div class="krow">
-    <div class="kpi g"><div class="kl">Total Recuperado (YTD)</div><div class="kv" id="k-ot">—</div><div class="ks">BPP + Não-BPP + Bono</div></div>
-    <div class="kpi r"><div class="kl">BPP Real Total</div><div class="kv" id="k-or">—</div><div class="ks">Cashout</div></div>
-    <div class="kpi b"><div class="kl">Plano BPP (YTD)</div><div class="kv" id="k-op">—</div><div class="ks" id="k-op-s">—</div></div>
-    <div class="kpi a"><div class="kl">Não-BPP Std</div><div class="kv" id="k-on">—</div><div class="ks" id="k-on-s">—</div></div>
-    <div class="kpi pk"><div class="kl">Bono Volumen</div><div class="kv" id="k-obv">—</div><div class="ks">Países hispânicos</div></div>
-  </div>
-  <div class="g2">
-    <div class="card">
-      <div class="ch"><div><div class="ct">BPP Real × Plano × Recuperado — Mensal</div></div></div>
-      <div class="cw" style="height:260px"><canvas id="cOM"></canvas></div>
-      <div class="leg">
-        <div class="li"><div class="ld" style="background:rgba(255,79,79,.5)"></div>BPP Real</div>
-        <div class="li"><div class="ld" style="background:var(--grn)"></div>BPP Rec.</div>
-        <div class="li"><div class="ld" style="background:var(--amb)"></div>Não-BPP</div>
-        <div class="li"><div class="ld" style="background:var(--pnk)"></div>Bono Vol.</div>
-        <div class="li"><div class="ld" style="background:var(--blu);opacity:.5"></div>Plano</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="ch"><div><div class="ct">Por País — Composição do Recuperado</div></div></div>
-      <div class="cw" style="height:260px"><canvas id="cOC"></canvas></div>
-    </div>
-  </div>
-  <div class="card gf">
-    <div class="ch"><div class="ct">Resumo Completo por País</div><span class="badge bg">USD · YTD Jan–Abr 2026</span></div>
-    <div class="tw"><table>
-      <thead><tr>
-        <th>País</th><th class="tr">BPP Real</th><th class="tr">Plano BPP</th>
-        <th class="tr">BPP Rec.</th><th class="tr">Rec/Real</th><th class="tr">Rec/Plano</th>
-        <th class="tr">Não-BPP Std</th><th class="tr">Bono Vol.</th><th class="tr">Total Rec.</th>
-      </tr></thead>
-      <tbody id="tOv"></tbody>
-    </table></div>
-  </div>
-</div>
-
-</div>
 <script>
-const D={
-"recBpp_all":{"MLB":[406698,923239,1679904,302708,0,0,0,0,0,0,0,0],"MLA":[207582,247013,543023,239205,0,0,0,0,0,0,0,0],"MLM":[256234,458426,491413,1144758,0,0,0,0,0,0,0,0],"MCO":[1149,5726,7337,0,0,0,0,0,0,0,0,0],"MLC":[29117,80344,1451,46350,0,0,0,0,0,0,0,0],"MPE":[0,0,10257,0,0,0,0,0,0,0,0,0],"MLU":[6642,7576,6499,17812,0,0,0,0,0,0,0,0],"MEC":[0,0,4796,0,0,0,0,0,0,0,0,0]},
-"recNB_all":{"MLB":[201076,301956,49569,146773,0,0,0,0,0,0,0,0],"MLA":[585892,677783,642993,14720,0,0,0,0,0,0,0,0],"MLM":[23151,265169,51827,29074,0,0,0,0,0,0,0,0],"MCO":[169,0,270,0,0,0,0,0,0,0,0,0],"MLC":[46199,45951,38280,4012,0,0,0,0,0,0,0,0],"MPE":[27824,31750,31791,0,0,0,0,0,0,0,0,0],"MLU":[24431,10911,10515,0,0,0,0,0,0,0,0,0],"MEC":[0,0,0,0,0,0,0,0,0,0,0,0]},
-"recBpp_cc":{"MLB":[406698,557184,1349557,302708,0,0,0,0,0,0,0,0],"MLA":[207582,247013,543023,239205,0,0,0,0,0,0,0,0],"MLM":[256234,77694,130207,220408,0,0,0,0,0,0,0,0],"MCO":[1149,5726,7337,0,0,0,0,0,0,0,0,0],"MLC":[29117,80344,1451,46350,0,0,0,0,0,0,0,0],"MPE":[0,0,10257,0,0,0,0,0,0,0,0,0],"MLU":[6642,7576,6499,17812,0,0,0,0,0,0,0,0],"MEC":[0,0,4796,0,0,0,0,0,0,0,0,0]},
-"recNB_cc":{"MLB":[201076,301956,49569,146773,0,0,0,0,0,0,0,0],"MLA":[585892,677783,642993,14720,0,0,0,0,0,0,0,0],"MLM":[23151,265169,51827,29074,0,0,0,0,0,0,0,0],"MCO":[169,0,270,0,0,0,0,0,0,0,0,0],"MLC":[46199,45951,38280,4012,0,0,0,0,0,0,0,0],"MPE":[27824,31750,31791,0,0,0,0,0,0,0,0,0],"MLU":[24431,10911,10515,0,0,0,0,0,0,0,0,0],"MEC":[0,0,0,0,0,0,0,0,0,0,0,0]},
-"recBpp_seg":{"MLB":[0,366055,330347,0,0,0,0,0,0,0,0,0],"MLA":[0,0,0,0,0,0,0,0,0,0,0,0],"MLM":[0,380732,361206,924350,0,0,0,0,0,0,0,0],"MCO":[0,0,0,0,0,0,0,0,0,0,0,0],"MLC":[0,0,0,0,0,0,0,0,0,0,0,0],"MPE":[0,0,0,0,0,0,0,0,0,0,0,0],"MLU":[0,0,0,0,0,0,0,0,0,0,0,0],"MEC":[0,0,0,0,0,0,0,0,0,0,0,0]},
-"recNB_seg":{"MLB":[0,0,0,0,0,0,0,0,0,0,0,0],"MLA":[0,0,0,0,0,0,0,0,0,0,0,0],"MLM":[0,0,0,0,0,0,0,0,0,0,0,0],"MCO":[0,0,0,0,0,0,0,0,0,0,0,0],"MLC":[0,0,0,0,0,0,0,0,0,0,0,0],"MPE":[0,0,0,0,0,0,0,0,0,0,0,0],"MLU":[0,0,0,0,0,0,0,0,0,0,0,0],"MEC":[0,0,0,0,0,0,0,0,0,0,0,0]},
-"recNB_bonov":{"MLB":[0,0,0,0,0,0,0,0,0,0,0,0],"MLA":[10491,0,0,0,0,0,0,0,0,0,0,0],"MLM":[0,0,0,0,0,0,0,0,0,0,0,0],"MCO":[0,0,0,0,0,0,0,0,0,0,0,0],"MLC":[0,0,0,0,0,0,0,0,0,0,0,0],"MPE":[0,0,0,0,0,0,0,0,0,0,0,0],"MLU":[0,0,0,0,0,0,0,0,0,0,0,0],"MEC":[0,0,0,0,0,0,0,0,0,0,0,0]},
-"carrierBySite":{"DAC":{"MLU":{"bpp":[504,7576,0,345,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]}},"Urbano":{"MEC":{"bpp":[0,0,4796,0,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]},"MLA":{"bpp":[11272,6987,0,12961,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]}},"Chilexpress":{"MLC":{"bpp":[8787,32590,0,24765,0,0,0,0,0,0,0,0],"nonbpp":[8185,6156,4696,4012,0,0,0,0,0,0,0,0]}},"Envia":{"MCO":{"bpp":[0,0,4659,0,0,0,0,0,0,0,0,0],"nonbpp":[169,0,270,0,0,0,0,0,0,0,0,0]}},"Urbano MPE":{"MPE":{"bpp":[0,0,10257,0,0,0,0,0,0,0,0,0],"nonbpp":[27824,31750,31791,0,0,0,0,0,0,0,0,0]}},"Punto HOP":{"MLA":{"bpp":[0,0,38932,0,0,0,0,0,0,0,0,0],"nonbpp":[0,0,5111,0,0,0,0,0,0,0,0,0]}},"Correo Argentino":{"MLA":{"bpp":[0,71891,62951,89103,0,0,0,0,0,0,0,0],"nonbpp":[456108,553095,537916,0,0,0,0,0,0,0,0,0]}},"Carvalima":{"MLB":{"bpp":[15525,9382,15653,30694,0,0,0,0,0,0,0,0],"nonbpp":[2592,0,0,0,0,0,0,0,0,0,0,0]}},"HDI SEGUROS GLOBAL SA":{"MLM":{"bpp":[149952,380732,361206,924350,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]}},"DHL":{"MLM":{"bpp":[575,4421,6717,1506,0,0,0,0,0,0,0,0],"nonbpp":[0,125301,47398,0,0,0,0,0,0,0,0,0]}},"FedEx":{"MLM":{"bpp":[99416,47871,70057,98502,0,0,0,0,0,0,0,0],"nonbpp":[23032,54000,0,29074,0,0,0,0,0,0,0,0]}},"Estafeta":{"MLM":{"bpp":[5623,0,1502,4322,0,0,0,0,0,0,0,0],"nonbpp":[0,13000,0,0,0,0,0,0,0,0,0,0]}},"Correios":{"MLB":{"bpp":[46679,41305,21111,0,0,0,0,0,0,0,0,0],"nonbpp":[562,11762,13800,0,0,0,0,0,0,0,0,0]}},"Loggi":{"MLB":{"bpp":[0,178169,675264,99575,0,0,0,0,0,0,0,0],"nonbpp":[0,11734,0,0,0,0,0,0,0,0,0,0]}},"Correos Chile":{"MLC":{"bpp":[465,1304,0,5108,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]}},"Pickit":{"MLA":{"bpp":[14339,44723,56953,45910,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]}},"Webpack":{"MLA":{"bpp":[5150,0,2613,4371,0,0,0,0,0,0,0,0],"nonbpp":[23654,11016,12021,0,0,0,0,0,0,0,0,0]}},"UES":{"MLU":{"bpp":[6138,0,6499,17467,0,0,0,0,0,0,0,0],"nonbpp":[24431,10911,10515,0,0,0,0,0,0,0,0,0]}},"Blue Express":{"MLC":{"bpp":[19865,46450,1451,16477,0,0,0,0,0,0,0,0],"nonbpp":[38014,39795,33584,0,0,0,0,0,0,0,0,0]}},"Cainiao Domestic":{"MLM":{"bpp":[668,411,0,7027,0,0,0,0,0,0,0,0],"nonbpp":[0,0,4429,0,0,0,0,0,0,0,0,0]}},"J&T Express":{"MLM":{"bpp":[0,24991,35989,87207,0,0,0,0,0,0,0,0],"nonbpp":[0,72868,0,0,0,0,0,0,0,0,0,0]},"MLB":{"bpp":[0,191662,518185,0,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]}},"Paquetexpress":{"MLM":{"bpp":[0,0,15942,21844,0,0,0,0,0,0,0,0],"nonbpp":[119,0,0,0,0,0,0,0,0,0,0,0]}},"OCA":{"MLA":{"bpp":[35510,35803,35803,17722,0,0,0,0,0,0,0,0],"nonbpp":[24168,12506,14386,14720,0,0,0,0,0,0,0,0]}},"TNT":{"MLB":{"bpp":[0,8083,4443,0,0,0,0,0,0,0,0,0],"nonbpp":[4124,6013,6105,0,0,0,0,0,0,0,0,0]}},"Jad Logistica Ltda":{"MLB":{"bpp":[132228,128583,114901,172439,0,0,0,0,0,0,0,0],"nonbpp":[193798,272447,29664,146773,0,0,0,0,0,0,0,0]}},"Servientrega":{"MCO":{"bpp":[1149,3777,0,0,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]}},"Argo Seguros":{"MLB":{"bpp":[212266,366055,330347,0,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]}},"Andreani":{"MLA":{"bpp":[54781,0,292803,0,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]}},"OCASA":{"MLA":{"bpp":[86530,87609,52968,69138,0,0,0,0,0,0,0,0],"nonbpp":[81962,101166,73559,0,0,0,0,0,0,0,0,0]}},"Coordinadora":{"MCO":{"bpp":[0,1949,2678,0,0,0,0,0,0,0,0,0],"nonbpp":[0,0,0,0,0,0,0,0,0,0,0,0]}}},
-"carrierSites":{"Jad Logistica Ltda":["MLB"],"Paquetexpress":["MLM"],"OCASA":["MLA"],"Servientrega":["MCO"],"FedEx":["MLM"],"Pickit":["MLA"],"Andreani":["MLA"],"Webpack":["MLA"],"Cainiao Domestic":["MLM"],"Carvalima":["MLB"],"Urbano":["MEC","MLA"],"OCA":["MLA"],"Chilexpress":["MLC"],"UES":["MLU"],"TNT":["MLB"],"Estafeta":["MLM"],"DHL":["MLM"],"DAC":["MLU"],"Correios":["MLB"],"Blue Express":["MLC"],"HDI SEGUROS GLOBAL SA":["MLM"],"Correos Chile":["MLC"],"Envia":["MCO"],"Urbano MPE":["MPE"],"Correo Argentino":["MLA"],"Argo Seguros":["MLB"],"Loggi":["MLB"],"J&T Express":["MLB","MLM"],"Coordinadora":["MCO"],"Punto HOP":["MLA"]},
-"plan":{"MLB":[550355,507110,577394,533073,637304,597146,626097,615996,593158,637045,740489,737993],"MLA":[332555,306424,348893,322112,385094,360828,378322,372219,358419,384938,447444,445936],"MLM":[181500,167238,190417,175801,210175,196931,206479,203148,195616,210089,244204,243381],"MLU":[32787,30211,34398,31758,37967,35575,37299,36698,35337,37952,44114,43966],"MCO":[4684,79,88,79,87,84,99,92,94,99,110,125],"MLC":[59719,55027,62653,57844,69154,64797,67938,66842,64364,69126,80351,80080],"MEC":[1171,1079,1228,1134,1356,1271,1332,1311,1262,1355,1576,1570],"MPE":[8197,7553,8599,7939,9492,8894,9325,9174,8834,9488,11029,10991]},
-"bppReal":{"MLB":[1395481,900318,1258797,850785,0,0,0,0,0,0,0,0],"MLA":[750345,509811,656055,384720,0,0,0,0,0,0,0,0],"MLM":[532818,392540,293061,183512,0,0,0,0,0,0,0,0],"MLU":[35294,22158,26043,20993,0,0,0,0,0,0,0,0],"MCO":[60444,41670,36811,20928,0,0,0,0,0,0,0,0],"MLC":[82935,69902,59126,39395,0,0,0,0,0,0,0,0],"MEC":[3559,833,2934,828,0,0,0,0,0,0,0,0],"MPE":[21920,19115,19543,11716,0,0,0,0,0,0,0,0]}
-};
-
+// ══════════════ DATA ══════════════
 const MONTHS=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+// flag() returns an <img> tag — emoji flags don't render on Windows
+function flag(iso){return `<img src="https://flagcdn.com/20x15/${iso}.png" width="20" height="15" style="border-radius:2px;vertical-align:middle;margin-right:5px" alt="${iso}">`;}
 const SITES=[
-  {c:'MLB',n:'Brasil',f:'🇧🇷',hisp:false},{c:'MLA',n:'Argentina',f:'🇦🇷',hisp:true},{c:'MLM',n:'México',f:'🇲🇽',hisp:true},
-  {c:'MCO',n:'Colômbia',f:'🇨🇴',hisp:true},{c:'MLC',n:'Chile',f:'🇨🇱',hisp:true},{c:'MPE',n:'Peru',f:'🇵🇪',hisp:true},
-  {c:'MLU',n:'Uruguai',f:'🇺🇾',hisp:true},{c:'MEC',n:'Equador',f:'🇪🇨',hisp:false}
+  {c:'MLB',n:'Brasil',  f:flag('br'),iso:'br'},
+  {c:'MLA',n:'Argentina',f:flag('ar'),iso:'ar'},
+  {c:'MLM',n:'México', f:flag('mx'),iso:'mx'},
+  {c:'MCO',n:'Colômbia',f:flag('co'),iso:'co'},
+  {c:'MLC',n:'Chile',  f:flag('cl'),iso:'cl'},
+  {c:'MPE',n:'Peru',   f:flag('pe'),iso:'pe'},
+  {c:'MLU',n:'Uruguai',f:flag('uy'),iso:'uy'},
+  {c:'MEC',n:'Equador',f:flag('ec'),iso:'ec'}
 ];
 const CC=['#4d9fff','#2ecc8a','#f5a623','#ff4f4f','#a374ff','#00d4c8','#ff6eb4','#ffd166'];
-const YTD=4;
+const YTD=5; // Jan–Mai 2026
 const CH={};
+// ── Month filter helpers ──
+function getMF(){
+  const v=document.getElementById('fMonth')?.value||'ytd';
+  if(v==='ytd') return {s:0,e:YTD};
+  const i=parseInt(v); return {s:i,e:i+1};
+}
+function periodLabel(){
+  const v=document.getElementById('fMonth')?.value||'ytd';
+  return v==='ytd'?'Jan–Mai YTD':MONTHS[parseInt(v)]+' 2026';
+}
 function dc(id){if(CH[id]){CH[id].destroy();delete CH[id];}}
 const f$=v=>v>0?'$'+Math.round(v).toLocaleString('pt-BR'):'—';
 const fp=v=>isFinite(v)&&v>0?Math.round(v)+'%':'—';
 const sm=a=>Array.isArray(a)?a.reduce((s,x)=>s+x,0):0;
+const fk=v=>v>=1e9?'$'+(v/1e9).toFixed(1)+'B':v>=1e6?'$'+(v/1e6).toFixed(1)+'M':v>=1e3?'$'+(v/1e3).toFixed(0)+'k':f$(v);
 
+// ── Static embedded data (site-level) ──
+const D_PLAN={MLB:[550355, 507110, 577394, 533073, 637304, 597146, 626097, 615996, 593158, 637045, 740489, 737993],MLA:[332555, 306424, 348893, 322112, 385094, 360828, 378322, 372219, 358419, 384938, 447444, 445936],MLM:[181500, 167238, 190417, 175801, 210175, 196931, 206479, 203148, 195616, 210089, 244204, 243381],MCO:[4684, 79, 88, 79, 87, 84, 99, 92, 94, 99, 110, 125],MLC:[59719, 55027, 62653, 57844, 69154, 64797, 67938, 66842, 64364, 69126, 80351, 80080],MPE:[8197, 7553, 8599, 7939, 9492, 8894, 9325, 9174, 8834, 9488, 11029, 10991],MLU:[32787, 30211, 34398, 31758, 37967, 35575, 37299, 36698, 35337, 37952, 44114, 43966],MEC:[1171, 1079, 1228, 1134, 1356, 1271, 1332, 1311, 1262, 1355, 1576, 1570]};
+// BPP Real (cashout) — aprovado por carrier — Fonte: BPP MAIO.xlsx (2026-05-08)
+const D_BPP_REAL={MLB:[3110105,2742499,3832119,3767942,874680,0,0,0,0,0,0,0],MLA:[1890142,1525857,1834033,1488247,319052,0,0,0,0,0,0,0],MLM:[1146816,886391,789964,674548,154641,0,0,0,0,0,0,0],MCO:[142358,125099,109870,104557,19647,0,0,0,0,0,0,0],MLC:[193454,160680,153472,117793,28517,0,0,0,0,0,0,0],MPE:[83798,66484,94618,61277,19233,0,0,0,0,0,0,0],MLU:[69234,51020,53810,59953,10295,0,0,0,0,0,0,0],MEC:[6851,3018,5497,6477,683,0,0,0,0,0,0,0]};
+const D_REC_BPP={MLB:[406698, 923239, 1679284, 597077, 643129, 0, 0, 0, 0, 0, 0, 0],MLA:[207582, 247013, 543569, 239205, 68993, 0, 0, 0, 0, 0, 0, 0],MLM:[256234, 458426, 490260, 1140436, 264665, 0, 0, 0, 0, 0, 0, 0],MCO:[1149, 5726, 7337, 0, 0, 0, 0, 0, 0, 0, 0, 0],MLC:[29117, 80344, 1451, 46350, 30956, 0, 0, 0, 0, 0, 0, 0],MPE:[0, 0, 10257, 0, 0, 0, 0, 0, 0, 0, 0, 0],MLU:[6642, 7576, 6499, 17812, 11961, 0, 0, 0, 0, 0, 0, 0],MEC:[0, 0, 4796, 0, 0, 0, 0, 0, 0, 0, 0, 0]};
+const D_REC_NB={MLB:[201076, 301956, 49533, 149147, 0, 0, 0, 0, 0, 0, 0, 0],MLA:[585892, 677783, 642993, 623765, 0, 0, 0, 0, 0, 0, 0, 0],MLM:[23151, 265169, 51827, 29074, 0, 0, 0, 0, 0, 0, 0, 0],MCO:[169, 0, 270, 0, 0, 0, 0, 0, 0, 0, 0, 0],MLC:[46199, 45951, 38280, 43929, 0, 0, 0, 0, 0, 0, 0, 0],MPE:[27824, 31750, 31791, 38540, 0, 0, 0, 0, 0, 0, 0, 0],MLU:[24431, 10911, 10515, 9073, 0, 0, 0, 0, 0, 0, 0, 0],MEC:[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]};
+
+// TGMV BigQuery (Carrier only) — 2026-05-08 (Jan–Mai, Mai parcial 8 dias)
+const D_TGMV={MLB:[248108664, 253795813, 344218530, 298334268, 0, 0, 0, 0, 0, 0, 0, 0],MLA:[371212485, 337917034, 391427801, 322651310, 0, 0, 0, 0, 0, 0, 0, 0],MLM:[79402426, 63807733, 70188073, 65558066, 0, 0, 0, 0, 0, 0, 0, 0],MCO:[22147615, 21213798, 24830416, 20606090, 0, 0, 0, 0, 0, 0, 0, 0],MLC:[53270174, 49881959, 57620337, 49712596, 0, 0, 0, 0, 0, 0, 0, 0],MPE:[15344700, 14554981, 17536684, 18599734, 0, 0, 0, 0, 0, 0, 0, 0],MLU:[33855871, 29936619, 37018355, 27524335, 0, 0, 0, 0, 0, 0, 0, 0],MEC:[722756, 680666, 904866, 919901, 0, 0, 0, 0, 0, 0, 0, 0]};
+const D_TGMV_CAR={"99 MINUTOS PERÚ|MPE":[0, 0, 16482, 270442, 0, 0, 0, 0, 0, 0, 0, 0],"ALMEX|MLM":[509440, 418974, 458355, 489339, 0, 0, 0, 0, 0, 0, 0, 0],"ANDREANI|MLA":[50053380, 43363941, 48233353, 41468885, 11130515, 0, 0, 0, 0, 0, 0, 0],"ANJUN|MLB":[0, 0, 0, 227, 0, 0, 0, 0, 0, 0, 0, 0],"ARCADIO BUENDIA|MLA":[0, 0, 0, 151, 0, 0, 0, 0, 0, 0, 0, 0],"ARROWCHILE|MLC":[0, 0, 0, 495, 0, 0, 0, 0, 0, 0, 0, 0],"AS20260324155000|MLB":[0, 0, 0, 39, 0, 0, 0, 0, 0, 0, 0, 0],"BASECOSMETICS|MLB":[0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0],"BECAPLIS_ECOMMERCE_BR|MLB":[0, 0, 0, 280, 0, 0, 0, 0, 0, 0, 0, 0],"BFBGACHDE59202|MLB":[0, 0, 0, 26, 0, 0, 0, 0, 0, 0, 0, 0],"BLUE EXPRESS|MLC":[7534628, 7012790, 7650013, 6703098, 2160058, 0, 0, 0, 0, 0, 0, 0],"CA20260316182002|MLU":[0, 0, 0, 51, 0, 0, 0, 0, 0, 0, 0, 0],"CABIFY|MLA":[115801, 54, 650, 835, 0, 0, 0, 0, 0, 0, 0, 0],"CAINIAO DOMESTIC|MLM":[747442, 818468, 767899, 655180, 144721, 0, 0, 0, 0, 0, 0, 0],"CAINIAO|MCO":[3081724, 2288999, 2875394, 3014240, 0, 0, 0, 0, 0, 0, 0, 0],"CAINIAO|MLB":[10127281, 7703593, 10720839, 10759559, 0, 0, 0, 0, 0, 0, 0, 0],"CAINIAO|MLC":[3226854, 2593318, 3401203, 3567744, 0, 0, 0, 0, 0, 0, 0, 0],"CAINIAO|MLM":[24946557, 16064071, 18753267, 18301659, 0, 0, 0, 0, 0, 0, 0, 0],"CAINIAO|MLU":[1093, 144115, 430269, 498218, 0, 0, 0, 0, 0, 0, 0, 0],"CARVALIMA|MLB":[12051306, 7875444, 9510073, 8499277, 2745029, 0, 0, 0, 0, 0, 0, 0],"CBT ARGENTINA|MLA":[0, 22, 23, 10324, 0, 0, 0, 0, 0, 0, 0, 0],"CBT CHILE|MLC":[0, 0, 338, 261328, 0, 0, 0, 0, 0, 0, 0, 0],"CDBACHFGE96079|MLC":[0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0],"CE20260410201723|MLC":[0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 0, 0],"CHILEXPRESS|MLC":[2814318, 2718292, 2936105, 2752672, 904664, 0, 0, 0, 0, 0, 0, 0],"CLAUDIO YULAN|MLA":[0, 0, 0, 184, 0, 0, 0, 0, 0, 0, 0, 0],"COMERCIALIZADORAVJP|MLC":[0, 0, 0, 40, 0, 0, 0, 0, 0, 0, 0, 0],"COMEXSHOP|MLA":[0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 0],"COMPRACERTAMARKETPLACE|MLB":[0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0],"COORDINADORA|MCO":[2203553, 1647282, 1654690, 1263426, 0, 0, 0, 0, 0, 0, 0, 0],"CORREIOS|MLB":[86033455, 106983237, 147365532, 135546681, 39458534, 0, 0, 0, 0, 0, 0, 0],"CORREO ARGENTINO|MLA":[48900633, 44263102, 50354669, 42066103, 45755235, 0, 0, 0, 0, 0, 0, 0],"CORREOS CHILE|MLC":[995975, 1071825, 1271269, 350453, 0, 0, 0, 0, 0, 0, 0, 0],"DAC|MLU":[2042328, 1661049, 2015393, 1564618, 508357, 0, 0, 0, 0, 0, 0, 0],"DHL|MLM":[2984247, 2791908, 2531240, 2448018, 761333, 0, 0, 0, 0, 0, 0, 0],"DKGOFFICIAL|MLA":[0, 34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"DOMINALOG EXPRESS|MLB":[895676, 1638589, 3475114, 3705760, 0, 0, 0, 0, 0, 0, 0, 0],"DV20260417154137|MLA":[0, 0, 0, 114, 0, 0, 0, 0, 0, 0, 0, 0],"EHEDGFACB134|MLB":[0, 0, 0, 56, 0, 0, 0, 0, 0, 0, 0, 0],"ELECTROHOGAR_|MLA":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"ELECTRONICAKOLM|MLC":[0, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"ELEVECOMEPI|MLB":[0, 0, 0, 141, 0, 0, 0, 0, 0, 0, 0, 0],"EMLED2842099|MCO":[0, 0, 0, 46, 0, 0, 0, 0, 0, 0, 0, 0],"EMPORIO_VARANDA|MLB":[0, 46, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"ENVIA|MCO":[6717849, 6594455, 8202440, 6401409, 2139801, 0, 0, 0, 0, 0, 0, 0],"ERAINHA|MLB":[0, 0, 0, 155, 0, 0, 0, 0, 0, 0, 0, 0],"ESTAFETA|MLM":[1647953, 1295901, 1493047, 1628537, 470509, 0, 0, 0, 0, 0, 0, 0],"EVEN7 STORE|MLB":[0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0],"FACUNDO GASTON VERGA|MLA":[0, 0, 0, 353, 0, 0, 0, 0, 0, 0, 0, 0],"FEDEX|MLM":[27086713, 22896922, 24034820, 21869743, 6450416, 0, 0, 0, 0, 0, 0, 0],"FLEX|MCO":[7706410, 8385039, 9526679, 7806604, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MEC":[135520, 157907, 190344, 185592, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MLA":[197212543, 182555784, 221810156, 189084244, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MLB":[94079554, 95240647, 114114484, 92270271, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MLC":[38584354, 36373052, 42254903, 36012400, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MLM":[5125715, 4802480, 5276026, 4493230, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MLU":[23739932, 21332298, 26237638, 19435815, 0, 0, 0, 0, 0, 0, 0, 0],"FLEX|MPE":[6563655, 6183335, 7477315, 7206265, 0, 0, 0, 0, 0, 0, 0, 0],"FREDIORTIGOZAPAIVA|MLA":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"GDFEGCAHB72000|MLB":[0, 0, 0, 49, 0, 0, 0, 0, 0, 0, 0, 0],"GFDHABCEG93876|MLB":[0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0],"GOL|MLB":[0, 0, 0, 77, 0, 0, 0, 0, 0, 0, 0, 0],"IMILE DELIVERY|MLB":[807, 111572, 228219, 317836, 0, 0, 0, 0, 0, 0, 0, 0],"IMPERIUM_FIT|MLB":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"J&T EXPRESS BRAZIL|MLB":[31954358, 19916087, 33418032, 30445702, 10890747, 0, 0, 0, 0, 0, 0, 0],"J&T EXPRESS|MLB":[0, 0, 0, 504, 0, 0, 0, 0, 0, 0, 0, 0],"J&T EXPRESS|MLM":[6123939, 4727543, 5273005, 5138018, 1288010, 0, 0, 0, 0, 0, 0, 0],"JAD LOGISTICA LTDA|MLB":[6179243, 8024393, 15289050, 8741110, 2841340, 0, 0, 0, 0, 0, 0, 0],"KENKOFOODS|MLC":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"KM20260210144718|MLB":[0, 0, 0, 60, 0, 0, 0, 0, 0, 0, 0, 0],"KOFEEK|MLA":[0, 0, 0, 45, 0, 0, 0, 0, 0, 0, 0, 0],"LOGGI|MLB":[5176376, 4526514, 7825468, 5522887, 1641581, 0, 0, 0, 0, 0, 0, 0],"LOJADOLINDAO|MLB":[0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 0],"LOJAPETONLINE|MLB":[0, 0, 0, 18, 0, 0, 0, 0, 0, 0, 0, 0],"LUCHO_7|MLA":[10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"LY20260116105204|MLB":[0, 0, 0, 160, 0, 0, 0, 0, 0, 0, 0, 0],"MADRETIERRA ONLINE|MCO":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"MAILAMERICAS|MCO":[0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0],"MAILAMERICAS|MLB":[1409567, 1498207, 2001173, 2134194, 0, 0, 0, 0, 0, 0, 0, 0],"MIMIUTILIDADES|MLB":[0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0],"MODONATURAL1|MLA":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MCO":[0, 46, 3536, 2862, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MEC":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MLA":[93, 637, 1346, 17949, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MLB":[28229, 17423, 17765, 205791, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MLC":[0, 9, 272, 4030, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MLM":[1210, 301, 4532, 19845, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MLU":[0, 0, 470, 1227, 0, 0, 0, 0, 0, 0, 0, 0],"N/A|MPE":[0, 0, 0, 5974, 0, 0, 0, 0, 0, 0, 0, 0],"NEXUSPA|MLC":[0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0],"OCASA|MLA":[18996294, 17361210, 18957062, 15760270, 4316580, 0, 0, 0, 0, 0, 0, 0],"OCA|MLA":[9363655, 7670260, 8638166, 6944517, 0, 0, 0, 0, 0, 0, 0, 0],"OLVA|MPE":[1536925, 1523381, 1712238, 1737510, 0, 0, 0, 0, 0, 0, 0, 0],"PAMPAS DECO|MLA":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"PAQUETEXPRESS|MLM":[10214551, 9972699, 11576574, 10496778, 3110583, 0, 0, 0, 0, 0, 0, 0],"PECASNOVASP|MLB":[0, 0, 0, 294, 0, 0, 0, 0, 0, 0, 0, 0],"PICKIT-PLACES|MLA":[19106732, 18634004, 23144639, 19964450, 6435659, 0, 0, 0, 0, 0, 0, 0],"PLAGAS|MLA":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"PLANEBRAND|MLB":[9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"PROVINCOM|MLC":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"PUNTO HOP|MLA":[7536652, 6608731, 7735087, 6581331, 2134107, 0, 0, 0, 0, 0, 0, 0],"QUYO|MLB":[0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0],"RAPIBOY|MLA":[3729, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"RFMULTIMIX|MLB":[0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0],"RIJU081925|MCO":[0, 0, 0, 98, 0, 0, 0, 0, 0, 0, 0, 0],"RODRIGUESMAYCOW20220402000742|MLA":[0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0],"ROYALE ATELIER|MLC":[0, 26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"SALDÃO ELETRO.COM|MLB":[0, 0, 0, 57, 0, 0, 0, 0, 0, 0, 0, 0],"SERVIENTREGA|MCO":[2435588, 2295750, 2564260, 2113504, 573345, 0, 0, 0, 0, 0, 0, 0],"SUPPRESSLED|MCO":[0, 0, 0, 76, 0, 0, 0, 0, 0, 0, 0, 0],"SUZER FERRAMENTAS|MLB":[0, 0, 0, 170, 0, 0, 0, 0, 0, 0, 0, 0],"TENDENCIAMODAFITNESS02|MLB":[0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0],"TENDENCIAS GOURMET|MLC":[0, 49, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"THEMBALAGEM|MLB":[0, 0, 0, 18, 0, 0, 0, 0, 0, 0, 0, 0],"TI20250426112241|MLB":[0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0],"UES|MLU":[8060741, 6787794, 8321313, 6017270, 1984697, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MCO":[2491, 2227, 3418, 3818, 0, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MLA":[369319, 256660, 208642, 193699, 0, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MLB":[172805, 260061, 252774, 182758, 0, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MLC":[114046, 112570, 106235, 60296, 0, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MLM":[14660, 18465, 19308, 17718, 0, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MLU":[11777, 11363, 13272, 7113, 0, 0, 0, 0, 0, 0, 0, 0],"UNKNOWN|MPE":[7991, 9775, 10787, 11120, 0, 0, 0, 0, 0, 0, 0, 0],"URBANO ECUADOR|MEC":[587236, 522759, 714522, 734309, 190130, 0, 0, 0, 0, 0, 0, 0],"URBANO|MLA":[9601166, 7658810, 4843939, 557841, 390766, 0, 0, 0, 0, 0, 0, 0],"URBANO|MPE":[7236128, 6838490, 8319862, 9368424, 1916175, 0, 0, 0, 0, 0, 0, 0],"WEBPACK|MLA":[9952479, 9543784, 7500061, 0, 0, 0, 0, 0, 0, 0, 0, 0],"XEBA_STORE|MLU":[0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 0]};
+let CARRIERS_LOADED=[];
+
+// ══ Recuperado Real por Causística — Q4 2025 + Q1 2026 ══
+// Fonte: Planilha "Recuperado por causística" (2026-04-29)
+// Índices: [Out-25, Nov-25, Dez-25, Jan-26, Fev-26, Mar-26]
+// Regra de negócio: recupero = caixa recebido NO mês (independente do período de origem)
+// Ciclo de 90 dias: casos de Q4-2025 ainda se fecham em Q1-2026
+const CAUS_PERIODS=['Out-25','Nov-25','Dez-25','Jan-26','Fev-26','Mar-26','Abr-26','Mai-26'];
+const CAUS_TYPES=['Lost','Stolen','Damaged','Delayed','PNR+EB','Outros'];
+const CAUS_COLORS=['#4d9fff','#ff6eb4','#f5a623','#a374ff','#2ecc8a','#8ab4c0'];
+// CAUS idx 3,4,5,6,7 → D_BPP_REAL/D_TGMV_CBS idx 0,1,2,3,4 (Jan,Fev,Mar,Abr,Mai 2026)
+// Mai-26 (idx 7): BPP Real pendente; Rec.Real = 0 (reclamos enviados 15/Jun, ciclo em aberto)
+const D_REC_CAUS={
+  MLB:{
+    Lost:    [234117,154149,250088,120148,0,0,0,132006],
+    Stolen:  [10234,5898,10362,5149,0,0,0,3],
+    Damaged: [110302,145027,123981,138245,0,0,0,83376],
+    Delayed: [0,685,90492,74468,0,0,0,303695],
+    'PNR+EB':[54694,73078,165227,179567,0,0,0,306304],
+    Outros:  [32296,81077,53889,54065,0,0,0,49296],
+    _total:  [441644,459914,694039,571641,0,0,0,874680]
+  },
+  MLA:{
+    Lost:    [45257,68500,73480,95440,6992,0,0,64642],
+    Stolen:  [56,3307,5270,35676,531,0,0,1],
+    Damaged: [63919,45445,45178,45016,2187,0,0,54963],
+    Delayed: [23691,289,76538,119203,34975,0,0,101216],
+    'PNR+EB':[24501,21413,34263,59692,0,0,0,90606],
+    Outros:  [0,0,0,0,0,0,0,7624],
+    _total:  [157425,138953,234728,355028,44686,0,0,319052]
+  },
+  MLM:{
+    Lost:    [104853,79653,73380,51159,3407,0,0,23214],
+    Stolen:  [17523,3110,16,1294,0,0,0,2],
+    Damaged: [6560,17621,5071,8445,0,0,0,23178],
+    Delayed: [0,256,32595,26780,503,0,0,55458],
+    'PNR+EB':[7376,34631,10585,2032,0,0,0,44144],
+    Outros:  [0,0,0,0,0,0,0,8645],
+    _total:  [136312,135271,121647,89710,3910,0,0,154641]
+  },
+  MCO:{
+    Lost:    [1809,2193,1457,4858,0,0,0,3667],
+    Stolen:  [411,0,0,0,0,0,0,2],
+    Damaged: [210,123,689,0,0,0,0,1804],
+    Delayed: [0,99,655,0,0,0,0,5531],
+    'PNR+EB':[921,1293,1558,0,0,0,0,7771],
+    Outros:  [906,922,4303,1080,0,0,0,872],
+    _total:  [4257,4630,8662,5938,0,0,0,19647]
+  },
+  MLU:{
+    Lost:    [10886,10331,2882,0,0,0,0,644],
+    Stolen:  [515,434,372,0,0,0,0,2],
+    Damaged: [2021,2163,1852,0,0,0,0,2232],
+    Delayed: [537,466,399,0,0,0,0,2867],
+    'PNR+EB':[618,595,510,0,0,0,0,4406],
+    Outros:  [25,22,18,0,0,0,0,144],
+    _total:  [14603,14011,6033,0,0,0,0,10295]
+  },
+  MLC:{
+    Lost:    [10569,17805,17517,12605,11920,0,0,5700],
+    Stolen:  [4908,2110,3938,142,1228,0,0,1],
+    Damaged: [10805,8118,7351,3629,251,0,0,9164],
+    Delayed: [0,0,15107,7052,1653,0,0,6973],
+    'PNR+EB':[2526,2198,4012,3479,2341,0,0,6160],
+    Outros:  [0,0,0,0,0,0,0,519],
+    _total:  [28808,30231,47925,26907,17393,0,0,28517]
+  },
+  MPE:{
+    Lost:    [305,153,205,0,0,0,0,3610],
+    Stolen:  [265,350,460,0,0,0,0,2],
+    Damaged: [749,309,412,0,0,0,0,999],
+    Delayed: [0,0,0,0,0,0,0,6077],
+    'PNR+EB':[442,589,344,0,0,0,0,8475],
+    Outros:  [1190,884,691,0,0,0,0,70],
+    _total:  [2951,2285,2111,0,0,0,0,19233]
+  },
+  MEC:{
+    Lost:    [0,0,0,0,0,0,0,152],
+    Stolen:  [0,0,0,484,0,0,0,2],
+    Damaged: [0,0,0,170,0,0,0,103],
+    Delayed: [0,0,0,0,0,0,0,67],
+    'PNR+EB':[0,0,0,0,97,0,0,359],
+    Outros:  [0,0,0,1578,0,0,0,0],
+    _total:  [0,0,0,2232,97,0,0,683]
+  }
+};
+
+// ── Alias CBS → BigQuery CARRIER_ID (quando o nome diverge) ──
+const _TGMV_ALIAS={
+  'PICKIT|MLA':'PICKIT-PLACES|MLA'
+  // J&T Express Brazil|MLB agora usa chave direta (sem alias necessário)
+};
+// Apenas as chaves BigQuery dos carriers mapeados no dashboard (CBS)
+// TNT|MLB e ARGO SEGUROS|MLB não constam no BigQuery como carrier
+const CBS_TGMV_KEYS=[
+  'ANDREANI|MLA','BLUE EXPRESS|MLC','CAINIAO DOMESTIC|MLM',
+  'CARVALIMA|MLB','CHILEXPRESS|MLC','COORDINADORA|MCO',
+  'CORREO ARGENTINO|MLA','CORREOS CHILE|MLC','CORREIOS|MLB',
+  'DAC|MLU','DHL|MLM','ESTAFETA|MLM','FEDEX|MLM',
+  'J&T EXPRESS BRAZIL|MLB','J&T EXPRESS|MLM',
+  'JAD LOGISTICA LTDA|MLB','LOGGI|MLB','OCASA|MLA','OCA|MLA',
+  'PAQUETEXPRESS|MLM','PICKIT-PLACES|MLA','SERVIENTREGA|MCO',
+  'UES|MLU','URBANO|MLA','WEBPACK|MLA'
+];
+// D_TGMV_CBS: TGMV agregado por site, filtrado só para CBS carriers
+// Exclui FLEX, CAINIAO (full), Correio Argentino cross-border, etc.
+const D_TGMV_CBS=(function(){
+  const r={MLB:new Array(12).fill(0),MLA:new Array(12).fill(0),MLM:new Array(12).fill(0),
+           MCO:new Array(12).fill(0),MLC:new Array(12).fill(0),MPE:new Array(12).fill(0),
+           MLU:new Array(12).fill(0),MEC:new Array(12).fill(0)};
+  CBS_TGMV_KEYS.forEach(key=>{
+    const site=key.split('|').pop();
+    (D_TGMV_CAR[key]||[]).forEach((v,i)=>{if(r[site]) r[site][i]+=v;});
+  });
+  return r;
+})();
+
+function hasTGMV(){return true;}
+function hasBppCar(){return true;}
+
+// ── Helpers ──
 function getSites(){const f=document.getElementById('fC').value;return f==='all'?SITES:SITES.filter(s=>s.c===f);}
-function getTipo(){return document.getElementById('fT').value;}
-
-function recBpp(site){
-  const t=getTipo();
-  if(t==='cc')  return D.recBpp_cc[site]||new Array(12).fill(0);
-  if(t==='seg') return D.recBpp_seg[site]||new Array(12).fill(0);
-  return D.recBpp_all[site]||new Array(12).fill(0);
-}
-function recNB(site){
-  const t=getTipo();
-  if(t==='cc')  return D.recNB_cc[site]||new Array(12).fill(0);
-  if(t==='seg') return D.recNB_seg[site]||new Array(12).fill(0);
-  return D.recNB_all[site]||new Array(12).fill(0);
-}
-function recBonov(site){return D.recNB_bonov[site]||new Array(12).fill(0);}
-// Standard NB = total NB minus bono volumen
-function recNBstd(site){
-  const nb=recNB(site),bv=recBonov(site);
-  return nb.map((v,i)=>Math.max(0,v-(bv[i]||0)));
-}
-
-function filterLabel(elId){
-  const t=getTipo(),p=document.getElementById('fC').value;
-  const tl=t==='all'?'CC + Seguros':t==='cc'?'Só Commercial Carrier':'Só Seguros';
+function getCarrierFilter(){return document.getElementById('fCarrier').value;}
+function getTipo(){return document.getElementById('fTipo')?.value||'all';}
+function filterLabel(id){
+  const p=document.getElementById('fC').value,c=getCarrierFilter(),t=getTipo();
   const pl=p==='all'?'Todos os países':SITES.find(s=>s.c===p)?.n||p;
-  if(elId) document.getElementById(elId).textContent=tl+' · '+pl;
+  const cl=c==='all'?'Todos os carriers':c;
+  const tl=t==='all'?'CC+Seguros':t==='cc'?'Só CC':'Só Seguros';
+  if(id) document.getElementById(id).textContent=pl+' · '+cl+' · '+tl;
 }
 
+// ── Tipo de carrier: 'seg' = seguros; demais = 'cc' ──
+const CARRIER_TIPO={'Argo Seguros':'seg','HDI SEGUROS GLOBAL SA':'seg'};
+
+// Calcula bpp/nonbpp mensais do CBS filtrado por tipo (para abas que usam dados BQ mas precisam do filtro)
+function cbsMonthly(site,tipo){
+  const bpp=[0,0,0,0,0],nb=[0,0,0,0,0];
+  Object.entries(CBS).forEach(([name,sMap])=>{
+    const ct=CARRIER_TIPO[name]||'cc';
+    if(tipo!=='all'&&ct!==tipo) return;
+    const d=sMap[site]; if(!d) return;
+    d.bpp.forEach((v,i)=>{if(i<5)bpp[i]+=v||0;});
+    d.nonbpp.forEach((v,i)=>{if(i<5)nb[i]+=v||0;});
+  });
+  return{bpp,nb};
+}
+// Wrappers de recuperação: quando tipo ativo usa CBS; senão usa dados carregados BQ
+function getRecBpp(site){const t=getTipo();return t==='all'?(D_REC_BPP[site]||[]):cbsMonthly(site,t).bpp;}
+function getRecNb(site) {const t=getTipo();return t==='all'?(D_REC_NB[site]||[]) :cbsMonthly(site,t).nb;}
 function baseOpts(type){
   return{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false},tooltip:{backgroundColor:'#181c24',borderColor:'rgba(255,255,255,.12)',borderWidth:1,
-      titleColor:'#dde1ea',bodyColor:'#7c8696',callbacks:{label:c=>' '+f$(c.raw)}}},
+    plugins:{legend:{display:false},tooltip:{backgroundColor:'#181c24',borderColor:'rgba(255,255,255,.12)',borderWidth:1,titleColor:'#dde1ea',bodyColor:'#7c8696',callbacks:{label:c=>' '+f$(c.raw)}}},
     scales:(type==='pie'||type==='doughnut')?{}:{
-      x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10}}},
-      y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10},callback:v=>'$'+Math.round(v/1000)+'k'}}
+      x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9}}},
+      y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>'$'+Math.round(v/1000)+'k'}}
     }};
 }
+function noDataBlock(msg,hint){
+  return `<div class="no-data"><div class="no-data-icon">📭</div>
+    <div class="no-data-title">${msg}</div>
+    <div class="no-data-sub">${hint}</div>
+    <button class="btn-load" onclick="openModal()">⬆ Carregar dados do BigQuery</button></div>`;
+}
 
-// ── BPP ──
-function renderBpp(){
+// ══════════════ RENDER: CONSOLIDADO ══════════════
+function renderConsolidado(){
+  const sites=getSites(); filterLabel('fl-con');
+  const bppR=sites.reduce((a,s)=>a+sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e)),0);
+  const plan=sites.reduce((a,s)=>a+sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e)),0);
+  const recB=sites.reduce((a,s)=>a+sm(getRecBpp(s.c).slice(getMF().s,getMF().e)),0);
+  const recN=sites.reduce((a,s)=>a+sm(getRecNb(s.c).slice(getMF().s,getMF().e)),0);
+  const tot=recB+recN;
+  const tgmv=hasTGMV()?sites.reduce((a,s)=>a+sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e)),0):0;
+
+  document.getElementById('k-bpp-real').textContent=fk(bppR);
+  document.getElementById('k-rec-bpp').textContent=fk(recB);
+  document.getElementById('k-rec-bpp-s').textContent=bppR>0?Math.round(recB/bppR*100)+'% do BPP Real':'—';
+  document.getElementById('k-plan-bpp').textContent=fk(plan);
+  document.getElementById('k-plan-s').innerHTML='<span class="'+(recB/plan>=1?'up':recB/plan>=.7?'wn':'dn')+'">'+(plan>0?Math.round(recB/plan*100)+'%':'—')+'</span> atingido';
+  document.getElementById('k-nb-rec').textContent=fk(recN);
+  document.getElementById('k-total-rec').textContent=fk(tot);
+  document.getElementById('k-total-rec-s').textContent=bppR>0?Math.round(tot/bppR*100)+'% vs BPP Real':'—';
+  document.getElementById('k-tgmv').textContent=tgmv>0?fk(tgmv):'Carregar dados';
+  document.getElementById('k-tgmv-s').textContent=tgmv>0?(tot/tgmv*100).toFixed(2)+'% Rec/TGMV':'⚠ aguardando CSV';
+
+  dc('cConM');
+  CH['cConM']=new Chart(document.getElementById('cConM'),{type:'bar',data:{labels:MONTHS,datasets:[
+    {label:'BPP Real',  data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_BPP_REAL[s.c]?.[i]||0),0)),backgroundColor:'rgba(255,79,79,.3)',borderRadius:3},
+    {label:'BPP Rec.',  data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(getRecBpp(s.c)[i]||0),0)),backgroundColor:'rgba(46,204,138,.75)',borderRadius:3,stack:'r'},
+    {label:'Não-BPP',   data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(getRecNb(s.c)[i]||0),0)),backgroundColor:'rgba(245,166,35,.75)',borderRadius:3,stack:'r'},
+    {label:'Plano',     data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_PLAN[s.c]?.[i]||0),0)),type:'line',borderColor:'rgba(77,159,255,.6)',backgroundColor:'transparent',borderWidth:2,borderDash:[4,4],pointRadius:2,tension:.3},
+  ]},options:baseOpts('bar')});
+
+  dc('cConPie');
+  CH['cConPie']=new Chart(document.getElementById('cConPie'),{type:'doughnut',data:{
+    labels:sites.map(s=>s.n),
+    datasets:[{data:sites.map(s=>sm(getRecBpp(s.c).slice(getMF().s,getMF().e))+sm(getRecNb(s.c).slice(getMF().s,getMF().e))),backgroundColor:CC.slice(0,sites.length),borderWidth:2,borderColor:'#111419'}]
+  },options:{...baseOpts('doughnut'),cutout:'60%'}});
+
+  document.getElementById('tCon').innerHTML=sites.map(s=>{
+    const bpp=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));
+    const pl=sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e));
+    const rb=sm(getRecBpp(s.c).slice(getMF().s,getMF().e));
+    const rn=sm(getRecNb(s.c).slice(getMF().s,getMF().e));
+    const tot2=rb+rn;
+    const tg=hasTGMV()?sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e)):0;
+    const pp=pl>0?Math.round(rb/pl*100):0, pr=bpp>0?Math.round(rb/bpp*100):0;
+    const cp=pp>=100?'var(--grn)':pp>=70?'var(--amb)':'var(--red)';
+    const cr=pr>=80?'var(--grn)':pr>=50?'var(--amb)':'var(--red)';
+    return `<tr><td class="tcc">${s.f} ${s.n}</td>
+      <td class="tr tr2">${f$(bpp)}</td><td class="tr tb">${f$(pl)}</td>
+      <td class="tr tg">${f$(rb)}</td>
+      <td class="tr" style="color:${cr}">${bpp>0?pr+'%':'—'}</td>
+      <td class="tr" style="color:${cp}">${pp}%</td>
+      <td class="tr ta">${f$(rn)}</td><td class="tr" style="font-weight:500">${f$(tot2)}</td>
+      <td class="tr tc2">${tg>0?fk(tg):'—'}</td>
+      <td class="tr">${tg>0?(bpp/tg*100).toFixed(2)+'%':'—'}</td>
+      <td class="tr">${tg>0?(tot2/tg*100).toFixed(2)+'%':'—'}</td></tr>`;
+  }).join('');
+}
+
+// ══════════════ RENDER: BPP × REC × PLANO ══════════════
+function renderBppRec(){
   const sites=getSites(); filterLabel('fl-bpp');
-  const real=sites.reduce((a,s)=>a+sm((D.bppReal[s.c]||[]).slice(0,YTD)),0);
-  const plan=sites.reduce((a,s)=>a+sm((D.plan[s.c]||[]).slice(0,YTD)),0);
-  const rec =sites.reduce((a,s)=>a+sm(recBpp(s.c).slice(0,YTD)),0);
-  const pp=plan>0?rec/plan*100:0, pr=real>0?rec/real*100:0;
-  document.getElementById('k-real').textContent=f$(real);
-  document.getElementById('k-plan').textContent=f$(plan);
-  document.getElementById('k-rec').textContent=f$(rec);
-  document.getElementById('k-rec-s').textContent=fp(pp)+' do plano';
-  document.getElementById('k-pp').textContent=fp(pp);
-  const pps=document.getElementById('k-pp-s');
+  const bppR=sites.reduce((a,s)=>a+sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e)),0);
+  const plan=sites.reduce((a,s)=>a+sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e)),0);
+  const rec =sites.reduce((a,s)=>a+sm(getRecBpp(s.c).slice(getMF().s,getMF().e)),0);
+  const pp=plan>0?rec/plan*100:0, pr=bppR>0?rec/bppR*100:0;
+  document.getElementById('k2-bpp').textContent=fk(bppR);
+  document.getElementById('k2-plan').textContent=fk(plan);
+  document.getElementById('k2-rec').textContent=fk(rec);
+  document.getElementById('k2-rec-s').textContent=fp(pp)+' do plano';
+  document.getElementById('k2-pp').textContent=fp(pp);
+  const pps=document.getElementById('k2-pp-s');
   pps.textContent=pp>=100?'✓ meta atingida':pp>=70?'próximo da meta':'faltam '+f$(plan-rec);
   pps.className='ks '+(pp>=100?'up':pp>=70?'wn':'dn');
-  document.getElementById('k-pr').textContent=fp(pr);
+  document.getElementById('k2-pr').textContent=fp(pr);
 
-  document.getElementById('gauges').innerHTML=sites.map(s=>{
-    const pl=sm((D.plan[s.c]||[]).slice(0,YTD));
-    const rc=sm(recBpp(s.c).slice(0,YTD));
+  document.getElementById('gauges2').innerHTML=sites.map(s=>{
+    const pl=sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e));
+    const rc=sm(getRecBpp(s.c).slice(getMF().s,getMF().e));
     const p=pl>0?Math.min(200,rc/pl*100):0;
     const col=p>=100?'var(--grn)':p>=70?'var(--amb)':'var(--red)';
     return `<div class="gau"><div class="gau-l">${s.f} ${s.n}</div>
@@ -437,29 +630,32 @@ function renderBpp(){
       <div class="gau-v"><span style="color:${col};font-weight:500">${Math.round(p)}%</span><span style="color:var(--m)">${f$(rc)}</span></div></div>`;
   }).join('');
 
-  dc('cBM');
-  CH['cBM']=new Chart(document.getElementById('cBM'),{type:'bar',data:{labels:MONTHS,datasets:[
-    {label:'BPP Real',   data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D.bppReal[s.c]?.[i]||0),0)),backgroundColor:'rgba(255,79,79,.35)',borderRadius:3},
-    {label:'Recuperado', data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(recBpp(s.c)[i]||0),0)),      backgroundColor:'rgba(46,204,138,.8)',borderRadius:3},
-    {label:'Plano',      data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D.plan[s.c]?.[i]||0),0)),    type:'line',borderColor:'rgba(77,159,255,.6)',backgroundColor:'transparent',borderWidth:2,borderDash:[4,4],pointRadius:2,tension:.3},
+  dc('cBRM');
+  CH['cBRM']=new Chart(document.getElementById('cBRM'),{type:'bar',data:{labels:MONTHS,datasets:[
+    {label:'BPP Real',  data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_BPP_REAL[s.c]?.[i]||0),0)),backgroundColor:'rgba(255,79,79,.4)',borderRadius:3},
+    {label:'Recuperado',data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(getRecBpp(s.c)[i]||0),0)),backgroundColor:'rgba(46,204,138,.8)',borderRadius:3},
+    {label:'Plano',     data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_PLAN[s.c]?.[i]||0),0)),type:'line',borderColor:'rgba(77,159,255,.6)',backgroundColor:'transparent',borderWidth:2,borderDash:[4,4],pointRadius:2,tension:.3},
   ]},options:baseOpts('bar')});
 
-  dc('cBD');
-  CH['cBD']=new Chart(document.getElementById('cBD'),{type:'doughnut',data:{
-    labels:sites.map(s=>s.f+' '+s.n),
-    datasets:[{data:sites.map(s=>sm(recBpp(s.c).slice(0,YTD))),backgroundColor:CC.slice(0,sites.length),borderWidth:2,borderColor:'#111419'}]
-  },options:{...baseOpts('doughnut'),cutout:'62%'}});
+  dc('cBRD');
+  CH['cBRD']=new Chart(document.getElementById('cBRD'),{type:'bar',data:{
+    labels:sites.map(s=>s.n),
+    datasets:[
+      {label:'Rec/Real %',data:sites.map(s=>{const b=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));const r=sm(getRecBpp(s.c).slice(getMF().s,getMF().e));return b>0?Math.round(r/b*100):0;}),
+       backgroundColor:sites.map(s=>{const b=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));const r=sm(getRecBpp(s.c).slice(getMF().s,getMF().e));const p=b>0?r/b*100:0;return p>=80?'rgba(46,204,138,.75)':p>=50?'rgba(245,166,35,.75)':'rgba(255,79,79,.75)';}),borderRadius:4}
+    ]},
+    options:{...baseOpts('bar'),plugins:{...baseOpts('bar').plugins},scales:{...baseOpts('bar').scales,y:{...baseOpts('bar').scales.y,ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>v+'%'}}}}});
 
-  document.getElementById('tB').innerHTML=sites.map(s=>{
-    const rl=sm((D.bppReal[s.c]||[]).slice(0,YTD));
-    const pl=sm((D.plan[s.c]||[]).slice(0,YTD));
-    const m=recBpp(s.c);
-    const rc=sm(m.slice(0,YTD));
+  document.getElementById('tBR').innerHTML=sites.map(s=>{
+    const rl=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));
+    const pl=sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e));
+    const m=getRecBpp(s.c);
+    const rc=sm(m.slice(getMF().s,getMF().e));
     const pp=pl>0?rc/pl*100:0, pr=rl>0?rc/rl*100:0;
     const cp=pp>=100?'var(--grn)':pp>=70?'var(--amb)':'var(--red)';
     const cr=pr>=80?'var(--grn)':pr>=50?'var(--amb)':'var(--red)';
-    return `<tr><td class="tcc">${s.f} ${s.n}</td><td class="tr t-r">${f$(rl)}</td><td class="tr tb">${f$(pl)}</td>
-      <td class="tr">${f$(m[0])}</td><td class="tr">${f$(m[1])}</td><td class="tr">${f$(m[2])}</td><td class="tr">${f$(m[3])}</td>
+    return `<tr><td class="tcc">${s.f} ${s.n}</td><td class="tr tr2">${f$(rl)}</td><td class="tr tb">${f$(pl)}</td>
+      <td class="tr">${f$(m[0]||0)}</td><td class="tr">${f$(m[1]||0)}</td><td class="tr">${f$(m[2]||0)}</td><td class="tr">${f$(m[3]||0)}</td><td class="tr">${f$(m[4]||0)}</td>
       <td class="tr tg" style="font-weight:500">${f$(rc)}</td>
       <td class="tr" style="color:${cr}">${rl>0?Math.round(pr)+'%':'—'}</td>
       <td class="tr" style="color:${cp}">${Math.round(pp)}%</td>
@@ -467,246 +663,779 @@ function renderBpp(){
   }).join('');
 }
 
-// ── NÃO-BPP ──
-function renderNonBpp(){
-  const sites=getSites(); filterLabel('fl-nb');
-  const CM=YTD;
-  let tot=0,totBV=0,bestMV=0,bestMI=-1,bestCV='',bestCN=0;
-  const mT=MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(recNBstd(s.c)[i]||0),0));
-  mT.forEach((v,i)=>{if(v>bestMV){bestMV=v;bestMI=i;}});
-  sites.forEach(s=>{const t=sm(recNBstd(s.c).slice(0,CM));tot+=t;if(t>bestCN){bestCN=t;bestCV=s.f+' '+s.n;}});
-  sites.forEach(s=>{totBV+=sm(recBonov(s.c).slice(0,CM));});
+// ══════════════ RENDER: TGMV × RECUPERADO ══════════════
+function renderTgmvRec(){
+  const sites=getSites(); filterLabel('fl-tr');
+  const el=document.getElementById('tgmv-rec-body');
+  if(!hasTGMV()){el.innerHTML=noDataBlock('Dados TGMV não carregados','Cole o resultado da query BT_CONTA_CAUSA_BPP (TIPO=NMV) no importador. Colunas: FECHA_CONTA_M, SIT_SITE_ID, CARRIER_ID, NMV');return;}
 
-  document.getElementById('k-nb-t').textContent=f$(tot);
-  document.getElementById('k-bv-t').textContent=totBV>0?f$(totBV):'a extrair';
-  document.getElementById('k-nb-top').textContent=bestCV||'—';
-  document.getElementById('k-nb-top-v').textContent=f$(bestCN);
-  document.getElementById('k-nb-mon').textContent=bestMI>=0?MONTHS[bestMI]:'—';
-  document.getElementById('k-nb-mon-v').textContent=f$(bestMV);
-  document.getElementById('k-nb-avg').textContent=CM>0?f$(tot/CM):'—';
+  const tgmvM=MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_TGMV_CBS[s.c]?.[i]||0),0));
+  const recM =MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(getRecBpp(s.c)[i]||0),0)); // só BPP (Não-BPP é outra conta contábil)
+  const ratioM=tgmvM.map((t,i)=>t>0?(recM[i]/t*100):null);
 
-  const mx=Math.max(...sites.flatMap(s=>recNBstd(s.c).slice(0,CM)));
-  document.getElementById('hH').innerHTML='<th>País</th>'+MONTHS.slice(0,CM).map(m=>`<th class="tr">${m}</th>`).join('')+'<th class="tr">Total</th>';
-  document.getElementById('hB').innerHTML=sites.map(s=>{
-    const v=recNBstd(s.c);const t=sm(v.slice(0,CM));
-    return `<tr><td class="tcc">${s.f} ${s.n}${s.hisp?' <span class="hisp-badge">HISP</span>':''}</td>
-      ${v.slice(0,CM).map(x=>{const a=mx>0?x/mx:0;const bg=x>0?`rgba(245,166,35,${(a*.65+.06).toFixed(2)})`:'transparent';
-        return `<td style="background:${bg};border-radius:3px;text-align:right;padding:6px 8px;font-family:var(--mono);font-size:11px">${x>0?f$(x):'—'}</td>`;}).join('')}
-      <td class="tr ta" style="font-weight:500">${f$(t)}</td></tr>`;
-  }).join('');
+  const totTGMV=sm(tgmvM.slice(getMF().s,getMF().e)),totRec=sm(recM.slice(getMF().s,getMF().e));
+  el.innerHTML=`
+  <div class="krow">
+    <div class="kpi c"><div class="kl">TGMV YTD</div><div class="kv">${fk(totTGMV)}</div><div class="ks">NMV Jan–Mai · só Carriers</div></div>
+    <div class="kpi g"><div class="kl">BPP Recuperado</div><div class="kv">${fk(totRec)}</div><div class="ks">Somente BPP · conta BPP</div></div>
+    <div class="kpi p"><div class="kl">BPP Rec / TGMV</div><div class="kv">${totTGMV>0?(totRec/totTGMV*100).toFixed(3)+'%':'—'}</div><div class="ks">BPP recuperado ÷ NMV carriers</div></div>
+    <div class="kpi a"><div class="kl">BPP / TGMV</div><div class="kv">${totTGMV>0?(sites.reduce((a,s)=>a+sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e)),0)/totTGMV*100).toFixed(3)+'%':'—'}</div><div class="ks">Penetração BPP sobre NMV</div></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div><div class="ct">TGMV vs BPP Recuperado — Evolução Mensal</div></div><span class="badge bc">USD</span></div>
+      <div class="cw" style="height:240px"><canvas id="cTRM"></canvas></div>
+      <div class="leg"><div class="li"><div class="ld" style="background:var(--cyn)"></div>TGMV (NMV)</div><div class="li"><div class="ld" style="background:var(--grn)"></div>Recuperado Total</div></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div><div class="ct">BPP Rec/TGMV % — Mensal</div></div><span class="badge bp">%</span></div>
+      <div class="cw" style="height:240px"><canvas id="cTRR"></canvas></div>
+    </div>
+  </div>
+  <div class="card gf">
+    <div class="ch"><div class="ct">Rec/TGMV por País (YTD)</div><span class="badge bc">Ratio</span></div>
+    <div class="tw"><table><thead><tr>
+      <th>País</th><th class="tr">TGMV</th><th class="tr">BPP Real</th><th class="tr">BPP Rec.</th><th class="tr">Não-BPP</th><th class="tr">Total Rec.</th>
+      <th class="tr">BPP/TGMV</th><th class="tr">BPP/TGMV</th>
+    </tr></thead><tbody id="tTR"></tbody></table></div>
+  </div>`;
 
-  dc('cNM');
-  CH['cNM']=new Chart(document.getElementById('cNM'),{type:'bar',data:{
-    labels:MONTHS.slice(0,CM),
-    datasets:sites.map((s,i)=>({label:s.n,data:recNBstd(s.c).slice(0,CM),backgroundColor:CC[i]+'bb',borderRadius:3,stack:'s'}))
-  },options:{...baseOpts('bar'),plugins:{...baseOpts('bar').plugins,legend:{display:true,labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10},boxWidth:7,boxHeight:7}}}}});
+  dc('cTRM');
+  CH['cTRM']=new Chart(document.getElementById('cTRM'),{type:'bar',data:{labels:MONTHS.slice(getMF().s,getMF().e),datasets:[
+    {label:'TGMV',     data:tgmvM.slice(getMF().s,getMF().e),backgroundColor:'rgba(0,212,200,.25)',borderRadius:3,order:2},
+    {label:'Recuperado',data:recM.slice(getMF().s,getMF().e), type:'line',borderColor:'var(--grn)',backgroundColor:'rgba(46,204,138,.1)',borderWidth:2,pointRadius:3,tension:.3,fill:true,order:1},
+  ]},options:{...baseOpts('bar'),scales:{x:baseOpts('bar').scales.x,y:{...baseOpts('bar').scales.y,ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>'$'+Math.round(v/1e6)+'M'}}}}});
 
-  dc('cND');
-  CH['cND']=new Chart(document.getElementById('cND'),{type:'doughnut',data:{
-    labels:sites.map(s=>s.f+' '+s.n),
-    datasets:[{data:sites.map(s=>sm(recNBstd(s.c).slice(0,CM))),backgroundColor:CC.slice(0,sites.length),borderWidth:2,borderColor:'#111419'}]
-  },options:{...baseOpts('doughnut'),cutout:'62%'}});
+  dc('cTRR');
+  CH['cTRR']=new Chart(document.getElementById('cTRR'),{type:'line',data:{labels:MONTHS.slice(getMF().s,getMF().e),datasets:[
+    {label:'Rec/TGMV %',data:ratioM.slice(getMF().s,getMF().e),borderColor:'var(--pur)',backgroundColor:'rgba(163,116,255,.12)',borderWidth:2,pointRadius:3,tension:.4,fill:true},
+  ]},options:{...baseOpts('line'),scales:{x:baseOpts('line').scales.x,y:{...baseOpts('line').scales.y,ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>v!=null?v.toFixed(3)+'%':null}}}}});
 
-  const gt=sites.reduce((a,s)=>a+sm(recNB(s.c).slice(0,CM)),0)||1;
-  document.getElementById('tN').innerHTML=sites.map(s=>{
-    const v=recNBstd(s.c);const t=sm(v.slice(0,CM));
-    const bv=sm(recBonov(s.c).slice(0,CM));
-    const tot2=t+bv;
-    return `<tr><td class="tcc">${s.f} ${s.n}${s.hisp?' <span class="hisp-badge">HISP</span>':''}</td>
-      ${v.slice(0,CM).map(x=>`<td class="tr">${f$(x)}</td>`).join('')}
-      <td class="tr ta" style="font-weight:500">${f$(t)}</td>
-      <td class="tr tpk">${bv>0?f$(bv):'—'}</td>
-      <td class="tr" style="font-weight:500">${f$(tot2)}</td>
-      <td class="tr" style="color:var(--m2)">${tot2>0?(tot2/gt*100).toFixed(1)+'%':'—'}</td></tr>`;
-  }).join('');
-}
-
-// ── BONO VOLUMEN ──
-function renderBonoVolumen(){
-  const sites=getSites(); filterLabel('fl-bv');
-  const CM=YTD;
-  const hispSites=sites.filter(s=>s.hisp);
-  let totBV=0,bestMV=0,bestMI=-1,bestCV='',bestCN=0;
-  const mT=MONTHS.map((_,i)=>hispSites.reduce((a,s)=>a+(recBonov(s.c)[i]||0),0));
-  mT.forEach((v,i)=>{if(v>bestMV){bestMV=v;bestMI=i;}});
-  hispSites.forEach(s=>{const t=sm(recBonov(s.c).slice(0,CM));totBV+=t;if(t>bestCN){bestCN=t;bestCV=s.f+' '+s.n;}});
-  const totNB=sites.reduce((a,s)=>a+sm(recNB(s.c).slice(0,CM)),0);
-
-  document.getElementById('k-bv-total').textContent=totBV>0?f$(totBV):'a extrair ⚠️';
-  document.getElementById('k-bv-pct').textContent=totNB>0&&totBV>0?Math.round(totBV/(totNB)*100)+'%':'—';
-  document.getElementById('k-bv-top').textContent=bestCV||'—';
-  document.getElementById('k-bv-top-v').textContent=bestCN>0?f$(bestCN):'—';
-  document.getElementById('k-bv-mon').textContent=bestMI>=0&&bestMV>0?MONTHS[bestMI]:'—';
-  document.getElementById('k-bv-mon-v').textContent=bestMV>0?f$(bestMV):'—';
-
-  const note=document.getElementById('bv-note');
-  const hasData=hispSites.some(s=>sm(recBonov(s.c).slice(0,CM))>0);
-  if(!hasData){
-    note.innerHTML='⚠️ PENDENTE: Dados de Bono Volumen precisam ser extraídos da planilha filtrando a coluna "Motivo del recupero" = "Descuento Comercial (Bonovolumen) CC". Parcialmente identificado: MLA Jan = $10.491 (Webpack). Solicite ao responsável a extração completa por país e mês.';
-  } else {
-    note.innerHTML='ℹ️ Dados parcialmente populados. Atualize extraindo "Descuento Comercial (Bonovolumen) CC" da planilha de recuperos.';
-  }
-
-  const gt=totNB||1;
-  document.getElementById('tBV').innerHTML=hispSites.map(s=>{
-    const v=recBonov(s.c);const t=sm(v.slice(0,CM));
-    const nb=sm(recNB(s.c).slice(0,CM));
+  document.getElementById('tTR').innerHTML=sites.map(s=>{
+    const tg=sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e));
+    const br=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));
+    const rb=sm(getRecBpp(s.c).slice(getMF().s,getMF().e));
+    const rn=sm(getRecNb(s.c).slice(getMF().s,getMF().e));
+    const tot2=rb+rn;
     return `<tr><td class="tcc">${s.f} ${s.n}</td>
-      ${v.slice(0,CM).map(x=>`<td class="tr tpk">${x>0?f$(x):'—'}</td>`).join('')}
-      <td class="tr tpk" style="font-weight:500">${t>0?f$(t):'—'}</td>
-      <td class="tr" style="color:var(--m2)">${nb>0&&t>0?(t/nb*100).toFixed(1)+'%':'—'}</td></tr>`;
+      <td class="tr tc2">${fk(tg)}</td><td class="tr tr2">${f$(br)}</td>
+      <td class="tr tg">${f$(rb)}</td><td class="tr ta">${f$(rn)}</td>
+      <td class="tr" style="font-weight:500">${f$(tot2)}</td>
+      <td class="tr">${tg>0?(br/tg*100).toFixed(3)+'%':'—'}</td>
+      <td class="tr tp">${tg>0?(rb/tg*100).toFixed(3)+'%':'—'}</td></tr>`; // BPP recuperado / TGMV
   }).join('');
-
-  dc('cBV');
-  CH['cBV']=new Chart(document.getElementById('cBV'),{type:'bar',data:{
-    labels:MONTHS.slice(0,CM),
-    datasets:hispSites.map((s,i)=>({label:s.n,data:recBonov(s.c).slice(0,CM),backgroundColor:CC[i]+'bb',borderRadius:3,stack:'s'}))
-  },options:{...baseOpts('bar'),plugins:{...baseOpts('bar').plugins,legend:{display:true,labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10},boxWidth:7,boxHeight:7}}}}});
-
-  dc('cBVD');
-  CH['cBVD']=new Chart(document.getElementById('cBVD'),{type:'bar',data:{
-    labels:hispSites.map(s=>s.f+' '+s.c),
-    datasets:[
-      {label:'NB Standard',  data:hispSites.map(s=>sm(recNBstd(s.c).slice(0,CM))),backgroundColor:'rgba(245,166,35,.7)',borderRadius:3,stack:'s'},
-      {label:'Bono Volumen', data:hispSites.map(s=>sm(recBonov(s.c).slice(0,CM))),backgroundColor:'rgba(255,110,180,.7)',borderRadius:3,stack:'s'},
-    ]},
-    options:{...baseOpts('bar'),plugins:{...baseOpts('bar').plugins,legend:{display:true,labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10},boxWidth:7,boxHeight:7}}}}});
 }
 
-// ── CARRIERS ──
+// ══════════════ RENDER: TGMV × BPP × REC ══════════════
+function renderTgmvFull(){
+  const sites=getSites(); filterLabel('fl-tf');
+  const el=document.getElementById('tgmv-full-body');
+  if(!hasTGMV()){el.innerHTML=noDataBlock('Dados TGMV não carregados','Cole o resultado da query TGMV no importador para ver esta visão completa.');return;}
+
+  const tgmvM=MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_TGMV_CBS[s.c]?.[i]||0),0));
+  const bppM =MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D_BPP_REAL[s.c]?.[i]||0),0));
+  const recBM=MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(getRecBpp(s.c)[i]||0),0));
+  const recNM=MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(getRecNb(s.c)[i]||0),0));
+  const totTG=sm(tgmvM.slice(getMF().s,getMF().e)),totBPP=sm(bppM.slice(getMF().s,getMF().e)),totRB=sm(recBM.slice(getMF().s,getMF().e)),totRN=sm(recNM.slice(getMF().s,getMF().e));
+
+  el.innerHTML=`
+  <div class="krow">
+    <div class="kpi c"><div class="kl">TGMV YTD</div><div class="kv">${fk(totTG)}</div><div class="ks">NMV Jan–Mai</div></div>
+    <div class="kpi r"><div class="kl">BPP Real YTD</div><div class="kv">${fk(totBPP)}</div><div class="ks">${totTG>0?(totBPP/totTG*100).toFixed(3)+'% do TGMV':'—'}</div></div>
+    <div class="kpi g"><div class="kl">BPP Rec YTD</div><div class="kv">${fk(totRB)}</div><div class="ks">${totTG>0?(totRB/totTG*100).toFixed(3)+'% do TGMV':'—'}</div></div>
+    <div class="kpi p"><div class="kl">BPP Rec / TGMV</div><div class="kv">${totTG>0?(totRB/totTG*100).toFixed(3)+'%':'—'}</div><div class="ks">Rec BPP / NMV</div></div>
+    <div class="kpi b"><div class="kl">Rec BPP / BPP Real</div><div class="kv">${totBPP>0?(totRB/totBPP*100).toFixed(1)+'%':'—'}</div><div class="ks">Eficiência recupero</div></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div><div class="ct">TGMV × BPP Real × Recuperado — Mensal</div></div><span class="badge bc">USD</span></div>
+      <div class="cw" style="height:260px"><canvas id="cTFM"></canvas></div>
+      <div class="leg">
+        <div class="li"><div class="ld" style="background:rgba(0,212,200,.5)"></div>TGMV (escala ÷1000)</div>
+        <div class="li"><div class="ld" style="background:rgba(255,79,79,.5)"></div>BPP Real</div>
+        <div class="li"><div class="ld" style="background:var(--grn)"></div>BPP Rec.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><div><div class="ct">Ratios sobre TGMV — % Mensal</div></div><span class="badge bp">%</span></div>
+      <div class="cw" style="height:260px"><canvas id="cTFR"></canvas></div>
+    </div>
+  </div>
+  <div class="card gf">
+    <div class="ch"><div class="ct">Visão Completa por País</div><span class="badge bc">USD + Ratios · YTD Jan–Mai</span></div>
+    <div class="tw"><table><thead><tr>
+      <th>País</th><th class="tr">TGMV</th><th class="tr">BPP Real</th><th class="tr">BPP/TGMV</th>
+      <th class="tr">BPP Rec.</th><th class="tr">BPP Rec/BPP</th><th class="tr">BPP Rec/TGMV</th>
+    </tr></thead><tbody id="tTF"></tbody></table></div>
+  </div>`;
+
+  dc('cTFM');
+  CH['cTFM']=new Chart(document.getElementById('cTFM'),{type:'bar',data:{labels:MONTHS.slice(getMF().s,getMF().e),datasets:[
+    {label:'TGMV÷1k', data:tgmvM.slice(getMF().s,getMF().e).map(v=>v/1000),backgroundColor:'rgba(0,212,200,.2)',borderRadius:3,order:3},
+    {label:'BPP Real', data:bppM.slice(getMF().s,getMF().e), backgroundColor:'rgba(255,79,79,.5)', borderRadius:3,stack:'bpp',order:2},
+    {label:'BPP Rec.', data:recBM.slice(getMF().s,getMF().e),backgroundColor:'rgba(46,204,138,.8)', borderRadius:3,stack:'r',order:1},
+  ]},options:baseOpts('bar')});
+
+  dc('cTFR');
+  {const mf=getMF(),tg=tgmvM.slice(mf.s,mf.e),bp=bppM.slice(mf.s,mf.e),rb=recBM.slice(mf.s,mf.e),rn=recNM.slice(mf.s,mf.e);
+  CH['cTFR']=new Chart(document.getElementById('cTFR'),{type:'line',data:{labels:MONTHS.slice(mf.s,mf.e),datasets:[
+    {label:'BPP/TGMV %',data:tg.map((t,i)=>t>0?(bp[i]/t*100):null),borderColor:'rgba(255,79,79,.8)',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.4},
+    {label:'BPP Rec/TGMV %',data:tg.map((t,i)=>t>0?(rb[i]/t*100):null),borderColor:'var(--pur)',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.4},
+  ]},options:{...baseOpts('line'),plugins:{...baseOpts('line').plugins,legend:{display:true,labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},boxWidth:6,boxHeight:6}}},scales:{x:baseOpts('line').scales.x,y:{...baseOpts('line').scales.y,ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>v!=null?v.toFixed(3)+'%':null}}}}});}
+
+  document.getElementById('tTF').innerHTML=sites.map(s=>{
+    const tg=sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e));
+    const br=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));
+    const rb=sm(getRecBpp(s.c).slice(getMF().s,getMF().e));
+    const bpt=tg>0?(br/tg*100).toFixed(3)+'%':'—';
+    const rrt=br>0?(rb/br*100).toFixed(1)+'%':'—';
+    const rtt=tg>0?(rb/tg*100).toFixed(3)+'%':'—';
+    return `<tr><td class="tcc">${s.f} ${s.n}</td>
+      <td class="tr tc2">${fk(tg)}</td><td class="tr tr2">${f$(br)}</td>
+      <td class="tr">${bpt}</td><td class="tr tg">${f$(rb)}</td>
+      <td class="tr">${rrt}</td><td class="tr tp">${rtt}</td></tr>`;
+  }).join('');
+}
+
+// ══════════════ RENDER: POR TRANSPORTADORA ══════════════
+// CBS = dados recuperados Jan–Mai 2026 (fonte: Planilha Recuperado Real, atualizado 2026-05-08)
+// Índices 0=Jan, 1=Fev, 2=Mar, 3=Abr, 4=Mai 2026
+// Fonte: planilha 1PRMxIpUwFnB9fOrTAmRAZxRRgkRfDHKlgnb_mwx_QNw — atualizado Mai/2026
+const CBS={
+  "ALMEX":              {"MLM":{"bpp":[31339,27132,12046,13770,4888], "nonbpp":[0,0,0,0,0]}},
+  "Andreani":           {"MLA":{"bpp":[54781,0,293349,0,0],          "nonbpp":[0,0,0,4347,0]}},
+  "Argo Seguros":       {"MLB":{"bpp":[212266,366055,330347,271952,0],"nonbpp":[0,0,0,0,0]}},
+  "Blue Express":       {"MLC":{"bpp":[19865,46450,1451,16477,30956], "nonbpp":[38014,39795,33584,39917,0]}},
+  "Cainiao Domestic":   {"MLM":{"bpp":[668,411,0,7027,0],             "nonbpp":[0,0,4429,0,0]}},
+  "Carvalima":          {"MLB":{"bpp":[15525,9382,15653,30694,0],      "nonbpp":[2592,0,0,0,0]}},
+  "Chilexpress":        {"MLC":{"bpp":[8787,32590,0,24765,0],          "nonbpp":[8185,6156,4696,4012,0]}},
+  "Coordinadora":       {"MCO":{"bpp":[0,1949,2678,0,0],              "nonbpp":[0,0,0,0,0]}},
+  "Correios":           {"MLB":{"bpp":[46679,41305,21111,22417,0],     "nonbpp":[562,11762,13800,2374,0]}},
+  "Correo Argentino":   {"MLA":{"bpp":[0,71891,62951,89103,0],         "nonbpp":[456108,553095,537916,518309,0]}},
+  "Correos Chile":      {"MLC":{"bpp":[465,1304,0,5108,0],             "nonbpp":[0,0,0,0,0]}},
+  "DAC":                {"MLU":{"bpp":[504,7576,0,345,0],              "nonbpp":[0,0,0,0,0]}},
+  "DHL":                {"MLM":{"bpp":[575,4421,6717,1506,586],         "nonbpp":[0,125301,47398,0,0]}},
+  "Dominalog Express":  {"MLB":{"bpp":[4015,83369,102136,128508,31153],"nonbpp":[0,0,0,0,0]}},
+  "Envia":              {"MCO":{"bpp":[0,0,4659,0,0],                  "nonbpp":[169,0,270,0,0]}},
+  "Estafeta":           {"MLM":{"bpp":[5623,0,1456,0,4409],             "nonbpp":[0,13000,0,0,0]}},
+  "FedEx":              {"MLM":{"bpp":[99416,47871,70057,98502,60743],  "nonbpp":[23032,54000,0,29074,0]}},
+  "HDI SEGUROS GLOBAL SA":{"MLM":{"bpp":[149952,380732,361206,924350,139813],"nonbpp":[0,0,0,0,0]}},
+  "Imile Delivery":     {"MLB":{"bpp":[0,307,2856,3637,1930],           "nonbpp":[0,0,0,0,0]}},
+  "J&T Express":        {"MLM":{"bpp":[0,24991,34882,87207,42017],      "nonbpp":[0,72868,0,0,0]}},
+  "J&T Express Brazil": {"MLB":{"bpp":[0,191662,518185,0,396226],       "nonbpp":[0,0,0,0,0]}},
+  "Jad Logistica Ltda": {"MLB":{"bpp":[132228,128583,114901,172439,0],  "nonbpp":[193798,272447,29664,146773,0]}},
+  "Loggi":              {"MLB":{"bpp":[0,178169,674670,99575,246903],    "nonbpp":[0,11734,0,0,0]}},
+  "OCA":                {"MLA":{"bpp":[35510,35803,35803,17722,0],       "nonbpp":[24168,12506,14386,23829,0]}},
+  "OCASA":              {"MLA":{"bpp":[86530,87609,52968,69138,21657],   "nonbpp":[81962,101166,73559,77280,0]}},
+  "OLVA":               {"MPE":{"bpp":[13185,10321,13557,9741,3725],    "nonbpp":[0,0,0,0,0]}},
+  "Paquetexpress":      {"MLM":{"bpp":[0,0,15942,21844,17097],           "nonbpp":[119,0,0,0,0]}},
+  "Pickit":             {"MLA":{"bpp":[14339,44723,56953,45910,0],       "nonbpp":[0,0,0,0,0]}},
+  "Punto HOP":          {"MLA":{"bpp":[0,0,38932,0,45161],              "nonbpp":[0,0,5111,0,0]}},
+  "Servientrega":       {"MCO":{"bpp":[1149,3777,0,0,0],                "nonbpp":[0,0,0,0,0]}},
+  "TNT":                {"MLB":{"bpp":[0,8083,4417,0,0],                 "nonbpp":[4124,6013,6069,0,0]}},
+  "UES":                {"MLU":{"bpp":[6138,0,6499,17467,11961],          "nonbpp":[24431,10911,10515,9073,0]}},
+  "Urbano":             {"MEC":{"bpp":[0,0,4796,0,0],"nonbpp":[0,0,0,0,0]},"MLA":{"bpp":[11272,6987,0,12961,2175],"nonbpp":[0,0,0,0,0]}},
+  "Urbano MPE":         {"MPE":{"bpp":[0,0,10257,0,0],                  "nonbpp":[27824,31750,31791,38540,0]}},
+  "Webpack":            {"MLA":{"bpp":[5150,0,2613,4371,0],              "nonbpp":[23654,11016,12021,0,0]}}
+};
+
 function renderCarriers(){
-  const fc=document.getElementById('fC').value; filterLabel('fl-car');
-  const CM=YTD;
+  const sites=getSites(); filterLabel('fl-car');
+  const el=document.getElementById('carriers-body');
+  if(!hasBppCar()&&!hasTGMV()){el.innerHTML=noDataBlock('Dados por carrier não carregados','Carregue tanto a query TGMV quanto a BPP para ver o breakdown por transportadora.');return;}
+
+  // Build carrier rows from existing carrierBySite structure
+  const carData={};
+
+  // Populate fCarrier dropdown filtered by selected country + tipo
+  const fcarEl=document.getElementById('fCarrier');
+  const fc=document.getElementById('fC').value;
+  const ft=getTipo();
+  {
+    const prevVal=fcarEl.value;
+    // Build carrier list for selected country and tipo
+    const availCars=[...new Set(
+      Object.entries(CBS)
+        .filter(([name,sitesMap])=>(fc==='all'||sitesMap[fc])&&(ft==='all'||(CARRIER_TIPO[name]||'cc')===ft))
+        .map(([car])=>car)
+    )].sort((a,b)=>a.localeCompare(b));
+    // Only rebuild if the set changed
+    const cur=[...fcarEl.options].slice(1).map(o=>o.value);
+    const changed=availCars.length!==cur.length||availCars.some((c,i)=>c!==cur[i]);
+    if(changed){
+      while(fcarEl.options.length>1) fcarEl.remove(1);
+      availCars.forEach(car=>{
+        const opt=document.createElement('option');
+        opt.value=car; opt.textContent=car;
+        fcarEl.appendChild(opt);
+      });
+      // Restore previous selection if still available
+      if(availCars.includes(prevVal)) fcarEl.value=prevVal;
+      else fcarEl.value='all';
+    }
+  }
+  const cf=getCarrierFilter();
   const rows=[];
-  Object.entries(D.carrierBySite||{}).forEach(([car,sites])=>{
-    Object.entries(sites).forEach(([site,vals])=>{
+  Object.entries(CBS).forEach(([car,sitesMap])=>{
+    const ct=CARRIER_TIPO[car]||'cc';
+    Object.entries(sitesMap).forEach(([site,vals])=>{
       if(fc!=='all'&&site!==fc) return;
-      const bppArr=vals.bpp||new Array(12).fill(0);
-      const nbArr =vals.nonbpp||new Array(12).fill(0);
-      const b=sm(bppArr.slice(0,CM));
-      const n=sm(nbArr.slice(0,CM));
-      if(b+n===0) return;
-      rows.push({car,site,b,n,bppArr,nbArr});
+      if(cf!=='all'&&car!==cf) return;
+      if(ft!=='all'&&ct!==ft) return;
+      const b=sm(vals.bpp.slice(getMF().s,getMF().e)),n=sm(vals.nonbpp.slice(getMF().s,getMF().e));
+      // só oculta zero quando nenhum carrier específico está selecionado
+      if(b+n===0&&cf==='all') return;
+      const _tgKey=car.toUpperCase()+'|'+site;
+      // usa _TGMV_ALIAS global (inclui J&T e Pickit)
+      const _tgResolved=_TGMV_ALIAS[_tgKey]||_tgKey;
+      const tg=hasTGMV()?sm((D_TGMV_CAR[_tgResolved]||D_TGMV_CAR[_tgKey]||D_TGMV_CAR[car+'|'+site]||[]).slice(getMF().s,getMF().e)):0;
+      rows.push({car,site,b,n,tg,bppArr:vals.bpp,nbArr:vals.nonbpp});
     });
   });
   rows.sort((a,b)=>(b.b+b.n)-(a.b+a.n));
   const top20=rows.slice(0,20);
-  const gB=sm(rows.map(r=>r.b)), gN=sm(rows.map(r=>r.n)), g=gB+gN;
-  const topBpp =rows.reduce((a,r)=>r.b>a.b?r:a,{b:0});
-  const topNbpp=rows.reduce((a,r)=>r.n>a.n?r:a,{n:0});
+  const top5=rows.slice(0,5);
+  const lc=['#2ecc8a','#f5a623','#4d9fff','#a374ff','#ff6eb4'];
 
-  document.getElementById('k-cn').textContent=rows.length;
-  document.getElementById('k-cb').textContent=topBpp.car||'—';
-  document.getElementById('k-cb-v').textContent=f$(topBpp.b);
-  document.getElementById('k-cn2').textContent=topNbpp.car||'—';
-  document.getElementById('k-cn2-v').textContent=f$(topNbpp.n);
-  document.getElementById('k-cp').textContent=g>0?Math.round(gB/g*100)+'%':'—';
+  el.innerHTML=`
+  <div class="krow">
+    <div class="kpi b"><div class="kl">Carriers ativos</div><div class="kv">${rows.length}</div><div class="ks">YTD 2026</div></div>
+    <div class="kpi g"><div class="kl">Top BPP Rec.</div><div class="kv">${rows[0]?.car||'—'}</div><div class="ks">${f$(rows[0]?.b)}</div></div>
+    <div class="kpi a"><div class="kl">Top Não-BPP</div><div class="kv">${rows.reduce((a,r)=>r.n>a.n?r:a,{n:0}).car||'—'}</div><div class="ks">${f$(rows.reduce((a,r)=>r.n>a.n?r:a,{n:0}).n)}</div></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div><div class="ct">Top 20 — BPP + Não-BPP Recovery</div></div><span class="badge bg">USD</span></div>
+      <div class="cw" style="height:380px"><canvas id="cCarBar"></canvas></div>
+      <div class="leg"><div class="li"><div class="ld" style="background:var(--grn)"></div>BPP</div><div class="li"><div class="ld" style="background:var(--amb)"></div>Não-BPP</div></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div><div class="ct">Top 5 — Evolução Mensal</div></div><span class="badge bg">2026</span></div>
+      <div class="cw" style="height:380px"><canvas id="cCarTrend"></canvas></div>
+    </div>
+  </div>
+  <div class="card gf">
+    <div class="ch"><div class="ct">Detalhe por Carrier × País</div><span class="badge bg">YTD Jan–Mai</span></div>
+    <div class="tw"><table><thead><tr>
+      <th>Carrier</th><th>País</th><th class="tr">BPP Rec.</th><th class="tr">Não-BPP</th><th class="tr">Total Rec.</th><th class="tr">% BPP</th>
+      <th class="tr">TGMV</th><th class="tr">Rec/TGMV</th>
+    </tr></thead><tbody id="tCarriers"></tbody></table></div>
+  </div>`;
 
-  dc('cCar');
-  CH['cCar']=new Chart(document.getElementById('cCar'),{type:'bar',
-    data:{labels:top20.map(r=>r.car+' ['+r.site+']'),datasets:[
+  dc('cCarBar');
+  CH['cCarBar']=new Chart(document.getElementById('cCarBar'),{type:'bar',
+    data:{labels:top20.map(r=>r.car.length>16?r.car.slice(0,14)+'…':r.car+' ['+r.site+']'),datasets:[
       {label:'BPP',    data:top20.map(r=>r.b),backgroundColor:'rgba(46,204,138,.75)',borderRadius:3,stack:'s'},
       {label:'Não-BPP',data:top20.map(r=>r.n),backgroundColor:'rgba(245,166,35,.75)',borderRadius:3,stack:'s'},
     ]},
     options:{...baseOpts('bar'),indexAxis:'y',
-      scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10},callback:v=>'$'+Math.round(v/1000)+'k'}},
-              y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10}}}}}});
+      scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>'$'+Math.round(v/1000)+'k'}},
+              y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9}}}}}});
 
-  const top5=rows.slice(0,5);
-  const lc=['#2ecc8a','#f5a623','#4d9fff','#a374ff','#ff6eb4'];
-  dc('cCT');
-  CH['cCT']=new Chart(document.getElementById('cCT'),{type:'line',
-    data:{labels:MONTHS.slice(0,CM),datasets:top5.map((r,i)=>({
+  dc('cCarTrend');
+  CH['cCarTrend']=new Chart(document.getElementById('cCarTrend'),{type:'line',
+    data:{labels:MONTHS.slice(getMF().s,getMF().e),datasets:top5.map((r,i)=>({
       label:r.car+' ['+r.site+']',
-      data:r.bppArr.slice(0,CM).map((b,j)=>b+(r.nbArr[j]||0)),
+      data:r.bppArr.slice(getMF().s,getMF().e).map((b,j)=>b+(r.nbArr[getMF().s+j]||0)),
       borderColor:lc[i],backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.4
     }))},
-    options:{...baseOpts('line'),plugins:{...baseOpts('line').plugins,legend:{display:true,labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10},boxWidth:7,boxHeight:7}}}}});
+    options:{...baseOpts('line'),plugins:{...baseOpts('line').plugins,legend:{display:true,labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},boxWidth:6,boxHeight:6}}}}});
 
-  document.getElementById('tCar').innerHTML=top20.map(r=>{
-    const tot=r.b+r.n;
-    return `<tr><td style="font-family:var(--sans);font-weight:500;font-size:12px">${r.car}</td>
-      <td style="color:var(--m2);font-size:11px">${SITES.find(x=>x.c===r.site)?.f||''} ${r.site}</td>
+  document.getElementById('tCarriers').innerHTML=top20.map(r=>{
+    const tot2=r.b+r.n;
+    const sf=SITES.find(x=>x.c===r.site);
+    return `<tr><td style="font-family:var(--sans);font-weight:500;font-size:11px">${r.car}</td>
+      <td style="color:var(--m2);font-size:10px">${sf?.f||''} ${r.site}</td>
       <td class="tr tg">${f$(r.b)}</td><td class="tr ta">${f$(r.n)}</td>
-      <td class="tr" style="font-weight:500">${f$(tot)}</td>
-      <td class="tr" style="color:var(--m2)">${tot>0?Math.round(r.b/tot*100)+'%':'—'}</td></tr>`;
+      <td class="tr" style="font-weight:500">${f$(tot2)}</td>
+      <td class="tr" style="color:var(--m2)">${tot2>0?Math.round(r.b/tot2*100)+'%':'—'}</td>
+      <td class="tr tc2">${r.tg>0?fk(r.tg):'—'}</td>
+      <td class="tr tp">${r.tg>0?(r.b/r.tg*100).toFixed(3)+'%':'—'}</td></tr>`;
   }).join('');
 }
 
-// ── OVERVIEW ──
-function renderOverview(){
-  const sites=getSites(); filterLabel('fl-ov');
-  const CM=YTD;
-  const bpp =sites.reduce((a,s)=>a+sm(recBpp(s.c).slice(0,CM)),0);
-  const nb  =sites.reduce((a,s)=>a+sm(recNBstd(s.c).slice(0,CM)),0);
-  const bv  =sites.reduce((a,s)=>a+sm(recBonov(s.c).slice(0,CM)),0);
-  const plan=sites.reduce((a,s)=>a+sm((D.plan[s.c]||[]).slice(0,CM)),0);
-  const real=sites.reduce((a,s)=>a+sm((D.bppReal[s.c]||[]).slice(0,CM)),0);
-  const tot=bpp+nb+bv, pp=plan>0?Math.round(bpp/plan*100):0;
+// ══════════════ RENDER: POR PAÍS ══════════════
+function renderPaises(){
+  const sites=getSites(); filterLabel('fl-pai');
+  const el=document.getElementById('paises-body');
+  const f$=v=>v>0?'$'+Math.round(v).toLocaleString('pt-BR'):'—';
+  const fp=v=>isFinite(v)&&v>0?Math.round(v)+'%':'—';
+  const sm=a=>Array.isArray(a)?a.reduce((s,x)=>s+x,0):0;
 
-  document.getElementById('k-ot').textContent=f$(tot);
-  document.getElementById('k-or').textContent=f$(real);
-  document.getElementById('k-op').textContent=f$(plan);
-  const ps=document.getElementById('k-op-s');
-  ps.textContent=pp+'% do plano BPP';ps.className='ks '+(pp>=100?'up':pp>=70?'wn':'dn');
-  document.getElementById('k-on').textContent=f$(nb);
-  document.getElementById('k-on-s').textContent=tot>0?Math.round(nb/tot*100)+'% do total':'—';
-  document.getElementById('k-obv').textContent=bv>0?f$(bv):'a extrair';
+  let html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px;margin-bottom:16px">';
+  sites.forEach(s=>{
+    const bppR = sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));
+    const plan  = sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e));
+    const recB  = sm(getRecBpp(s.c).slice(getMF().s,getMF().e));
+    const recN  = sm(getRecNb(s.c).slice(getMF().s,getMF().e));
+    const tgmv  = hasTGMV()?sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e)):0;
+    const tot   = recB+recN;
+    const pp    = plan>0?recB/plan*100:0;
+    const pen   = tgmv>0?bppR/tgmv*100:0;
 
-  dc('cOM');
-  CH['cOM']=new Chart(document.getElementById('cOM'),{type:'bar',data:{labels:MONTHS,datasets:[
-    {label:'BPP Real', data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D.bppReal[s.c]?.[i]||0),0)),backgroundColor:'rgba(255,79,79,.3)',borderRadius:3},
-    {label:'BPP Rec.', data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(recBpp(s.c)[i]||0),0)),     backgroundColor:'rgba(46,204,138,.75)',borderRadius:3,stack:'r'},
-    {label:'Não-BPP',  data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(recNBstd(s.c)[i]||0),0)),   backgroundColor:'rgba(245,166,35,.75)',borderRadius:3,stack:'r'},
-    {label:'Bono Vol.', data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(recBonov(s.c)[i]||0),0)),  backgroundColor:'rgba(255,110,180,.75)',borderRadius:3,stack:'r'},
-    {label:'Plano',    data:MONTHS.map((_,i)=>sites.reduce((a,s)=>a+(D.plan[s.c]?.[i]||0),0)),   type:'line',borderColor:'rgba(77,159,255,.6)',backgroundColor:'transparent',borderWidth:2,borderDash:[4,4],pointRadius:2,tension:.3},
-  ]},options:baseOpts('bar')});
+    const ppCls = pp>=100?'grn':pp>=70?'amb':'red';
+    const ppCol = pp>=100?'var(--grn)':pp>=70?'var(--amb)':'var(--red)';
 
-  dc('cOC');
-  CH['cOC']=new Chart(document.getElementById('cOC'),{type:'bar',data:{
-    labels:sites.map(s=>s.f+' '+s.c),
-    datasets:[
-      {label:'BPP Real',  data:sites.map(s=>sm((D.bppReal[s.c]||[]).slice(0,CM))),backgroundColor:'rgba(255,79,79,.4)',borderRadius:3},
-      {label:'BPP Rec.',  data:sites.map(s=>sm(recBpp(s.c).slice(0,CM))),          backgroundColor:'rgba(46,204,138,.75)',borderRadius:3},
-      {label:'Não-BPP',   data:sites.map(s=>sm(recNBstd(s.c).slice(0,CM))),        backgroundColor:'rgba(245,166,35,.75)',borderRadius:3},
-      {label:'Bono Vol.', data:sites.map(s=>sm(recBonov(s.c).slice(0,CM))),        backgroundColor:'rgba(255,110,180,.75)',borderRadius:3},
-    ]},
-    options:{...baseOpts('bar'),plugins:{...baseOpts('bar').plugins,legend:{display:true,labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:10},boxWidth:7,boxHeight:7}}}}});
+    // Monthly bars for sparkline
+    const months=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    const recArr=getRecBpp(s.c);
+    const maxR=Math.max(...recArr,1);
+    const bars=recArr.slice(getMF().s,getMF().e).map((v,i)=>{
+      const h=Math.round(v/maxR*32);
+      return `<div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1">
+        <div style="width:100%;background:var(--blu);height:${h}px;border-radius:2px 2px 0 0;min-height:2px"></div>
+        <div style="font-size:8px;color:var(--m);font-family:var(--mono)">${months[i]}</div>
+      </div>`;
+    }).join('');
 
-  document.getElementById('tOv').innerHTML=sites.map(s=>{
-    const rl=sm((D.bppReal[s.c]||[]).slice(0,CM));
-    const pl=sm((D.plan[s.c]||[]).slice(0,CM));
-    const b=sm(recBpp(s.c).slice(0,CM));
-    const n=sm(recNBstd(s.c).slice(0,CM));
-    const bv2=sm(recBonov(s.c).slice(0,CM));
-    const pp=pl>0?Math.round(b/pl*100):0, pr=rl>0?Math.round(b/rl*100):0;
-    const cp=pp>=100?'var(--grn)':pp>=70?'var(--amb)':'var(--red)';
-    const cr=pr>=80?'var(--grn)':pr>=50?'var(--amb)':'var(--red)';
-    return `<tr><td class="tcc">${s.f} ${s.n}${s.hisp?' <span class="hisp-badge">HISP</span>':''}</td>
-      <td class="tr t-r">${f$(rl)}</td><td class="tr tb">${f$(pl)}</td>
-      <td class="tr tg">${f$(b)}</td>
-      <td class="tr" style="color:${cr}">${rl>0?pr+'%':'—'}</td>
-      <td class="tr" style="color:${cp}">${pp}%</td>
-      <td class="tr ta">${f$(n)}</td>
-      <td class="tr tpk">${bv2>0?f$(bv2):'—'}</td>
-      <td class="tr" style="font-weight:500">${f$(b+n+bv2)}</td></tr>`;
-  }).join('');
+    html+=`<div style="background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:14px;position:relative;overflow:hidden">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:${ppCol}"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div>
+          <span style="font-size:16px">${s.f}</span>
+          <span style="font-size:13px;font-weight:600;margin-left:6px">${s.n}</span>
+          <span style="font-size:10px;color:var(--m);font-family:var(--mono);margin-left:4px">${s.c}</span>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:18px;font-weight:500;font-family:var(--mono);color:${ppCol}">${fp(pp)}</div>
+          <div style="font-size:9px;color:var(--m)">Rec÷Plano</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px">
+        <div style="background:var(--s2);border-radius:6px;padding:8px">
+          <div style="font-size:8px;color:var(--m);font-family:var(--mono);margin-bottom:2px">BPP REAL</div>
+          <div style="font-size:12px;font-family:var(--mono)">${f$(bppR)}</div>
+        </div>
+        <div style="background:var(--s2);border-radius:6px;padding:8px">
+          <div style="font-size:8px;color:var(--m);font-family:var(--mono);margin-bottom:2px">PLANO</div>
+          <div style="font-size:12px;font-family:var(--mono)">${f$(plan)}</div>
+        </div>
+        <div style="background:var(--s2);border-radius:6px;padding:8px">
+          <div style="font-size:8px;color:var(--m);font-family:var(--mono);margin-bottom:2px">REC. BPP</div>
+          <div style="font-size:12px;font-family:var(--mono);color:var(--grn)">${f$(recB)}</div>
+        </div>
+      </div>
+      ${tgmv>0?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+        <div style="background:var(--s2);border-radius:6px;padding:8px">
+          <div style="font-size:8px;color:var(--m);font-family:var(--mono);margin-bottom:2px">TGMV CARRIER</div>
+          <div style="font-size:12px;font-family:var(--mono)">${(tgmv/1e6).toFixed(1)}M</div>
+        </div>
+        <div style="background:var(--s2);border-radius:6px;padding:8px">
+          <div style="font-size:8px;color:var(--m);font-family:var(--mono);margin-bottom:2px">PENETRAÇÃO BPP</div>
+          <div style="font-size:12px;font-family:var(--mono);color:var(--amb)">${pen.toFixed(3)}%</div>
+        </div>
+      </div>`:''}
+      <div style="display:flex;align-items:flex-end;gap:2px;height:36px;padding:0 2px">${bars}</div>
+    </div>`;
+  });
+  html+='</div>';
+
+  // Summary table
+  const allRows=sites.map(s=>{
+    const bppR=sm((D_BPP_REAL[s.c]||[]).slice(getMF().s,getMF().e));
+    const plan=sm((D_PLAN[s.c]||[]).slice(getMF().s,getMF().e));
+    const recB=sm(getRecBpp(s.c).slice(getMF().s,getMF().e));
+    const recN=sm(getRecNb(s.c).slice(getMF().s,getMF().e));
+    const tgmv=hasTGMV()?sm((D_TGMV_CBS[s.c]||[]).slice(getMF().s,getMF().e)):0;
+    return {s,bppR,plan,recB,recN,tgmv};
+  }).filter(r=>r.bppR+r.plan+r.recB>0);
+
+  html+=`<div style="background:var(--s1);border:1px solid var(--b);border-radius:10px;overflow:hidden">
+    <table style="width:100%;border-collapse:collapse;font-size:11px">
+      <thead>
+        <tr style="background:var(--s2)">
+          <th style="text-align:left;padding:8px 12px;font-weight:500;color:var(--m)">País</th>
+          <th style="text-align:right;padding:8px 12px;font-weight:500;color:var(--m)">BPP Real</th>
+          <th style="text-align:right;padding:8px 12px;font-weight:500;color:var(--m)">Plano</th>
+          <th style="text-align:right;padding:8px 12px;font-weight:500;color:var(--m)">Rec BPP</th>
+          <th style="text-align:right;padding:8px 12px;font-weight:500;color:var(--m)">Rec Não-BPP</th>
+          <th style="text-align:right;padding:8px 12px;font-weight:500;color:var(--m)">% Rec/Plano</th>
+          ${hasTGMV()?'<th style="text-align:right;padding:8px 12px;font-weight:500;color:var(--m)">TGMV</th>':''}
+        </tr>
+      </thead>
+      <tbody>
+        ${allRows.map((r,i)=>{
+          const pp=r.plan>0?r.recB/r.plan*100:0;
+          const ppCol=pp>=100?'var(--grn)':pp>=70?'var(--amb)':'var(--red)';
+          return `<tr style="border-top:1px solid var(--b);${i%2?'background:rgba(255,255,255,.015)':''}">
+            <td style="padding:8px 12px;font-weight:500">${r.s.f} ${r.s.n}</td>
+            <td style="text-align:right;padding:8px 12px;font-family:var(--mono)">${f$(r.bppR)}</td>
+            <td style="text-align:right;padding:8px 12px;font-family:var(--mono)">${f$(r.plan)}</td>
+            <td style="text-align:right;padding:8px 12px;font-family:var(--mono);color:var(--blu)">${f$(r.recB)}</td>
+            <td style="text-align:right;padding:8px 12px;font-family:var(--mono);color:var(--pur)">${f$(r.recN)}</td>
+            <td style="text-align:right;padding:8px 12px;font-family:var(--mono);font-weight:600;color:${ppCol}">${isFinite(pp)&&pp>0?Math.round(pp)+'%':'—'}</td>
+            ${hasTGMV()?`<td style="text-align:right;padding:8px 12px;font-family:var(--mono);color:var(--m)">${r.tgmv>0?(r.tgmv/1e6).toFixed(1)+'M':'—'}</td>`:''}
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  </div>`;
+  el.innerHTML=html;
 }
 
+// ══════════════ RENDER: REC. REAL POR CAUSÍSTICA ══════════════
+function getCausPeriod(){
+  const v=document.getElementById('fCausPeriod')?.value||'ytd';
+  if(v==='ytd') return {s:3,e:8,label:'YTD Jan–Mai 2026'};
+  if(v==='6m')  return {s:0,e:8,label:'Out-25–Mai-26 (8M)'};
+  if(v==='q4')  return {s:0,e:3,label:'Q4 2025'};
+  if(v==='q1')  return {s:3,e:6,label:'Q1 2026'};
+  const i=parseInt(v); return {s:i,e:i+1,label:CAUS_PERIODS[i]};
+}
+// Soma BPP Real do intervalo causística [s,e) — CAUS idx 3..7 → BPP idx 0..4 (Jan–Mai 2026)
+function causBppReal(site,s,e){
+  let t=0; for(let i=s;i<e;i++){if(i>=3&&i<=7)t+=(D_BPP_REAL[site]||[])[i-3]||0;} return t;
+}
+// Soma TGMV CBS do intervalo causística [s,e) — CAUS idx 3..6 → TGMV idx 0..3
+function causTgmvSite(site,s,e){
+  let t=0; for(let i=s;i<e;i++){if(i>=3&&i<=7)t+=(D_TGMV_CBS[site]||[])[i-3]||0;} return t;
+}
+
+function renderCausisticas(){
+  const el=document.getElementById('causisticas-body');
+  if(!el) return;
+  const sites=getSites();
+  filterLabel('fl-caus');
+  const cp=getCausPeriod();
+  const activeSites=sites.map(s=>s.c);
+
+  const sumC=(site,type,s,e)=>{const a=(D_REC_CAUS[site]||{})[type]||[];return a.slice(s,e).reduce((x,v)=>x+(+v||0),0);};
+  const sumTot=(site,s,e)=>{const a=(D_REC_CAUS[site]||{})._total||[];return a.slice(s,e).reduce((x,v)=>x+(+v||0),0);};
+
+  const totRec=activeSites.reduce((a,s)=>a+sumTot(s,cp.s,cp.e),0);
+  const totBpp=activeSites.reduce((a,s)=>a+causBppReal(s,cp.s,cp.e),0);
+  const totTgmv=activeSites.reduce((a,s)=>a+causTgmvSite(s,cp.s,cp.e),0);
+  const has2026=(cp.s<8&&cp.e>3);
+
+  // Gráfico de tendência: apenas 2026 (Jan–Mai, índices 3–7)
+  const CAUS_2026=CAUS_PERIODS.slice(3); // ['Jan-26','Fev-26','Mar-26','Abr-26','Mai-26']
+  const trendDs=CAUS_TYPES.map((type,i)=>({
+    label:type,
+    data:CAUS_2026.map((_,j)=>activeSites.reduce((a,s)=>a+sumC(s,type,j+3,j+4),0)),
+    backgroundColor:CAUS_COLORS[i]+'cc',borderRadius:2,stack:'s',yAxisID:'y'
+  }));
+  // BPP Real e TGMV apenas 2026
+  const bppLine=CAUS_2026.map((_,j)=>activeSites.reduce((a,s)=>a+((D_BPP_REAL[s]||[])[j]||0),0));
+  const tgmvLine=CAUS_2026.map((_,j)=>activeSites.reduce((a,s)=>a+((D_TGMV_CBS[s]||[])[j]||0),0));
+
+  // Donut data for selected period
+  const donutVals=CAUS_TYPES.map((t)=>activeSites.reduce((a,s)=>a+sumC(s,t,cp.s,cp.e),0));
+  const donutNZ=CAUS_TYPES.map((t,i)=>({t,v:donutVals[i],c:CAUS_COLORS[i]})).filter(x=>x.v>0);
+
+  el.innerHTML=`
+  <div class="krow">
+    <div class="kpi g">
+      <div class="kl">Rec. Real BPP</div>
+      <div class="kv">${fk(totRec)}</div>
+      <div class="ks">${cp.label}</div>
+    </div>
+    <div class="kpi r">
+      <div class="kl">BPP Real (cashout)</div>
+      <div class="kv">${has2026&&totBpp>0?fk(totBpp):'—'}</div>
+      <div class="ks">${has2026&&totBpp>0?'Meses 2026 do período':'Sem dados 2026'}</div>
+    </div>
+    <div class="kpi b">
+      <div class="kl">% Rec / BPP Real</div>
+      <div class="kv">${has2026&&totBpp>0?Math.round(totRec/totBpp*100)+'%':'—'}</div>
+      <div class="ks">${has2026&&totBpp>0?'Meses com dado':'—'}</div>
+    </div>
+    <div class="kpi a">
+      <div class="kl">TGMV CBS</div>
+      <div class="kv">${has2026&&totTgmv>0?fk(totTgmv):'—'}</div>
+      <div class="ks">${has2026&&totTgmv>0?'Meses 2026 do período':'Sem dados 2026'}</div>
+    </div>
+    <div class="kpi" style="background:rgba(163,116,255,.08);border-color:rgba(163,116,255,.25)">
+      <div class="kl">% Rec / TGMV</div>
+      <div class="kv" style="color:var(--pur)">${has2026&&totTgmv>0?(totRec/totTgmv*100).toFixed(2)+'%':'—'}</div>
+      <div class="ks">${has2026&&totTgmv>0?'Meses com dado':'—'}</div>
+    </div>
+  </div>
+
+  <div class="card gf" style="margin-bottom:14px">
+    <div class="ch">
+      <div>
+        <div class="ct">Evolução Mensal — Recuperado Real por Causística vs BPP Real vs TGMV</div>
+        <div style="font-size:10px;color:var(--m2);margin-top:2px">⏱ Ciclo de fechamento: reclamos enviados no dia 15 do mês seguinte → 3 janelas de 15 dias com o carrier (~75 dias do mês de origem) · BPP Real e TGMV Jan–Mai 2026 (eixo direito) · Mai-26: Rec. Real em aberto</div>
+      </div>
+      <span class="badge bg">USD</span>
+    </div>
+    <div class="cw" style="height:310px"><canvas id="cCausBar"></canvas></div>
+    <div class="leg" style="flex-wrap:wrap;gap:6px 12px">
+      ${CAUS_TYPES.map((t,i)=>`<div class="li"><div class="ld" style="background:${CAUS_COLORS[i]}"></div>${t}</div>`).join('')}
+      <div class="li"><div class="ld" style="background:#ef4444;border-radius:0;height:2px;margin-top:6px;width:20px"></div>BPP Real</div>
+      <div class="li"><div class="ld" style="background:#f59e0b;border-radius:0;height:2px;margin-top:6px;width:20px"></div>TGMV CBS</div>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div class="ct">Mix de Causísticas — ${cp.label}</div><span class="badge bg">USD</span></div>
+      <div class="cw" style="height:270px"><canvas id="cCausPie"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ct">Recuperado por País — ${cp.label}</div><span class="badge bg">USD</span></div>
+      <div class="cw" style="height:270px"><canvas id="cCausCtry"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card gf">
+    <div class="ch">
+      <div class="ct">Detalhe: País × Causística × BPP Real × TGMV — ${cp.label}</div>
+      <span class="badge bg">USD · Rec. Real = caixa recebido no mês · reclamos abertos dia 15/M+1 · 3×15 dias para fechar</span>
+    </div>
+    <div class="tw"><table>
+      <thead><tr>
+        <th>País</th>
+        <th class="tr">Lost</th><th class="tr">Stolen</th><th class="tr">Damaged</th>
+        <th class="tr">Delayed</th><th class="tr">PNR+EB</th><th class="tr">Outros</th>
+        <th class="tr tg">Total Rec.</th>
+        <th class="tr">BPP Real</th><th class="tr">% Rec/BPP</th>
+        <th class="tr tc2">TGMV CBS</th><th class="tr tp">% Rec/TGMV</th>
+      </tr></thead>
+      <tbody id="tCauses"></tbody>
+    </table></div>
+  </div>
+
+  <div class="card gf" style="margin-top:14px">
+    <div class="ch">
+      <div class="ct">BPP Recovery por Carrier × Mês — ${cp.label}</div>
+      <span class="badge bc">CBS · evolução mensal Jan–Mai 2026${cp.s<3?'  ·  ⚠️ Q4/2025 sem dados CBS':''}</span>
+    </div>
+    <div class="tw"><table><thead><tr>
+      <th>Carrier</th><th>País</th>
+      <th class="tr">Jan</th><th class="tr">Fev</th><th class="tr">Mar</th><th class="tr">Abr</th><th class="tr">Mai</th>
+      <th class="tr tg">Total (${cp.label})</th>
+      <th class="tr tc2">TGMV</th><th class="tr tp">BPP Rec/TGMV</th>
+    </tr></thead><tbody id="tCausCar"></tbody></table></div>
+  </div>`;
+
+  // ── Chart: Stacked bar + dual axis lines ──
+  dc('cCausBar');
+  CH['cCausBar']=new Chart(document.getElementById('cCausBar'),{
+    type:'bar',
+    data:{
+      labels:CAUS_2026,
+      datasets:[
+        ...trendDs,
+        {label:'BPP Real',data:bppLine,type:'line',borderColor:'#ef4444',backgroundColor:'transparent',
+         borderWidth:2,pointRadius:4,pointBackgroundColor:'#ef4444',borderDash:[5,3],
+         yAxisID:'y2',order:-1,spanGaps:false},
+        {label:'TGMV CBS',data:tgmvLine,type:'line',borderColor:'#f59e0b',backgroundColor:'transparent',
+         borderWidth:2,pointRadius:4,pointBackgroundColor:'#f59e0b',borderDash:[5,3],
+         yAxisID:'y2',order:-2,spanGaps:false}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{backgroundColor:'#181c24',borderColor:'rgba(255,255,255,.12)',borderWidth:1,
+          titleColor:'#dde1ea',bodyColor:'#7c8696',
+          callbacks:{label:c=>' '+c.dataset.label+': '+fk(c.raw||0)}}
+      },
+      scales:{
+        x:{stacked:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9}}},
+        y:{stacked:true,grid:{color:'rgba(255,255,255,.06)'},
+           ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>'$'+Math.round(v/1000)+'k'},
+           title:{display:true,text:'Recuperado (barras)',color:'#5a6170',font:{size:9}}},
+        y2:{type:'linear',display:true,position:'right',grid:{drawOnChartArea:false},
+            ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>fk(v)},
+            title:{display:true,text:'BPP Real / TGMV (linhas)',color:'#5a6170',font:{size:9}}}
+      }
+    }
+  });
+
+  // ── Donut: mix causísticas ──
+  dc('cCausPie');
+  CH['cCausPie']=new Chart(document.getElementById('cCausPie'),{
+    type:'doughnut',
+    data:{labels:donutNZ.map(x=>x.t),datasets:[{data:donutNZ.map(x=>x.v),
+      backgroundColor:donutNZ.map(x=>x.c),borderWidth:1,borderColor:'rgba(0,0,0,.25)'}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'55%',
+      plugins:{legend:{display:true,position:'bottom',labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},boxWidth:8,boxHeight:8}},
+               tooltip:{callbacks:{label:c=>` ${c.label}: ${f$(c.raw)} (${Math.round(c.raw/(donutNZ.reduce((a,x)=>a+x.v,0)||1)*100)}%)`}}}}
+  });
+
+  // ── Country bar: stacked by causística ──
+  dc('cCausCtry');
+  CH['cCausCtry']=new Chart(document.getElementById('cCausCtry'),{
+    type:'bar',
+    data:{
+      labels:activeSites.map(s=>{const sf=SITES.find(x=>x.c===s);return sf?sf.n:s;}),
+      datasets:CAUS_TYPES.map((type,i)=>({
+        label:type,
+        data:activeSites.map(s=>sumC(s,type,cp.s,cp.e)),
+        backgroundColor:CAUS_COLORS[i]+'cc',borderRadius:2,stack:'s'
+      }))
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'bottom',labels:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},boxWidth:8,boxHeight:8}},
+               tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${f$(c.raw)}`}}},
+      scales:{
+        x:{stacked:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9}}},
+        y:{stacked:true,grid:{color:'rgba(255,255,255,.06)'},ticks:{color:'#5a6170',font:{family:'IBM Plex Mono',size:9},callback:v=>'$'+Math.round(v/1000)+'k'}}
+      }}
+  });
+
+  // ── Table: País × Causística ──
+  document.getElementById('tCauses').innerHTML=activeSites.map(s=>{
+    const sf=SITES.find(x=>x.c===s);
+    const tots=CAUS_TYPES.map(t=>sumC(s,t,cp.s,cp.e));
+    const rec=sumTot(s,cp.s,cp.e);
+    const bpp=causBppReal(s,cp.s,cp.e);
+    const tgmv=causTgmvSite(s,cp.s,cp.e);
+    const recPbpp=bpp>0&&rec>0?Math.round(rec/bpp*100)+'%':'—';
+    const recPtgmv=tgmv>0&&rec>0?(rec/tgmv*100).toFixed(2)+'%':'—';
+    return `<tr>
+      <td class="tcc">${sf?sf.f:''} ${sf?.n||s}</td>
+      ${tots.map(v=>`<td class="tr">${v>0?f$(v):'—'}</td>`).join('')}
+      <td class="tr tg" style="font-weight:600">${rec>0?f$(rec):'—'}</td>
+      <td class="tr">${bpp>0?f$(bpp):'—'}</td>
+      <td class="tr">${recPbpp}</td>
+      <td class="tr tc2">${tgmv>0?fk(tgmv):'—'}</td>
+      <td class="tr tp">${recPtgmv}</td>
+    </tr>`;
+  }).join('')+`<tr style="border-top:1px solid var(--b2);font-weight:600">
+    <td class="tcc">TOTAL</td>
+    ${CAUS_TYPES.map(t=>{const v=activeSites.reduce((a,s)=>a+sumC(s,t,cp.s,cp.e),0);return`<td class="tr">${v>0?f$(v):'—'}</td>`;}).join('')}
+    <td class="tr tg">${totRec>0?f$(totRec):'—'}</td>
+    <td class="tr">${totBpp>0?f$(totBpp):'—'}</td>
+    <td class="tr">${has2026&&totBpp>0?Math.round(totRec/totBpp*100)+'%':'—'}</td>
+    <td class="tr tc2">${totTgmv>0?fk(totTgmv):'—'}</td>
+    <td class="tr tp">${has2026&&totTgmv>0?(totRec/totTgmv*100).toFixed(2)+'%':'—'}</td>
+  </tr>`;
+
+  // ── Table: Carrier × País (CBS, period-aware) ──
+  // Map CAUS period slice → CBS indices (Jan=0,Feb=1,Mar=2,Apr=3)
+  // CAUS index 3=Jan-26→CBS[0], 4=Feb-26→CBS[1], 5=Mar-26→CBS[2]
+  // Q4 2025 (CAUS 0-2) has no CBS data
+  // CAUS idx → CBS idx: subtract 3 (Jan-26=CAUS3→CBS0, ..., Abr-26=CAUS6→CBS3)
+  const cbsS=Math.max(0,cp.s-3), cbsE=Math.min(5,cp.e-3);
+  const hasCbs=cbsE>cbsS;
+  const fc=document.getElementById('fC').value;
+  const cbsRows=[];
+  const ftCaus=getTipo();
+  if(hasCbs){
+    Object.entries(CBS).forEach(([car,sitesMap])=>{
+      const ct=CARRIER_TIPO[car]||'cc';
+      Object.entries(sitesMap).forEach(([site,vals])=>{
+        if(fc!=='all'&&site!==fc) return;
+        if(!activeSites.includes(site)) return;
+        if(ftCaus!=='all'&&ct!==ftCaus) return;
+        const b=sm(vals.bpp.slice(cbsS,cbsE));
+        const n=sm(vals.nonbpp.slice(cbsS,cbsE));
+        if(b+n===0) return;
+        const _tgKey=car.toUpperCase()+'|'+site;
+        const _tgResolved=_TGMV_ALIAS[_tgKey]||_tgKey;
+        const tg=hasTGMV()?sm((D_TGMV_CAR[_tgResolved]||D_TGMV_CAR[_tgKey]||[]).slice(cbsS,cbsE)):0;
+        cbsRows.push({car,site,b,n,tg,bppArr:vals.bpp.slice(0,5)});
+      });
+    });
+    cbsRows.sort((a,b2)=>(b2.b+b2.n)-(a.b+a.n));
+  }
+  const sfMap=Object.fromEntries(SITES.map(x=>[x.c,x]));
+  // CBS months fixed Jan-Mai (indices 0-4); Total/TGMV filtered by period
+  const CBS_MONTHS=['Jan','Fev','Mar','Abr','Mai'];
+  document.getElementById('tCausCar').innerHTML=hasCbs&&cbsRows.length>0
+    ? cbsRows.map(r=>{
+        const sf=sfMap[r.site]||{};
+        const months=r.bppArr; // [Jan,Fev,Mar,Abr,Mai]
+        const rtgmv=r.tg>0?(r.b/r.tg*100).toFixed(3)+'%':'—';
+        const fv=v=>v>0?f$(v):'<span style="color:var(--m2)">—</span>';
+        return `<tr>
+          <td style="font-size:12px;padding:6px 10px">${r.car}</td>
+          <td class="tcc">${sf.f||''} ${sf.n||r.site}</td>
+          ${months.map(v=>`<td class="tr">${fv(v)}</td>`).join('')}
+          <td class="tr tg" style="font-weight:600">${f$(r.b)}</td>
+          <td class="tr tc2">${r.tg>0?fk(r.tg):'—'}</td>
+          <td class="tr tp">${rtgmv}</td>
+        </tr>`;
+      }).join('')+`<tr style="border-top:1px solid var(--b2);font-weight:600">
+        <td colspan="2" style="padding:6px 10px;font-size:12px">TOTAL (${cbsRows.length} carriers)</td>
+        ${[0,1,2,3,4].map(i=>`<td class="tr">${f$(cbsRows.reduce((a,r)=>a+(r.bppArr[i]||0),0))}</td>`).join('')}
+        <td class="tr tg">${f$(cbsRows.reduce((a,r)=>a+r.b,0))}</td>
+        <td class="tr tc2">${hasTGMV()?fk(cbsRows.reduce((a,r)=>a+r.tg,0)):'—'}</td>
+        <td class="tr tp">—</td>
+      </tr>`
+    : `<tr><td colspan="10" style="text-align:center;color:var(--m2);padding:20px;font-size:12px">
+        ${hasCbs?'Nenhum dado CBS para este filtro':'⚠️ Período Q4/2025 não tem dados CBS — selecione YTD, Q1 ou mês individual 2026'}
+      </td></tr>`;
+}
+
+// ══════════════ TAB SWITCHING ══════════════
 function switchTab(name){
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['bpp','nonbpp','bonov','carriers','overview'][i]===name));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tc').forEach(c=>c.classList.remove('active'));
-  document.getElementById('tab-'+name).classList.add('active');
-  ({bpp:renderBpp,nonbpp:renderNonBpp,bonov:renderBonoVolumen,carriers:renderCarriers,overview:renderOverview}[name])();
+  const tabMap={'consolidado':0,'bpp-rec':1,'tgmv-rec':2,'tgmv-full':3,'carriers':4,'paises':5,'causisticas':6};
+  const idx=tabMap[name]??0;
+  document.querySelectorAll('.tab')[idx]?.classList.add('active');
+  const tc=document.getElementById('tab-'+name);
+  if(tc) tc.classList.add('active');
+  const renderMap={
+    'consolidado':renderConsolidado,
+    'bpp-rec':renderBppRec,
+    'tgmv-rec':renderTgmvRec,
+    'tgmv-full':renderTgmvFull,
+    'carriers':renderCarriers,
+    'paises':renderPaises,
+    'causisticas':renderCausisticas
+  };
+  if(renderMap[name]) renderMap[name]();
 }
+
 function applyFilters(){
-  const i=[...document.querySelectorAll('.tab')].findIndex(t=>t.classList.contains('active'));
-  switchTab(['bpp','nonbpp','bonov','carriers','overview'][i]);
+  // Update period pill
+  document.getElementById('pill-months').textContent=periodLabel();
+  const active=document.querySelector('.tab.active');
+  if(!active) return;
+  const tabMap=['consolidado','bpp-rec','tgmv-rec','tgmv-full','carriers','paises','causisticas'];
+  const tabs=[...document.querySelectorAll('.tab')];
+  const idx=tabs.indexOf(active);
+  if(idx>=0) switchTab(tabMap[idx]);
 }
-renderBpp();renderNonBpp();renderBonoVolumen();renderCarriers();renderOverview();
+
+// ══════════════ MODAL / IMPORT (legacy CSV kept for manual override) ══════════════
+function openModal(){document.getElementById('modal-overlay').style.display='flex';}
+function closeModal(){document.getElementById('modal-overlay').style.display='none';}
+let _mtab='tgmv';
+function switchMtab(t){
+  _mtab=t;
+  document.querySelectorAll('.mtab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('mtab-'+t).classList.add('active');
+  document.getElementById('mtab-tgmv-panel').style.display=t==='tgmv'?'block':'none';
+  document.getElementById('mtab-bpp-panel').style.display=t==='bpp'?'block':'none';
+}
+function loadData(){closeModal();}
+
+// ══════════════ INIT ══════════════
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    const names=['consolidado','bpp-rec','tgmv-rec','tgmv-full','carriers','paises','causisticas'];
+    t.onclick=()=>switchTab(names[i]);
+  });
+  // Update data status pill based on actual data state
+  const pill=document.getElementById('pill-data-status');
+  if(hasTGMV()&&hasBppCar()){
+    pill.textContent='✅ Dados carregados';
+    pill.className='pill pill-g';
+  } else if(hasTGMV()){
+    pill.textContent='✅ TGMV carregado';
+    pill.className='pill pill-g';
+  } else {
+    pill.textContent='⚠ TGMV pendente';
+    pill.className='pill pill-o';
+  }
+  // Forçar valor padrão dos filtros (ignora restauração de form pelo browser)
+  const causPeriodEl=document.getElementById('fCausPeriod');
+  if(causPeriodEl) causPeriodEl.value='ytd';
+  const tipoEl=document.getElementById('fTipo');
+  if(tipoEl) tipoEl.value='all';
+  switchMtab('tgmv');
+  switchTab('consolidado');
+});
 </script>
 
-<!-- PASSWORD GATE -->
+<!-- ══════════════ PASSWORD GATE ══════════════ -->
 <style>
 #pw-gate{position:fixed;inset:0;background:#0b0d11;display:flex;align-items:center;justify-content:center;z-index:9999}
 #pw-card{background:#111419;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:40px 44px;display:flex;flex-direction:column;align-items:center;gap:18px;width:340px;max-width:90vw}
@@ -723,8 +1452,8 @@ renderBpp();renderNonBpp();renderBonoVolumen();renderCarriers();renderOverview()
   <div id="pw-card">
     <div class="pw-logo">📦</div>
     <div style="text-align:center">
-      <div class="pw-title">Recovery Dashboard</div>
-      <div class="pw-sub">Commercial Carriers &middot; 2026 &middot; v7</div>
+      <div class="pw-title">BPP KPI Dashboard</div>
+      <div class="pw-sub">Commercial Carriers &middot; 2026</div>
     </div>
     <input id="pw-field" type="password" placeholder="••••••••••••••••" autocomplete="off">
     <button id="pw-submit">Acessar &rarr;</button>
