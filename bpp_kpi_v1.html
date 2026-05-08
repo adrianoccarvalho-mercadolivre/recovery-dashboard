@@ -317,16 +317,16 @@ td{padding:7px 9px;font-family:var(--mono);font-size:10px}
     <div id="mtab-tgmv-panel">
       <div class="modal-hint">
         Colunas esperadas: <strong>FECHA_CONTA_M, SIT_SITE_ID, CARRIER_ID, NMV</strong><br>
-        Query: BT_CONTA_CAUSA_BPP · filtro TIPO='NMV', FECHA >= 202601, só Carrier<br>
-        Formato: YYYYMM para o mês (ex: 202601)
+        Query: BT_CONTA_CAUSA_BPP · filtro TIPO='NMV', FECHA >= 202601 AND FECHA &lt;= 202605, só Carrier<br>
+        Formato: YYYYMM para o mês (ex: 202601) · Última atualização: Jan–Mai 2026
       </div>
       <textarea id="csv-tgmv" placeholder="FECHA_CONTA_M,SIT_SITE_ID,CARRIER_ID,NMV&#10;202601,MLB,Jad Logistica Ltda,125000000&#10;202601,MLA,OCASA,45000000&#10;..."></textarea>
     </div>
     <div id="mtab-bpp-panel" style="display:none">
       <div class="modal-hint">
         Colunas esperadas: <strong>FECHA_M, L1_CAUSA_BPP, SIT_SITE_ID, CARRIER_ID, CASHOUT</strong><br>
-        Query: BT_CX_BPP_CAUSE · filtro FECHA_BPP >= 2026-01-01, só Carrier<br>
-        FECHA_M: formato YYYYMM (ex: 202601)
+        Query: BT_CX_BPP_CAUSE · filtro FECHA_BPP >= 2026-01-01 AND FECHA_BPP &lt;= 2026-05-31, só Carrier<br>
+        FECHA_M: formato YYYYMM (ex: 202601) · Última atualização: Jan–Mai 2026
       </div>
       <textarea id="csv-bpp" placeholder="FECHA_M,L1_CAUSA_BPP,SIT_SITE_ID,CARRIER_ID,CASHOUT&#10;202601,Extravios,MLB,Jad Logistica Ltda,132228&#10;202601,Damaged,MLA,OCASA,35510&#10;..."></textarea>
     </div>
@@ -390,80 +390,80 @@ let CARRIERS_LOADED=[];
 const CAUS_PERIODS=['Out-25','Nov-25','Dez-25','Jan-26','Fev-26','Mar-26','Abr-26','Mai-26'];
 const CAUS_TYPES=['Lost','Stolen','Damaged','Delayed','PNR+EB','Outros'];
 const CAUS_COLORS=['#4d9fff','#ff6eb4','#f5a623','#a374ff','#2ecc8a','#8ab4c0'];
-// CAUS idx 3,4,5,6 → D_BPP_REAL/D_TGMV_CBS idx 0,1,2,3 (Jan,Fev,Mar,Abr 2026)
-// Abr-26 (idx 6): BPP Real disponível; Rec.Real = 0 (reclamos enviados 15/Mai, ciclo em aberto)
+// CAUS idx 3,4,5,6,7 → D_BPP_REAL/D_TGMV_CBS idx 0,1,2,3,4 (Jan,Fev,Mar,Abr,Mai 2026)
+// Mai-26 (idx 7): BPP Real pendente; Rec.Real = 0 (reclamos enviados 15/Jun, ciclo em aberto)
 const D_REC_CAUS={
   MLB:{
-    Lost:    [234117,154149,250088,120148,0,0,0],
-    Stolen:  [10234,5898,10362,5149,0,0,0],
-    Damaged: [110302,145027,123981,138245,0,0,0],
-    Delayed: [0,685,90492,74468,0,0,0],
-    'PNR+EB':[54694,73078,165227,179567,0,0,0],
-    Outros:  [32296,81077,53889,54065,0,0,0],
-    _total:  [441644,459914,694039,571641,0,0,0]
+    Lost:    [234117,154149,250088,120148,0,0,0,0],
+    Stolen:  [10234,5898,10362,5149,0,0,0,0],
+    Damaged: [110302,145027,123981,138245,0,0,0,0],
+    Delayed: [0,685,90492,74468,0,0,0,0],
+    'PNR+EB':[54694,73078,165227,179567,0,0,0,0],
+    Outros:  [32296,81077,53889,54065,0,0,0,0],
+    _total:  [441644,459914,694039,571641,0,0,0,0]
   },
   MLA:{
-    Lost:    [45257,68500,73480,95440,6992,0,0],
-    Stolen:  [56,3307,5270,35676,531,0,0],
-    Damaged: [63919,45445,45178,45016,2187,0,0],
-    Delayed: [23691,289,76538,119203,34975,0,0],
-    'PNR+EB':[24501,21413,34263,59692,0,0,0],
-    Outros:  [0,0,0,0,0,0,0],
-    _total:  [157425,138953,234728,355028,44686,0,0]
+    Lost:    [45257,68500,73480,95440,6992,0,0,0],
+    Stolen:  [56,3307,5270,35676,531,0,0,0],
+    Damaged: [63919,45445,45178,45016,2187,0,0,0],
+    Delayed: [23691,289,76538,119203,34975,0,0,0],
+    'PNR+EB':[24501,21413,34263,59692,0,0,0,0],
+    Outros:  [0,0,0,0,0,0,0,0],
+    _total:  [157425,138953,234728,355028,44686,0,0,0]
   },
   MLM:{
-    Lost:    [104853,79653,73380,51159,3407,0,0],
-    Stolen:  [17523,3110,16,1294,0,0,0],
-    Damaged: [6560,17621,5071,8445,0,0,0],
-    Delayed: [0,256,32595,26780,503,0,0],
-    'PNR+EB':[7376,34631,10585,2032,0,0,0],
-    Outros:  [0,0,0,0,0,0,0],
-    _total:  [136312,135271,121647,89710,3910,0,0]
+    Lost:    [104853,79653,73380,51159,3407,0,0,0],
+    Stolen:  [17523,3110,16,1294,0,0,0,0],
+    Damaged: [6560,17621,5071,8445,0,0,0,0],
+    Delayed: [0,256,32595,26780,503,0,0,0],
+    'PNR+EB':[7376,34631,10585,2032,0,0,0,0],
+    Outros:  [0,0,0,0,0,0,0,0],
+    _total:  [136312,135271,121647,89710,3910,0,0,0]
   },
   MCO:{
-    Lost:    [1809,2193,1457,4858,0,0,0],
-    Stolen:  [411,0,0,0,0,0,0],
-    Damaged: [210,123,689,0,0,0,0],
-    Delayed: [0,99,655,0,0,0,0],
-    'PNR+EB':[921,1293,1558,0,0,0,0],
-    Outros:  [906,922,4303,1080,0,0,0],
-    _total:  [4257,4630,8662,5938,0,0,0]
+    Lost:    [1809,2193,1457,4858,0,0,0,0],
+    Stolen:  [411,0,0,0,0,0,0,0],
+    Damaged: [210,123,689,0,0,0,0,0],
+    Delayed: [0,99,655,0,0,0,0,0],
+    'PNR+EB':[921,1293,1558,0,0,0,0,0],
+    Outros:  [906,922,4303,1080,0,0,0,0],
+    _total:  [4257,4630,8662,5938,0,0,0,0]
   },
   MLU:{
-    Lost:    [10886,10331,2882,0,0,0,0],
-    Stolen:  [515,434,372,0,0,0,0],
-    Damaged: [2021,2163,1852,0,0,0,0],
-    Delayed: [537,466,399,0,0,0,0],
-    'PNR+EB':[618,595,510,0,0,0,0],
-    Outros:  [25,22,18,0,0,0,0],
-    _total:  [14603,14011,6033,6033,6033,6033,0]
+    Lost:    [10886,10331,2882,0,0,0,0,0],
+    Stolen:  [515,434,372,0,0,0,0,0],
+    Damaged: [2021,2163,1852,0,0,0,0,0],
+    Delayed: [537,466,399,0,0,0,0,0],
+    'PNR+EB':[618,595,510,0,0,0,0,0],
+    Outros:  [25,22,18,0,0,0,0,0],
+    _total:  [14603,14011,6033,6033,6033,0,0,0]
   },
   MLC:{
-    Lost:    [10569,17805,17517,12605,11920,0,0],
-    Stolen:  [4908,2110,3938,142,1228,0,0],
-    Damaged: [10805,8118,7351,3629,251,0,0],
-    Delayed: [0,0,15107,7052,1653,0,0],
-    'PNR+EB':[2526,2198,4012,3479,2341,0,0],
-    Outros:  [0,0,0,0,0,0,0],
-    _total:  [28808,30231,47925,26907,17393,0,0]
+    Lost:    [10569,17805,17517,12605,11920,0,0,0],
+    Stolen:  [4908,2110,3938,142,1228,0,0,0],
+    Damaged: [10805,8118,7351,3629,251,0,0,0],
+    Delayed: [0,0,15107,7052,1653,0,0,0],
+    'PNR+EB':[2526,2198,4012,3479,2341,0,0,0],
+    Outros:  [0,0,0,0,0,0,0,0],
+    _total:  [28808,30231,47925,26907,17393,0,0,0]
   },
   MPE:{
-    Lost:    [305,153,205,0,0,0,0],
-    Stolen:  [265,350,460,0,0,0,0],
-    Damaged: [749,309,412,0,0,0,0],
-    Delayed: [0,0,0,0,0,0,0],
-    'PNR+EB':[442,589,344,0,0,0,0],
-    Outros:  [1190,884,691,0,0,0,0],
-    _total:  [2951,2285,2111,0,0,0,0]
+    Lost:    [305,153,205,0,0,0,0,0],
+    Stolen:  [265,350,460,0,0,0,0,0],
+    Damaged: [749,309,412,0,0,0,0,0],
+    Delayed: [0,0,0,0,0,0,0,0],
+    'PNR+EB':[442,589,344,0,0,0,0,0],
+    Outros:  [1190,884,691,0,0,0,0,0],
+    _total:  [2951,2285,2111,0,0,0,0,0]
   },
   MEC:{
-    Lost:    [0,0,0,0,0,0,0],
-    Stolen:  [0,0,0,484,0,0,0],
-    Damaged: [0,0,0,170,0,0,0],
-    Delayed: [0,0,0,0,0,0,0],
-    'PNR+EB':[0,0,0,0,97,0,0],
-    Outros:  [0,0,0,1578,0,0,0],
-    _total:  [0,0,0,2232,97,0,0]
+    Lost:    [0,0,0,0,0,0,0,0],
+    Stolen:  [0,0,0,484,0,0,0,0],
+    Damaged: [0,0,0,170,0,0,0,0],
+    Delayed: [0,0,0,0,0,0,0,0],
+    'PNR+EB':[0,0,0,0,97,0,0,0],
+    Outros:  [0,0,0,1578,0,0,0,0],
+    _total:  [0,0,0,2232,97,0,0,0]
   }
 };
 
