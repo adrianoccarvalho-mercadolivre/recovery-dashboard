@@ -5,7 +5,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<!-- v2026-05-08-r15 -->
+<!-- v2026-05-08-r16 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BPP KPI Dashboard — Commercial Carriers 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -563,7 +563,7 @@ function renderConsolidado(){
   document.getElementById('k-plan-s').innerHTML='<span class="'+(recB/plan>=1?'up':recB/plan>=.7?'wn':'dn')+'">'+(plan>0?Math.round(recB/plan*100)+'%':'—')+'</span> atingido';
   document.getElementById('k-nb-rec').textContent=fk(recN);
   document.getElementById('k-total-rec').textContent=fk(tot);
-  document.getElementById('k-total-rec-s').textContent=bppR>0?Math.round(tot/bppR*100)+'% vs BPP Real':'—';
+  document.getElementById('k-total-rec-s').textContent='BPP + Não-BPP';
   document.getElementById('k-tgmv').textContent=tgmv>0?fk(tgmv):'Carregar dados';
   document.getElementById('k-tgmv-s').textContent=tgmv>0?(tot/tgmv*100).toFixed(2)+'% Rec/TGMV':'⚠ aguardando CSV';
 
