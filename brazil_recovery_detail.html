@@ -421,28 +421,21 @@ function render(){
   }
   h+=`</tr></thead><tbody>`;
 
-  // rows by tipo group
-  const groups = [{key:'cc',label:'Commercial Carriers'},{key:'seg',label:'Seguros'}];
-  groups.forEach(g=>{
-    const gRows=rows.filter(r=>r.tipo===g.key&&r.bppP+r.nbP>0);
-    if(!gRows.length) return;
-    const colSpan=1+MONTHS.length*(+showBpp+ +showNb)+(+showBpp+ +showNb);
-    h+=`<tr class="grp-row"><td colspan="${colSpan}">${g.label}</td></tr>`;
-    gRows.forEach(r=>{
-      const tag=r.tipo==='seg'?`<span class="seg-tag">SEG</span>`:`<span class="cc-tag">CC</span>`;
-      const rBpp=cBpp(r); const rNb=cNb(r);
-      h+=`<tr><td class="tl">${r.name}${tag}</td>`;
-      rBpp.slice(0,MONTHS.length).forEach((v,i)=>{
-        const blM='border-left:1px solid rgba(255,255,255,.05)';
-        if(showBpp) h+=`<td class="tg" style="${blM}">${v>0?fVal(v):'<span style="color:var(--m2)">—</span>'}</td>`;
-        if(showNb)  h+=`<td class="ta" style="${!showBpp?blM:''}">${(rNb[i]||0)>0?fVal(rNb[i]):'<span style="color:var(--m2)">—</span>'}</td>`;
-      });
-      // total col
-      const blT='border-left:1px solid rgba(255,255,255,.12)';
-      if(showBpp) h+=`<td class="tg" style="${blT};font-weight:600">${r.bppP>0?fVal(r.bppP):'<span style="color:var(--m2)">—</span>'}</td>`;
-      if(showNb)  h+=`<td class="ta" style="${!showBpp?blT:''}">${r.nbP>0?fVal(r.nbP):'<span style="color:var(--m2)">—</span>'}</td>`;
-      h+=`</tr>`;
+  // rows sorted by total (largest → smallest), no group separation
+  rows.filter(r=>r.bppP+r.nbP>0).forEach(r=>{
+    const tag=r.tipo==='seg'?`<span class="seg-tag">SEG</span>`:`<span class="cc-tag">CC</span>`;
+    const rBpp=cBpp(r); const rNb=cNb(r);
+    h+=`<tr><td class="tl">${r.name}${tag}</td>`;
+    rBpp.slice(0,MONTHS.length).forEach((v,i)=>{
+      const blM='border-left:1px solid rgba(255,255,255,.05)';
+      if(showBpp) h+=`<td class="tg" style="${blM}">${v>0?fVal(v):'<span style="color:var(--m2)">—</span>'}</td>`;
+      if(showNb)  h+=`<td class="ta" style="${!showBpp?blM:''}">${(rNb[i]||0)>0?fVal(rNb[i]):'<span style="color:var(--m2)">—</span>'}</td>`;
     });
+    // total col
+    const blT='border-left:1px solid rgba(255,255,255,.12)';
+    if(showBpp) h+=`<td class="tg" style="${blT};font-weight:600">${r.bppP>0?fVal(r.bppP):'<span style="color:var(--m2)">—</span>'}</td>`;
+    if(showNb)  h+=`<td class="ta" style="${!showBpp?blT:''}">${r.nbP>0?fVal(r.nbP):'<span style="color:var(--m2)">—</span>'}</td>`;
+    h+=`</tr>`;
   });
 
   // total row
